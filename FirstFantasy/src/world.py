@@ -1,6 +1,5 @@
 '''
-$Date: 2012-08-19 01:20:37 -0700 (Sun, 19 Aug 2012) $
-$Revision: 16392 $
+Last changed by: Dale Everett
 '''
 import zone
 import random
@@ -10,12 +9,11 @@ import pprint
 class Map:    
     
     def __init__(self):
-        ## List of Zone names
+        """Define zone names and sets of enemies to use in zones"""
         self.wild_names = ["Dark Forest", "Evil Bridge", "Desolate Plains", "Old Ruins", "Torched Grassland", "Black Swamp", "Endless Wastes", "Sunless Canyon", "Foul Bog", "Terror Isle"]
         self.town_names = ["Your House", "Cheery Inn","Joe's Bed & Breakfast"]
         self.enemy_types = [("Theif",10,[5,5,5,5]),("Goblin",5,[3,7,7,3]),("Spider",5,[7,7,3,3])]
         
-        ## Shuffle to pop in random order
         random.shuffle(self.wild_names)
         random.shuffle(self.town_names)
         
@@ -23,7 +21,8 @@ class Map:
         self.current_zone = zone.Town(starting_zone,0)
         self.placeZone(self.current_zone,1)
     
-    def placeZone(self,cur,dr,root = None): 
+    def placeZone(self,cur,dr,root = None):
+        """Recursively place zones outwards from 'Your House'"""
         if root == None:
             home_flag = 1
         else:
@@ -49,6 +48,7 @@ class Map:
                     self.placeZone(cur.neighbors[i],dr,cur)
                     
     def printMap(self):
+        """Uses pprint to print zone list in map_layer""" 
         map_layer = []
         j_map = 0
         for i in range(len(self.current_zone.neighbors)):
@@ -80,6 +80,7 @@ class Map:
                 continue 
         
     def generateMapLayer(self, cur_zone, root_zone, map_layer):
+        """Recursively places neighboring zones in in current layer""" 
         j_map = 0
         for i in range(len(cur_zone.neighbors) ):
             if cur_zone.neighbors[i].z_name != root_zone.z_name:

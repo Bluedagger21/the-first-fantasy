@@ -7,7 +7,7 @@ import random
 
 
 class Zone:
-    """Base class"""
+    """Defines members and methods of each location in the world"""
     def __init__(self,name,dr,first_neighbor):
         self.z_name = name
         self.z_dr = dr
@@ -22,7 +22,7 @@ class Zone:
                 print z.z_name
        
 class Wild(Zone):
-    """"Object for a wild zone type"""
+    """"Wild zones are hostile and contain enemies"""
     def __init__(self,name,dr,enemy_list,first_neighbor = None):
         Zone.__init__(self,name,dr,first_neighbor)
         
@@ -50,7 +50,7 @@ class Wild(Zone):
         return raw_input().lower()
 
 class Town(Zone):
-    """Object for town zone type"""
+    """Town zones pose no threat and offer shops and rest"""
     def __init__(self,name,dr,first_neighbor = None):
         Zone.__init__(self,name,dr,first_neighbor)
         self.z_type = "town"

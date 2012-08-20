@@ -76,7 +76,9 @@ def continuegame():
             continue
 
 def homescreen():
-    """Displays current location information and prompts for actions"""
+    """Displays current location information and prompts for actions
+    
+    NOTE -- Need to reduce this function into something more manageable"""
     choice = ''
     while True:
         current_zone = worldmap.loadZone()

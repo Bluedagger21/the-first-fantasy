@@ -2,7 +2,7 @@
 Last changed by: Dale Everett
 '''
 class Equipment():
-    """Base class"""
+    """Defines base members and methods of equippable items"""
     def __init__(self,name,stats):
         self.name = name
         self.stats = stats
@@ -48,7 +48,7 @@ class Armor(Equipment):
         self.slot = slot
                                               
 class Consumable():
-    """Base class"""
+    """Defines base members and methods for consumables"""
     def __init__(self,name,effect):
         self.name = name
         self.effect = effect

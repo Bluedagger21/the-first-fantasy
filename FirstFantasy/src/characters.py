@@ -7,7 +7,7 @@ import items
 import os
 
 class Character:
-    """Base class"""
+    """Defines an interactive character within the game"""
     def __init__(self):
         self.status = "normal"
         self.VITALITY_RATIO = 5
@@ -93,6 +93,7 @@ class Player(Character):
         self.health = self.getMaxHealth()
     
     def giveExp(self,exp_earned):
+        """Gives the player exp_earned experience and checks for level up"""
         print self.name + " gained " + repr(exp_earned) + " experience!"
         self.exp += exp_earned
         self.checkLevelUp()
@@ -102,6 +103,7 @@ class Player(Character):
         self.gold += gold_earned
         
     def giveItem(self,item):
+        """Checks to see if inventory has space and gives item to player"""
         print self.name + " found a " + item.name + "!"
         if len(self.inventory) < 10:
             self.inventory.append(item)
