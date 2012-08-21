@@ -13,7 +13,10 @@ worldmap = None
 
 
 def titlescreen():
-    """Display title and prompt whether to start a new game, continue, or quit"""
+    """
+    Display title and prompt whether to
+    start a new game, continue, or quit
+    """
     choice = ''
     while True:
         os.system("CLS")
@@ -28,9 +31,9 @@ def titlescreen():
             newgame()
             break
         elif choice == 'c':
-            tmp_bool = continuegame() 
-            if tmp_bool == True:
-                break  
+            tmp_bool = continuegame()
+            if tmp_bool is True:
+                break
         elif choice == 'q':
             sys.exit()
             break
@@ -56,16 +59,16 @@ def continuegame():
     print home_dir
     while True:
         os.system("CLS")
-        if not os.path.exists(home_dir+"\saves"):
+        if not os.path.exists(home_dir + "\saves"):
             print "Creating saves directory..."
-            os.makedirs(home_dir+'\saves')
-        for files in os.listdir(home_dir+"\saves"):
+            os.makedirs(home_dir + '\saves')
+        for files in os.listdir(home_dir + "\saves"):
             if files.endswith(".bin"):
                 print files[:-4]
         saved_file = raw_input("\nType filename to load (C to cancel): ")
-        if os.path.exists(home_dir+"\saves\\"+saved_file+".bin"):
+        if os.path.exists(home_dir + "\saves\\" + saved_file + ".bin"):
             print "Loading game..."
-            f = open(home_dir+'\saves\\'+saved_file+'.bin', 'rb')
+            f = open(home_dir + '\saves\\' + saved_file + '.bin', 'rb')
             player = cPickle.load(f)
             worldmap = cPickle.load(f)
             f.close()
@@ -80,7 +83,7 @@ def continuegame():
 
 def homescreen():
     """Displays current location information and prompts for actions
-    
+
     NOTE -- Need to reduce this function into something more manageable"""
     choice = ''
     while True:
@@ -107,7 +110,7 @@ def homescreen():
                 os.system("PAUSE")
         elif choice == 'i':
             os.system("CLS")
-            player.getInventory()               
+            player.getInventory()
         elif choice == 't':
             os.system("CLS")
             worldmap.printMap()
@@ -121,12 +124,12 @@ def homescreen():
         elif choice == 's':
             os.system("CLS")
             home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-            if not os.path.exists(home_dir+'\saves'):
-                os.makedirs(home_dir+'\saves')
+            if not os.path.exists(home_dir + '\saves'):
+                os.makedirs(home_dir + '\saves')
             print home_dir
-            f = open(home_dir+'\saves\\'+player.name+'.bin', 'wb')
+            f = open(home_dir +'\saves\\'+ player.name + '.bin', 'wb')
             print "Saving game..."
-            
+
             cPickle.dump(player, f, protocol=0)
             cPickle.dump(worldmap, f, protocol=0)
             f.close()
