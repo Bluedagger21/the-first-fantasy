@@ -2,7 +2,11 @@ The First Fantasy is a text-based role-playing game developed completely with Py
 
 To Run:
 
+Windows Only:
 Execute TheFirstFantasy.exe within the dist directory.
+
+Any OS with Python 2.7.3:
+Change directory into the src folder and type the command: python main.py 
 
 To Build:
 
