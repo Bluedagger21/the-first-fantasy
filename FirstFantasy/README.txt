@@ -4,6 +4,9 @@ To Run:
 
 Execute TheFirstFantasy.exe within the dist directory.
 
+or (if python2.7 is installed on your system) change into the src folder and type
+python main.py 
+
 To Build:
 
 Python and py2exe is needed create a new dist. Once installed, run build.bat.
