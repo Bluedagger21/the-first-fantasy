@@ -4,16 +4,17 @@ Last changed by: Dale Everett
 import items
 import random
 from weightedchoice import weighted_choice_sub
-            
+
+
 def Loot(level):
     """Decides loot given for the kill"""
-    gold = random.randint(0,10) * level + 10
-    
+    gold = random.randint(0, 10) * level + 10
+
     quality = level // 4
-    
-    item_dict = {"None":(2), "Armor":(10), "Weapon":(7), "Consumable":(7)} ##
+
+    item_dict = {"None": (2), "Armor": (10), "Weapon": (7), "Consumable": (7)}
     item_type = item_dict.keys()[weighted_choice_sub(item_dict.values())]
-    
+
     if item_type == "Consumable":
         item = createConsumable(quality)
     elif item_type == "Armor":
@@ -22,19 +23,29 @@ def Loot(level):
         item = createWeapon(quality)
     else:
         item = None
-    
+
     return (gold, item)
 
-armor_slots = ("Helm","Coat","Gloves","Leggings","Boots")
-weapon_types = ("Sword","Right Hand",[1,0,0,0]), ("Mace","Right Hand",[0,0,1,0]), ("Dagger","Right Hand",[0,1,0,0]) 
-weapon_prefixes = ("",10,[0,0,0,0]), ("Sharp ",1,[1,1,0,0]), ("Precise ",1,[0,1,1,0]), ("Stalwart ",1,[0,0,1,1]), ("Unyielding ",1,[1,0,0,1])
-armor_prefixes = ("Crude ",[0,0,1,0]), ("Basic ",[0,0,2,0]), ("Sturdy ",[0,0,2,1])
-suffixes = (("",(10,[0,0,0,0])), (" of Brutality",(1,[1,1,0,0])), (" of Survival",(1,[0,0,1,1])), (" of Finesse",(1,[0,1,1,0])), (" of Dueling",(1,[1,0,0,1])))
+armor_slots = ("Helm", "Coat", "Gloves", "Leggings", "Boots")
+weapon_types = ("Sword", "Right Hand", [1, 0, 0, 0]), (
+                "Mace", "Right Hand", [0, 0, 1, 0]), (
+                "Dagger", "Right Hand", [0, 1, 0, 0])
+weapon_prefixes = ("", 10, [0, 0, 0, 0]), ("Sharp ", 1, [1, 1, 0, 0]), (
+                   "Precise ", 1, [0, 1, 1, 0]), (
+                   "Stalwart ", 1, [0, 0, 1, 1]), (
+                   "Unyielding ", 1, [1, 0, 0, 1])
+armor_prefixes = ("Crude ", [0, 0, 1, 0]), ("Basic ", [0, 0, 2, 0]), (
+                  "Sturdy ", [0, 0, 2, 1])
+suffixes = (("", (10, [0, 0, 0, 0])), (" of Brutality", (1, [1, 1, 0, 0])), (
+             " of Survival", (1, [0, 0, 1, 1])), (
+             " of Finesse", (1, [0, 1, 1, 0])), (
+             " of Dueling", (1, [1, 0, 0, 1])))
 
-def createArmor(level,armor_slot = ""):
+
+def createArmor(level, armor_slot=""):
     """Creates a piece of armor"""
     stats = []
-    
+
     if armor_slot == "":
         slot = random.choice(armor_slots)
     else:
@@ -44,30 +55,33 @@ def createArmor(level,armor_slot = ""):
     name = prefix[0] + slot + suffix[0]
     for i in range(4):
         stats.append(prefix[1][i] + suffix[1][1][i])
-        
-    return items.Armor(name,slot,stats)
 
-def createWeapon(level,weapon_type = ""):
+    return items.Armor(name, slot, stats)
+
+
+def createWeapon(level, weapon_type=""):
     """Creates a weapon"""
     stats = []
-    
+
     if weapon_type == "":
         w_type = random.choice(weapon_types)
     else:
         w_type = weapon_type
-    
-    prefix = weapon_prefixes[weighted_choice_sub([x[1] for x in weapon_prefixes])]
+
+    prefix = weapon_prefixes[weighted_choice_sub(
+                            [x[1] for x in weapon_prefixes])]
     name = prefix[0] + w_type[0]
     for i in range(4):
         stats.append((prefix[2][i] + w_type[2][i]) * (1 + level))
-        
+
     if w_type[0] == "Sword":
-        return items.Sword(name,stats)
+        return items.Sword(name, stats)
     if w_type[0] == "Mace":
-        return items.Mace(name,stats)
+        return items.Mace(name, stats)
     if w_type[0] == "Dagger":
-        return items.Dagger(name,stats)
-    
+        return items.Dagger(name, stats)
+
+
 def createConsumable(level):
     """Chooses a consumable"""
     consumable_weights = (10,2)
@@ -75,4 +89,4 @@ def createConsumable(level):
     if choice == 0:
         return items.SmallHealthPotion()
     elif choice == 1:
-        return items.SmallExperienceBoost()    
+        return items.SmallExperienceBoost()
