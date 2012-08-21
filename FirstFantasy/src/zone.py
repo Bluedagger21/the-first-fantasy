@@ -30,7 +30,7 @@ class Wild(Zone):
         Zone.__init__(self, name, dr, first_neighbor)
 
         self.z_type = "wild"
-        self.z_options = ("(E)xplore    (T)ravel    (I)nventory" +
+        self.z_options = ("(E)xplore    (T)ravel    (I)nventory    " +
                           "(C)haracter Sheet\n(Q)uit    (S)ave")
         self.z_actions = [("encounter", 20), ("nothing", 4)]
         self.z_enemy_list = enemy_list
@@ -61,7 +61,8 @@ class Town(Zone):
     def __init__(self, name, dr, first_neighbor=None):
         Zone.__init__(self,name, dr, first_neighbor)
         self.z_type = "town"
-        self.z_options = "(S)hop    (T)ravel    (R)est    (I)nventory    (C)haracter Sheet\n(Q)uit    (S)ave"
+        self.z_options = ("(S)hop    (T)ravel    (R)est    (I)nventory    " +
+                          "(C)haracter Sheet\n(Q)uit    (S)ave")
 
     def getOptions(self):
         """Print options and prompt for choice"""
