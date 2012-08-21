@@ -35,6 +35,7 @@ def titlescreen():
             sys.exit()
             break
 
+
 def newgame():
     """Get player name and create new world"""
     global worldmap
@@ -44,7 +45,8 @@ def newgame():
     worldmap = world.Map()
     print "Prepare to begin your journey..."
     os.system("PAUSE")
-    
+
+
 def continuegame():
     """Prompt to choose saved game and load player and worldmap states"""
     global worldmap
@@ -74,6 +76,7 @@ def continuegame():
             return False
         else:
             continue
+
 
 def homescreen():
     """Displays current location information and prompts for actions
@@ -131,7 +134,8 @@ def homescreen():
             os.system("PAUSE")
         else:
             continue
-                       
+
+
 def explore(current_zone):
     """Decides if an encounter occurs or not"""
     os.system("CLS")
@@ -142,5 +146,3 @@ def explore(current_zone):
     elif action == "nothing":
         print "Nothing of interest was found..."
         os.system("PAUSE")
-    
-        
