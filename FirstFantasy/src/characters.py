@@ -116,7 +116,7 @@ class Player(Character):
             print "Your inventory is empty..."
             return
         while True:
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             print "Inventory:"
             for i,x in enumerate(self.inventory):
                 print "{}) {}".format(i+1,x.name)
@@ -126,7 +126,7 @@ class Player(Character):
             except ValueError:
                 continue
             if choice <= i and choice >= 0:
-                os.system("CLS")
+                os.system("cls" if os.name=="nt" else "clear")
                 option = self.inventory[choice].getOptions()
                 
                 if option == "equip":
@@ -151,7 +151,7 @@ class Player(Character):
                 
                 elif option == "consume":
                     self.inventory.pop(choice).use(self)
-                    os.system("PAUSE")
+                    raw_input("Press \"Enter\" to continue...")
                     break
                 
                 elif option == "compare":
@@ -161,14 +161,14 @@ class Player(Character):
                             self.updateEquipmentStats()
                         else:
                             print "No existing item to compare!"
-                            os.system("PAUSE")
+                            raw_input("Press \"Enter\" to continue...")
                     elif isinstance(self.inventory[choice],items.Weapon):
                         if self.weapons.get(self.inventory[choice].slot) != None:
                             self.compareEquipment(self.inventory[choice], self.weapons.get(self.inventory[choice].slot))
                             self.updateEquipmentStats()
                         else:
                             print "No existing item to compare!"
-                            os.system("PAUSE")
+                            raw_input("Press \"Enter\" to continue...")
                             
                 elif option == "destroy":
                     self.inventory.pop(choice)
@@ -185,7 +185,7 @@ class Player(Character):
     def compareEquipment(self,new,cur):
         """Compares attributes of existing item with a new item"""
         while True:
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             STAT_WIDTH = 12
             CUR_NAME_WIDTH = len(cur.name) + 2
             NEW_NAME_WIDTH = len(new.name) + 2
@@ -203,10 +203,10 @@ class Player(Character):
                 elif isinstance(new, items.Weapon):
                     self.weapons[new.slot] = new
                 self.inventory.remove(new)
-                os.system("CLS")
+                os.system("cls" if os.name=="nt" else "clear")
                 break
             elif choice == 'n':
-                os.system("CLS")
+                os.system("cls" if os.name=="nt" else "clear")
                 break
     
     def updateEquipmentStats(self):
@@ -235,8 +235,8 @@ class Player(Character):
             self.exp_needed += self.level * 100
             level_gain += 1
         if level_gain > 0:
-            os.system("PAUSE")
-            os.system("CLS")
+            raw_input("Press \"Enter\" to continue...")
+            os.system("cls" if os.name=="nt" else "clear")
             self.levelUp(level_gain)
     
     def levelUp(self,level_gain):
@@ -261,10 +261,10 @@ class Player(Character):
                 self.stat_list[3] += 1
             else:
                 continue
-                os.system("CLS")
+                os.system("cls" if os.name=="nt" else "clear")
             points_gain -= 1
             self.health = self.getMaxHealth()
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
 
     def getCharacterSheet(self):
         print "[---Character Sheet---]"

@@ -7,7 +7,7 @@ import time
 
 def getAction(a,b):
     """Display combat information and prompt for action"""
-    os.system("CLS")
+    os.system("cls" if os.name=="nt" else "clear")
     print b.name
     print "Health: " + repr(b.health) + "/" + repr(b.getMaxHealth())
     print "P: {:2} P: {:2} T: {:2} V: {:2}".format(b.stat_list[0],b.stat_list[1],b.stat_list[2],b.stat_list[3])

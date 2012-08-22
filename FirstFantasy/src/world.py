@@ -62,7 +62,7 @@ class Map:
         pp = pprint.PrettyPrinter(indent = 4)
         possiblities = len(self.current_zone.neighbors)       
         while True:
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             pp.pprint(map_layer)
             for i in range(possiblities):
                 print repr(i+1) + ") " + self.current_zone.neighbors[i].z_name
