@@ -99,7 +99,7 @@ class Sword(Weapon):
     def __init__(self,name,stats):
         Weapon.__init__(self,name,stats)
         self.slot = "Right Hand"
-        self.options = ["Swing"]
+        self.options = ["Swing"]       
         
 class Mace(Weapon):
     def __init__(self,name,stats):
