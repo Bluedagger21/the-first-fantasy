@@ -11,12 +11,11 @@ import os
 player = None
 worldmap = None
 
-
 def titlescreen():
     """Display title and prompt whether to start a new game, continue, or quit"""
     choice = ''
     while True:
-        os.system("CLS")
+        os.system("cls" if os.name=="nt" else "clear")
         print "The First Fantasy"
         print "Copyright (C) 2012  Dale Everett\n\n"
         while True:
@@ -43,7 +42,7 @@ def newgame():
     player = characters.Player(raw_input("Enter your name: "))
     worldmap = world.Map()
     print "Prepare to begin your journey..."
-    os.system("PAUSE")
+    raw_input("Press \"Enter\" to continue...")
     
 def continuegame():
     """Prompt to choose saved game and load player and worldmap states"""
@@ -53,7 +52,7 @@ def continuegame():
     home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
     print home_dir
     while True:
-        os.system("CLS")
+        os.system("cls" if os.name=="nt" else "clear")
         if not os.path.exists(home_dir+"\saves"):
             print "Creating saves directory..."
             os.makedirs(home_dir+'\saves')
@@ -68,7 +67,7 @@ def continuegame():
             worldmap = cPickle.load(f)
             f.close()
             print "...Done!"
-            os.system("PAUSE")
+            raw_input("Press \"Enter\" to continue...")
             return True
         elif saved_file == 'c' or saved_file == 'C':
             return False
@@ -82,15 +81,15 @@ def homescreen():
     choice = ''
     while True:
         current_zone = worldmap.loadZone()
-        os.system("CLS")
+        os.system("cls" if os.name=="nt" else "clear")
         choice = current_zone.getOptions()
         if choice == 'e':
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             explore(current_zone)
         elif choice == 'c':
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             player.getCharacterSheet()
-            os.system("PAUSE")
+            raw_input("Press \"Enter\" to continue...")
         elif choice == 'r':
             cost = player.level * 10 + 15
             print "Cost: {}g".format(cost)
@@ -101,22 +100,22 @@ def homescreen():
                     print player.name + " has returned to full health!"
                 else:
                     print "You don't have enough gold!"
-                os.system("PAUSE")
+                raw_input("Press \"Enter\" to continue...")
         elif choice == 'i':
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             player.getInventory()               
         elif choice == 't':
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             worldmap.printMap()
             print "You make your way to " + worldmap.current_zone.z_name
             if worldmap.current_zone.z_type == "wild":
                 explore(worldmap.current_zone)
             else:
-                os.system("PAUSE")
+                raw_input("Press \"Enter\" to continue...")
         elif choice == 'q':
             sys.exit()
         elif choice == 's':
-            os.system("CLS")
+            os.system("cls" if os.name=="nt" else "clear")
             home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
             if not os.path.exists(home_dir+'\saves'):
                 os.makedirs(home_dir+'\saves')
@@ -128,19 +127,19 @@ def homescreen():
             cPickle.dump(worldmap, f, protocol=0)
             f.close()
             print "...Done!"
-            os.system("PAUSE")
+            raw_input("Press \"Enter\" to continue...")
         else:
             continue
                        
 def explore(current_zone):
     """Decides if an encounter occurs or not"""
-    os.system("CLS")
+    os.system("cls" if os.name=="nt" else "clear")
     action = current_zone.getAction()
     if action == "encounter":
         opponent = current_zone.getEnemy()
         combat.combat(player, opponent)
     elif action == "nothing":
         print "Nothing of interest was found..."
-        os.system("PAUSE")
+        raw_input("Press \"Enter\" to continue...")
     
         
