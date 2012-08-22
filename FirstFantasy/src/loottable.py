@@ -8,7 +8,8 @@ from weightedchoice import weighted_choice_sub
 
 def createUnique(quality):
     """Chooses an unique item"""
-    unique_list = (items.Sword("Sword of a Thousand Truths",[2,2,2,2]),items.Armor("Judgement Chestguard","Chest",[3,1,3,1]))
+    unique_list = (items.Sword("Sword of a Thousand Truths",[2,2,2,2])
+                   ,items.Armor("Judgement Chestguard","Chest",[3,1,3,1]))
     return random.choice(unique_list)
 
 def Loot(level):
