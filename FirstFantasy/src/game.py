@@ -53,13 +53,60 @@ def continuegame():
     print home_dir
     while True:
         os.system("cls" if os.name=="nt" else "clear")
+<<<<<<< HEAD
+        if os.name == "nt":  # WINDOWS
+            if not os.path.exists(home_dir+"\saves"):
+                print "Creating saves directory..."
+                os.makedirs(home_dir+'\saves')
+            for files in os.listdir(home_dir+"\saves"):
+                if files.endswith(".bin"):
+                    print files[:-4]
+        else:  # UNIX
+            if not os.path.exists(home_dir+"/saves"):
+                print "Creating saves directory..."
+                os.makedirs(home_dir+'/saves')
+            for files in os.listdir(home_dir+"/saves"):
+                if files.endswith(".bin"):
+                    print files[:-4]
+=======
         if not os.path.exists(home_dir+"\saves"):
             print "Creating saves directory..."
             os.makedirs(home_dir+'\saves')
         for files in os.listdir(home_dir+"\saves"):
             if files.endswith(".bin"):
                 print files[:-4]
+>>>>>>> branch 'multi-platform' of https://github.com/Bluedagger21/the-first-fantasy.git
         saved_file = raw_input("\nType filename to load (C to cancel): ")
+<<<<<<< HEAD
+        if os.name == "nt":  # WINDOWS
+            if os.path.exists(home_dir+"\saves\\"+saved_file+".bin"):
+                print "Loading game..."
+                f = open(home_dir+'\saves\\'+saved_file+'.bin', 'rb')
+                player = cPickle.load(f)
+                worldmap = cPickle.load(f)
+                f.close()
+                print "...Done!"
+                raw_input("Press \"Enter\" to continue...")
+                return True
+            elif saved_file == 'c' or saved_file == 'C':
+                return False
+            else:
+                continue
+        else:  # UNIX
+            if os.path.exists(home_dir+"/saves/"+saved_file+".bin"):
+                print "Loading game..."
+                f = open(home_dir+'/saves/'+saved_file+'.bin', 'rb')
+                player = cPickle.load(f)
+                worldmap = cPickle.load(f)
+                f.close()
+                print "...Done!"
+                raw_input("Press \"Enter\" to continue...")
+                return True
+            elif saved_file == 'c' or saved_file == 'C':
+                return False
+            else:
+                continue
+=======
         if os.path.exists(home_dir+"\saves\\"+saved_file+".bin"):
             print "Loading game..."
             f = open(home_dir+'\saves\\'+saved_file+'.bin', 'rb')
@@ -73,6 +120,7 @@ def continuegame():
             return False
         else:
             continue
+>>>>>>> branch 'multi-platform' of https://github.com/Bluedagger21/the-first-fantasy.git
 
 def homescreen():
     """Displays current location information and prompts for actions
@@ -117,10 +165,16 @@ def homescreen():
         elif choice == 's':
             os.system("cls" if os.name=="nt" else "clear")
             home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-            if not os.path.exists(home_dir+'\saves'):
-                os.makedirs(home_dir+'\saves')
-            print home_dir
-            f = open(home_dir+'\saves\\'+player.name+'.bin', 'wb')
+            if os.name == "nt":  # WINDOWS
+                if not os.path.exists(home_dir+'\saves'):
+                    os.makedirs(home_dir+'\saves')
+                print home_dir
+                f = open(home_dir+'\saves\\'+player.name+'.bin', 'wb')
+            else:  # UNIX
+                if not os.path.exists(home_dir+'/saves'):
+                    os.makedirs(home_dir+'/saves')
+                print home_dir
+                f = open(home_dir+'/saves/'+player.name+'.bin', 'wb')
             print "Saving game..."
             
             cPickle.dump(player, f, protocol=0)
