@@ -17,7 +17,8 @@ def Loot(level):
     
     quality = level // 4
     
-    item_type_list = ("None",2), ("Armor",10), ("Weapon",7), ("Consumable",7), ("Rare",100) #100 Rare weight is for testing
+    item_type_list = [("None", 2), ("Armor", 10), ("Weapon", 7), ("Consumable", 7), 
+                      ("Rare", 100)] #100 Rare weight is for testing
     item_type = item_type_list[weighted_choice_sub([x[1] for x in item_type_list])][0]
     
     if item_type == "Consumable":
@@ -33,13 +34,25 @@ def Loot(level):
     
     return (gold, item)
 
-armor_slots = ("Helm","Coat","Gloves","Leggings","Boots")
-weapon_types = ("Sword","Right Hand",[1,0,0,0]), ("Mace","Right Hand",[0,0,1,0]), ("Dagger","Right Hand",[0,1,0,0]) 
-weapon_prefixes = ("",10,[0,0,0,0]), ("Sharp ",1,[1,1,0,0]), ("Precise ",1,[0,1,1,0]), ("Stalwart ",1,[0,0,1,1]), ("Unyielding ",1,[1,0,0,1])
-armor_prefixes = ("Crude ",[0,0,1,0]), ("Basic ",[0,0,2,0]), ("Sturdy ",[0,0,2,1])
-suffixes = (("",(10,[0,0,0,0])), (" of Brutality",(1,[1,1,0,0])), (" of Survival",(1,[0,0,1,1])), (" of Finesse",(1,[0,1,1,0])), (" of Dueling",(1,[1,0,0,1])))
+armor_slots = [("Helm", "Coat", "Gloves", "Leggings", "Boots")]
+weapon_types = [("Sword", "Right Hand", [1,0,0,0]), 
+                ("Mace","Right Hand", [0,0,1,0]), 
+                ("Dagger", "Right Hand", [0,1,0,0])]
+weapon_prefixes = [("", 10, [0,0,0,0]), 
+                   ("Sharp ", 1, [1,1,0,0]), 
+                   ("Precise ", 1, [0,1,1,0]), 
+                   ("Stalwart ", 1, [0,0,1,1]), 
+                   ("Unyielding ", 1, [1,0,0,1])]
+armor_prefixes = [("Crude ", [0,0,1,0]), 
+                  ("Basic ", [0,0,2,0]), 
+                  ("Sturdy ", [0,0,2,1])]
+suffixes = [(("", (10, [0,0,0,0])), 
+             (" of Brutality", (1, [1,1,0,0])), 
+             (" of Survival", (1, [0,0,1,1])), 
+             (" of Finesse", (1, [0,1,1,0])), 
+             (" of Dueling", (1, [1,0,0,1])))]
 
-def createArmor(quality,armor_slot = ""):
+def createArmor(quality, armor_slot=""):
     """Creates a piece of armor"""
     stats = []
     
@@ -53,9 +66,9 @@ def createArmor(quality,armor_slot = ""):
     for i in range(4):
         stats.append(prefix[1][i] + suffix[1][1][i])
         
-    return items.Armor(name,slot,stats)
+    return items.Armor(name, slot, stats)
 
-def createWeapon(quality,weapon_type = ""):
+def createWeapon(quality, weapon_type=""):
     """Creates a weapon"""
     stats = []
     
@@ -64,7 +77,8 @@ def createWeapon(quality,weapon_type = ""):
     else:
         w_type = weapon_type
     
-    prefix = weapon_prefixes[weighted_choice_sub([x[1] for x in weapon_prefixes])]
+    prefix = weapon_prefixes[weighted_choice_sub(
+                            [x[1] for x in weapon_prefixes])]
     name = prefix[0] + w_type[0]
     for i in range(4):
         stats.append((prefix[2][i] + w_type[2][i]) * (1 + quality))
@@ -83,4 +97,4 @@ def createConsumable(quality):
     if choice == 0:
         return items.SmallHealthPotion()
     elif choice == 1:
-        return items.SmallExperienceBoost()    
+        return items.SmallExperienceBoost()
