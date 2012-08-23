@@ -7,9 +7,19 @@ from weightedchoice import weighted_choice_sub
             
 
 def createUnique(quality):
-    """Chooses an unique item"""
-    unique_list = (items.Sword("Sword of a Thousand Truths",[2,2,2,2])
-                   ,items.Armor("Judgement Chestguard","Chest",[3,1,3,1]))
+    """
+    Chooses an unique item.
+    Quality 0 armor have 8 stat points total.
+    Quality 0 weapons have 12 stat points total.
+    """
+    unique_list = (items.Sword("Demonforged Blade", [3,3,3,3]),
+                   items.Mace("Bane of Darkness", [3,1,5,3]),
+                   items.Dagger("Throatslitter", [3,6,1,2]),
+                   items.Armor("Judgement Chestguard", "Chest", [3,1,3,1]),
+                   items.Armor("Sanctuary", "Helm", [0,1,4,3]),
+                   items.Armor("Fiercegrip", "Gloves", [3,2,2,1]),
+                   items.Armor("Veracious Leggings", "Leggings", [2,3,3,0]),
+                   items.Armor("Gravestompers", "Boots",[2,2,2,2]))
     return random.choice(unique_list)
 
 def Loot(level):
