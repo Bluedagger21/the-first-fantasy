@@ -8,7 +8,7 @@ import time
 
 def getAction(a, b):
     """Display combat information and prompt for action"""
-    os.system("cls" if os.name=="nt" else "clear")
+    os.system("cls" if os.name == "nt" else "clear")
     print b.name
     print "Health: " + repr(b.health) + "/" + repr(b.getMaxHealth())
     print "P: {:2} P: {:2} T: {:2} V: {:2}".format(
@@ -19,7 +19,7 @@ def getAction(a, b):
     print "P: {:2} P: {:2} T: {:2} V: {:2}".format(
            a.stat_list[0] + a.equipment_stat_list[0], a.stat_list[1] +
            a.equipment_stat_list[1], a.stat_list[2] + a.equipment_stat_list[2],
-           a.stat_list[3]+a.equipment_stat_list[3])
+           a.stat_list[3] + a.equipment_stat_list[3])
     print "\n[ACTIONS]-------------------"
     choice = raw_input("(A)ttack    (I)nventory    (E)nemy Info: ").lower()
     if choice == "a" or choice == "i" or choice == "e":
@@ -29,7 +29,10 @@ def getAction(a, b):
 
 
 def combat(a, b):
-    """State machine that controls combat flow between a (typically the player) b (typically player's enemy)"""
+    """
+    State machine that controls combat flow between a (typically the player)
+    and b (typically player's enemy)
+    """
     a_status = a.status
     b_status = b.status
     c_state = None

@@ -6,7 +6,7 @@ import py2exe
 
 setup(console=[{"script":"main.py",
           "dest_base": "TheFirstFantasy"}],
-      options={"py2exe":{
+      options={"py2exe": {
           "dist_dir": "..\dist"}
                }
       )
