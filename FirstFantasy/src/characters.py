@@ -1,5 +1,5 @@
 '''
-Last changed by: Dale Everett
+Last changed by: Ryan Breaker
 '''
 from weightedchoice import weighted_choice_sub
 from random import random
@@ -114,7 +114,7 @@ class Player(Character):
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""
         print self.name + " found a " + item.name + "!"
-        if len(self.inventory) < 10:
+        if len(self.inventory) <= 10:
             self.inventory.append(item)
         else:
             print "Inventory is full!"
@@ -122,10 +122,17 @@ class Player(Character):
     def getInventory(self):
         """Displays inventory and options"""
         if len(self.inventory) == 0:
-            print "Your inventory is empty..."
+            raw_input("Your inventory is empty.\n" +
+                      "Press enter to continue...")
             return
+
         while True:
+            # Clearers should be removed from game.py if they're called here.
             os.system("cls" if os.name == "nt" else "clear")
+            if len(self.inventory) == 1:
+                print "You are carrying %d item.\n" % len(self.inventory)
+            else:
+                print "You are carrying %d items.\n" % len(self.inventory)
             print "Inventory:"
             for i, x in enumerate(self.inventory):
                 print "{}) {}".format(i + 1, x.name)

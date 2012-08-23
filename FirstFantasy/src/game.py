@@ -19,10 +19,10 @@ def titlescreen():
     """
     choice = ''
     while True:
-        os.system("cls" if os.name == "nt" else "clear")
-        print "The First Fantasy v0.1"
-        print "Copyright (C) 2012  Dale Everett\n\n"
         while True:
+            os.system("cls" if os.name == "nt" else "clear")
+            print "The First Fantasy v0.1"
+            print "Copyright (C) 2012  Dale Everett\n\n"
             print "(N)ew Game    (C)ontinue    (Q)uit"
             choice = raw_input().lower()
             if choice == 'n' or choice == 'c' or choice == 'q':
@@ -35,6 +35,7 @@ def titlescreen():
             if tmp_bool is True:
                 break
         elif choice == 'q':
+            os.system("cls" if os.name == "nt" else "clear")
             sys.exit()
             break
 
@@ -143,6 +144,7 @@ def homescreen():
             else:
                 raw_input("Press \"Enter\" to continue...")
         elif choice == 'q':
+            os.system("cls" if os.name == "nt" else "clear")
             sys.exit()
         elif choice == 's':
             os.system("cls" if os.name == "nt" else "clear")
