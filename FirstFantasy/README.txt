@@ -8,7 +8,7 @@ Execute TheFirstFantasy.exe within the dist directory.
 Any OS with Python 2.7.3:
 Change directory into the src folder and type the command: python main.py 
 
-To Build:
+To Build Distributable on Windows:
 
 Python and py2exe is needed create a new dist. Once installed, run build.bat.
 
