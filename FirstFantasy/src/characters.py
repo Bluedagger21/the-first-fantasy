@@ -125,7 +125,7 @@ class Player(Character):
             print "Your inventory is empty..."
             return
         while True:
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             print "Inventory:"
             for i, x in enumerate(self.inventory):
                 print "{}) {}".format(i + 1, x.name)
@@ -135,39 +135,22 @@ class Player(Character):
             except ValueError:
                 continue
             if choice <= i and choice >= 0:
-                os.system("cls" if os.name=="nt" else "clear")
+                os.system("cls" if os.name == "nt" else "clear")
                 option = self.inventory[choice].getOptions()
 
                 if option == "equip":
-                    tmp_slot = self.inventory[choice].slot
                     if isinstance(self.inventory[choice], items.Armor):
-                        if self.armor.get(
-                           self.inventory[choice].slot) is not None:
-                            self.compareEquipment(self.inventory[choice],
-                                   self.armor.get(self.inventory[choice].slot))
-                        else:
-                            self.armor[tmp_slot] = self.inventory.pop(choice)
-
+                        self.equip(self.inventory[choice], self.armor)
                     elif isinstance(self.inventory[choice], items.Weapon):
-                        if self.weapons.get(
-                           self.inventory[choice].slot) is not None:
-                            self.compareEquipment(self.inventory[choice],
-                                                  self.weapons.get(
-                                                  self.inventory[choice].slot))
-                        else:
-                            self.weapons[tmp_slot] = self.inventory.pop(choice)
-
+                        self.equip(self.inventory[choice], self.weapons)
                     else:
                         print "Type Check Error"
-
                     self.updateEquipmentStats()
                     break
-
                 elif option == "consume":
                     self.inventory.pop(choice).use(self)
                     raw_input("Press \"Enter\" to continue...")
                     break
-
                 elif option == "compare":
                     if isinstance(self.inventory[choice], items.Armor):
                         if self.armor.get(
@@ -175,7 +158,6 @@ class Player(Character):
                             self.compareEquipment(self.inventory[choice],
                                                   self.armor.get(
                                                   self.inventory[choice].slot))
-                            self.updateEquipmentStats()
                         else:
                             print "No existing item to compare!"
                             raw_input("Press \"Enter\" to continue...")
@@ -184,10 +166,10 @@ class Player(Character):
                            self.inventory[choice].slot) is not None:
                             self.compareEquipment(self.inventory[choice],
                                  self.weapons.get(self.inventory[choice].slot))
-                            self.updateEquipmentStats()
                         else:
                             print "No existing item to compare!"
                             raw_input("Press \"Enter\" to continue...")
+                    self.updateEquipmentStats()
 
                 elif option == "destroy":
                     self.inventory.pop(choice)
@@ -200,10 +182,16 @@ class Player(Character):
     def attack(self, receiver):
         self.weapons.get("Right Hand").attack(self, receiver)
 
+    def equip(self, new, type_dict):
+        if type_dict.get(new.slot) is not None:
+            self.compareEquipment(new, type_dict.get(new.slot))
+        else:
+            type_dict[new.slot] = self.inventory.pop(self.inventory.index(new))
+
     def compareEquipment(self, new, cur):
         """Compares attributes of existing item with a new item"""
         while True:
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             STAT_WIDTH = 12
             CUR_NAME_WIDTH = len(cur.name) + 2
             NEW_NAME_WIDTH = len(new.name) + 2
@@ -243,10 +231,10 @@ class Player(Character):
                 elif isinstance(new, items.Weapon):
                     self.weapons[new.slot] = new
                 self.inventory.remove(new)
-                os.system("cls" if os.name=="nt" else "clear")
+                os.system("cls" if os.name == "nt" else "clear")
                 break
             elif choice == 'n':
-                os.system("cls" if os.name=="nt" else "clear")
+                os.system("cls" if os.name == "nt" else "clear")
                 break
 
     def updateEquipmentStats(self):
@@ -276,7 +264,7 @@ class Player(Character):
             level_gain += 1
         if level_gain > 0:
             raw_input("Press \"Enter\" to continue...")
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             self.levelUp(level_gain)
 
     def levelUp(self, level_gain):
@@ -301,10 +289,10 @@ class Player(Character):
                 self.stat_list[3] += 1
             else:
                 continue
-                os.system("cls" if os.name=="nt" else "clear")
+                os.system("cls" if os.name == "nt" else "clear")
             points_gain -= 1
             self.health = self.getMaxHealth()
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
 
     def getCharacterSheet(self):
         print "[---Character Sheet---]"
@@ -333,7 +321,7 @@ class Player(Character):
                 name = self.armor.get(x).name
             else:
                 name = "None"
-            print "{}: {}".format(x,name)
+            print "{}: {}".format(x, name)
 
         print ""
         for x in self.weapons.iterkeys():

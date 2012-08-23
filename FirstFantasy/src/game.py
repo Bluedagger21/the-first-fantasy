@@ -19,8 +19,8 @@ def titlescreen():
     """
     choice = ''
     while True:
-        os.system("cls" if os.name=="nt" else "clear")
-        print "The First Fantasy"
+        os.system("cls" if os.name == "nt" else "clear")
+        print "The First Fantasy v0.1"
         print "Copyright (C) 2012  Dale Everett\n\n"
         while True:
             print "(N)ew Game    (C)ontinue    (Q)uit"
@@ -58,26 +58,26 @@ def continuegame():
     home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
     print home_dir
     while True:
-        os.system("cls" if os.name=="nt" else "clear")
+        os.system("cls" if os.name == "nt" else "clear")
         if os.name == "nt":  # WINDOWS
-            if not os.path.exists(home_dir+"\saves"):
+            if not os.path.exists(home_dir + "\saves"):
                 print "Creating saves directory..."
-                os.makedirs(home_dir+'\saves')
-            for files in os.listdir(home_dir+"\saves"):
+                os.makedirs(home_dir + '\saves')
+            for files in os.listdir(home_dir + "\saves"):
                 if files.endswith(".bin"):
                     print files[:-4]
         else:  # UNIX
-            if not os.path.exists(home_dir+"/saves"):
+            if not os.path.exists(home_dir + "/saves"):
                 print "Creating saves directory..."
-                os.makedirs(home_dir+'/saves')
-            for files in os.listdir(home_dir+"/saves"):
+                os.makedirs(home_dir + '/saves')
+            for files in os.listdir(home_dir + "/saves"):
                 if files.endswith(".bin"):
                     print files[:-4]
         saved_file = raw_input("\nType filename to load (C to cancel): ")
         if os.name == "nt":  # WINDOWS
-            if os.path.exists(home_dir+"\saves\\"+saved_file+".bin"):
+            if os.path.exists(home_dir + "\saves\\" + saved_file + ".bin"):
                 print "Loading game..."
-                f = open(home_dir+'\saves\\'+saved_file+'.bin', 'rb')
+                f = open(home_dir + '\saves\\' + saved_file + '.bin', 'rb')
                 player = cPickle.load(f)
                 worldmap = cPickle.load(f)
                 f.close()
@@ -89,9 +89,9 @@ def continuegame():
             else:
                 continue
         else:  # UNIX
-            if os.path.exists(home_dir+"/saves/"+saved_file+".bin"):
+            if os.path.exists(home_dir + "/saves/" + saved_file + ".bin"):
                 print "Loading game..."
-                f = open(home_dir+'/saves/'+saved_file+'.bin', 'rb')
+                f = open(home_dir + '/saves/' + saved_file + '.bin', 'rb')
                 player = cPickle.load(f)
                 worldmap = cPickle.load(f)
                 f.close()
@@ -111,13 +111,13 @@ def homescreen():
     choice = ''
     while True:
         current_zone = worldmap.loadZone()
-        os.system("cls" if os.name=="nt" else "clear")
+        os.system("cls" if os.name == "nt" else "clear")
         choice = current_zone.getOptions()
         if choice == 'e':
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             explore(current_zone)
         elif choice == 'c':
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             player.getCharacterSheet()
             raw_input("Press \"Enter\" to continue...")
         elif choice == 'r':
@@ -132,10 +132,10 @@ def homescreen():
                     print "You don't have enough gold!"
                 raw_input("Press \"Enter\" to continue...")
         elif choice == 'i':
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()
         elif choice == 't':
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             worldmap.printMap()
             print "You make your way to " + worldmap.current_zone.z_name
             if worldmap.current_zone.z_type == "wild":
@@ -145,18 +145,18 @@ def homescreen():
         elif choice == 'q':
             sys.exit()
         elif choice == 's':
-            os.system("cls" if os.name=="nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
             home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
             if os.name == "nt":  # WINDOWS
-                if not os.path.exists(home_dir+'\saves'):
-                    os.makedirs(home_dir+'\saves')
+                if not os.path.exists(home_dir + '\saves'):
+                    os.makedirs(home_dir + '\saves')
                 print home_dir
-                f = open(home_dir+'\saves\\'+player.name+'.bin', 'wb')
+                f = open(home_dir + '\saves\\' + player.name + '.bin', 'wb')
             else:  # UNIX
-                if not os.path.exists(home_dir+'/saves'):
-                    os.makedirs(home_dir+'/saves')
+                if not os.path.exists(home_dir + '/saves'):
+                    os.makedirs(home_dir + '/saves')
                 print home_dir
-                f = open(home_dir+'/saves/'+player.name+'.bin', 'wb')
+                f = open(home_dir + '/saves/' + player.name + '.bin', 'wb')
             print "Saving game..."
 
             cPickle.dump(player, f, protocol=0)
@@ -170,7 +170,7 @@ def homescreen():
 
 def explore(current_zone):
     """Decides if an encounter occurs or not"""
-    os.system("cls" if os.name=="nt" else "clear")
+    os.system("cls" if os.name == "nt" else "clear")
     action = current_zone.getAction()
     if action == "encounter":
         opponent = current_zone.getEnemy()
