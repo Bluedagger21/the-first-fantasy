@@ -14,7 +14,7 @@ class Map:
                            "Old Ruins", "Torched Grassland", "Black Swamp", 
                            "Endless Wastes", "Sunless Canyon", "Foul Bog",
                            "Terror Isle"]
-        self.town_names = ["Your House", "Cheery Inn","Joe's Bed & Breakfast"]
+        self.town_names = ["Your House", "Cheery Inn", "Joe's Bed & Breakfast"]
         self.enemy_types = [("Theif", 10, [5,5,5,5]),
                             ("Goblin", 5, [3,7,7,3]),
                             ("Spider", 5, [7,7,3,3])]
@@ -42,12 +42,12 @@ class Map:
             if (cur.z_type != "town" and neighbors_to_place > 0 and 
                 len(self.town_names) > 0):
                 if random.randint(0, 10) > 8:
-                    created_town = zone.Town(self.town_names.pop(),dr,cur)
+                    created_town = zone.Town(self.town_names.pop(), dr, cur)
                     neighbor_list.append(created_town)
                     neighbors_to_place -= 1
             while neighbors_to_place > 0:
                 created_wild = zone.Wild(self.wild_names.pop(), dr, 
-                                         self.enemy_types, )
+                                         self.enemy_types)
                 neighbor_list.append(created_wild)
                 neighbors_to_place -= 1
             while len(neighbor_list) > 0:
@@ -73,6 +73,7 @@ class Map:
         
         pp = pprint.PrettyPrinter(indent=4)
         possiblities = len(self.current_zone.neighbors)
+        i = 0
         while True:
             os.system("cls" if os.name=="nt" else "clear")
             pp.pprint(map_layer)

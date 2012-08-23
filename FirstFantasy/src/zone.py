@@ -61,7 +61,7 @@ class Town(Zone):
     def __init__(self, name, dr, first_neighbor=None):
         Zone.__init__(self,name, dr, first_neighbor)
         self.z_type = "town"
-        self.z_options = ("(S)hop    (T)ravel    (R)est    (I)nventory    " +
+        self.z_options = ("(M)arket    (T)ravel    (R)est    (I)nventory    " +
                           "(C)haracter Sheet\n(Q)uit    (S)ave")
 
     def getOptions(self):

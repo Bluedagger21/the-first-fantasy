@@ -29,7 +29,7 @@ def Loot(level):
     quality = level // 4
     
     item_type_list = [("None", 2), ("Armor", 10), ("Weapon", 7), ("Consumable", 7), 
-                      ("Rare", 100)] #100 Rare weight is for testing
+                      ("Rare", 1)]
     item_type = item_type_list[weighted_choice_sub([x[1] for x in item_type_list])][0]
     
     if item_type == "Consumable":
@@ -45,7 +45,7 @@ def Loot(level):
     
     return (gold, item)
 
-armor_slots = [("Helm", "Coat", "Gloves", "Leggings", "Boots")]
+armor_slots = ["Helm", "Coat", "Gloves", "Leggings", "Boots"]
 weapon_types = [("Sword", "Right Hand", [1,0,0,0]), 
                 ("Mace","Right Hand", [0,0,1,0]), 
                 ("Dagger", "Right Hand", [0,1,0,0])]
@@ -57,11 +57,11 @@ weapon_prefixes = [("", 10, [0,0,0,0]),
 armor_prefixes = [("Crude ", [0,0,1,0]), 
                   ("Basic ", [0,0,2,0]), 
                   ("Sturdy ", [0,0,2,1])]
-suffixes = [(("", (10, [0,0,0,0])), 
+suffixes = [("", (10, [0,0,0,0])), 
              (" of Brutality", (1, [1,1,0,0])), 
              (" of Survival", (1, [0,0,1,1])), 
              (" of Finesse", (1, [0,1,1,0])), 
-             (" of Dueling", (1, [1,0,0,1])))]
+             (" of Dueling", (1, [1,0,0,1]))]
 
 def createArmor(quality, armor_slot=""):
     """Creates a piece of armor"""
@@ -72,7 +72,9 @@ def createArmor(quality, armor_slot=""):
     else:
         slot = armor_slot
     prefix = armor_prefixes[quality]
+    print [x[1][0] for x in suffixes]
     suffix = suffixes[weighted_choice_sub([x[1][0] for x in suffixes])]
+    print prefix[0],slot,suffix
     name = prefix[0] + slot + suffix[0]
     for i in range(4):
         stats.append(prefix[1][i] + suffix[1][1][i])
