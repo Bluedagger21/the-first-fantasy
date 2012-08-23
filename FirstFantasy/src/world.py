@@ -39,6 +39,7 @@ class Map:
                                                 min(3+home_flag, 
                                                     len(self.wild_names)))
             neighbor_list = []
+            
             if (cur.z_type != "town" and neighbors_to_place > 0 and 
                 len(self.town_names) > 0):
                 if random.randint(0, 10) > 8:
@@ -47,7 +48,7 @@ class Map:
                     neighbors_to_place -= 1
             while neighbors_to_place > 0:
                 created_wild = zone.Wild(self.wild_names.pop(), dr, 
-                                         self.enemy_types)
+                                         self.enemy_types, cur)
                 neighbor_list.append(created_wild)
                 neighbors_to_place -= 1
             while len(neighbor_list) > 0:

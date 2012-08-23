@@ -72,9 +72,7 @@ def createArmor(quality, armor_slot=""):
     else:
         slot = armor_slot
     prefix = armor_prefixes[quality]
-    print [x[1][0] for x in suffixes]
     suffix = suffixes[weighted_choice_sub([x[1][0] for x in suffixes])]
-    print prefix[0],slot,suffix
     name = prefix[0] + slot + suffix[0]
     for i in range(4):
         stats.append(prefix[1][i] + suffix[1][1][i])
