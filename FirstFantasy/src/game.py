@@ -20,7 +20,7 @@ def titlescreen():
     choice = ''
     while True:
         os.system("cls" if os.name=="nt" else "clear")
-        print "The First Fantasy"
+        print "The First Fantasy v0.1"
         print "Copyright (C) 2012  Dale Everett\n\n"
         while True:
             print "(N)ew Game    (C)ontinue    (Q)uit"
