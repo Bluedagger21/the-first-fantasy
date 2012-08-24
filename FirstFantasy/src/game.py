@@ -128,6 +128,7 @@ def homescreen():
                 if player.gold >= cost:
                     player.gold -= cost
                     player.health = player.getMaxHealth()
+                    player.status = "normal"
                     print player.name + " has returned to full health!"
                 else:
                     print "You don't have enough gold!"
