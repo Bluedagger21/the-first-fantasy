@@ -139,7 +139,8 @@ class Player(Character):
             if len(self.inventory) == 1:
                 print "You are carrying {} item.\n".format(len(self.inventory))
             else:
-                print "You are carrying {} items.\n".format(len(self.inventory))
+                print ("You are carrying " \
+                       "{} items.\n".format(len(self.inventory)))
             print "Inventory:"
             for i, x in enumerate(self.inventory):
                 print "{}) {}".format(i + 1, x.name)
@@ -242,9 +243,11 @@ class Player(Character):
             choice = raw_input("\nEquip " + new.name + "? (Y/N)").lower()
             if choice == 'y':
                 if isinstance(new, items.Armor):
-                    self.armor[new.slot] = self.inventory.pop(self.inventory.index(new))
+                    self.armor[new.slot] = self.inventory \
+                                                .pop(self.inventory.index(new))
                 elif isinstance(new, items.Weapon):
-                    self.weapons[new.slot] = self.inventory.pop(self.inventory.index(new))
+                    self.weapons[new.slot] = self.inventory \
+                                              .pop(self.inventory.index(new))
                 self.status.append("skip")
                 break
             elif choice == 'n':

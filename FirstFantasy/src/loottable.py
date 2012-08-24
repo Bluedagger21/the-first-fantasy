@@ -12,14 +12,16 @@ def createUnique(quality):
     Quality 0 armor have 8 stat points total.
     Quality 0 weapons have 12 stat points total.
     """
-    unique_list = (items.Sword("Demonforged Blade", [3,3,3,3]),
-                   items.Mace("Bane of Darkness", [3,1,5,3]),
-                   items.Dagger("Throatslitter", [3,6,1,2]),
-                   items.Armor("Judgement Chestguard", "Chest", [3,1,3,1]),
-                   items.Armor("Sanctuary", "Helm", [0,1,4,3]),
-                   items.Armor("Fiercegrip", "Gloves", [3,2,2,1]),
-                   items.Armor("Veracious Leggings", "Leggings", [2,3,3,0]),
-                   items.Armor("Gravestompers", "Boots",[2,2,2,2]))
+    unique_list = ((items.Sword("Demonforged Blade", [3, 3, 3, 3])),
+                   (items.Mace("Bane of Darkness", [3, 1, 5, 3])),
+                   (items.Dagger("Throatslitter", [3, 6, 1, 2])),
+                   (items.Armor("Judgement Chestguard", "Chest",
+                                [3, 1, 3, 1])),
+                   (items.Armor("Sanctuary", "Helm", [0, 1, 4, 3])),
+                   (items.Armor("Fiercegrip", "Gloves", [3, 2, 2, 1])),
+                   (items.Armor("Veracious Leggings", "Leggings",
+                                [2, 3, 3, 0])),
+                   (items.Armor("Gravestompers", "Boots", [2, 2, 2, 2])))
     return random.choice(unique_list)
 
 
@@ -44,22 +46,22 @@ def Loot(level):
     return (gold, item)
 
 armor_slots = ["Helm", "Coat", "Gloves", "Leggings", "Boots"]
-weapon_types = [("Sword", "Right Hand", [1,0,0,0]),
-                ("Mace","Right Hand", [0,0,1,0]),
-                ("Dagger", "Right Hand", [0,1,0,0])]
-weapon_prefixes = [("", 10, [0,0,0,0]),
-                   ("Sharp ", 1, [1,1,0,0]),
-                   ("Precise ", 1, [0,1,1,0]),
-                   ("Stalwart ", 1, [0,0,1,1]),
-                   ("Unyielding ", 1, [1,0,0,1])]
-armor_prefixes = [("Crude ", [0,0,1,0]),
-                  ("Basic ", [0,0,2,0]),
-                  ("Sturdy ", [0,0,2,1])]
-suffixes = [("", (10, [0,0,0,0])),
-             (" of Brutality", (1, [1,1,0,0])),
-             (" of Survival", (1, [0,0,1,1])),
-             (" of Finesse", (1, [0,1,1,0])),
-             (" of Dueling", (1, [1,0,0,1]))]
+weapon_types = [("Sword", "Right Hand", [1, 0, 0, 0]),
+                ("Mace", "Right Hand", [0, 0, 1, 0]),
+                ("Dagger", "Right Hand", [0, 1, 0, 0])]
+weapon_prefixes = [("", 10, [0, 0, 0, 0]),
+                   ("Sharp ", 1, [1, 1, 0, 0]),
+                   ("Precise ", 1, [0, 1, 1, 0]),
+                   ("Stalwart ", 1, [0, 0, 1, 1]),
+                   ("Unyielding ", 1, [1, 0, 0, 1])]
+armor_prefixes = [("Crude ", [0, 0, 1, 0]),
+                  ("Basic ", [0, 0, 2, 0]),
+                  ("Sturdy ", [0, 0, 2, 1])]
+suffixes = [("", (10, [0, 0, 0, 0])),
+             (" of Brutality", (1, [1, 1, 0, 0])),
+             (" of Survival", (1, [0, 0, 1, 1])),
+             (" of Finesse", (1, [0, 1, 1, 0])),
+             (" of Dueling", (1, [1, 0, 0, 1]))]
 
 
 def createArmor(quality, armor_slot=""):

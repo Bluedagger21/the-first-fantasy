@@ -59,7 +59,7 @@ class Wild(Zone):
 class Town(Zone):
     """Town zones pose no threat and offer shops and rest"""
     def __init__(self, name, dr, first_neighbor=None):
-        Zone.__init__(self,name, dr, first_neighbor)
+        Zone.__init__(self, name, dr, first_neighbor)
         self.z_type = "town"
         self.z_options = ("(M)arket    (T)ravel    (R)est    (I)nventory    " +
                           "(C)haracter Sheet\n(Q)uit    (S)ave")

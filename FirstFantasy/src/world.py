@@ -15,9 +15,9 @@ class Map:
                            "Endless Wastes", "Sunless Canyon", "Foul Bog",
                            "Terror Isle"]
         self.town_names = ["Your House", "Cheery Inn", "Joe's Bed & Breakfast"]
-        self.enemy_types = [("Theif", 10, [5,5,5,5]),
-                            ("Goblin", 5, [3,7,7,3]),
-                            ("Spider", 5, [7,7,3,3])]
+        self.enemy_types = [("Theif", 10, [5, 5, 5, 5]),
+                            ("Goblin", 5, [3, 7, 7, 3]),
+                            ("Spider", 5, [7, 7, 3, 3])]
 
         random.shuffle(self.wild_names)
         random.shuffle(self.town_names)
