@@ -106,7 +106,13 @@ class Player(Character):
         print self.name + " gained " + repr(exp_earned) + " experience!"
         self.exp += exp_earned
         self.checkLevelUp()
-
+    
+    def giveHealth(self, given_health):
+        self.health += given_health
+        if self.health > self.getMaxHealth():
+            self.health = self.getMaxHealth()
+        self.status = "normal"
+    
     def giveGold(self, gold_earned):
         print self.name + " gained " + repr(gold_earned) + " gold!"
         self.gold += gold_earned

@@ -127,8 +127,7 @@ def homescreen():
             if raw_input("Accept? (Y/N): ").lower() == 'y':
                 if player.gold >= cost:
                     player.gold -= cost
-                    player.health = player.getMaxHealth()
-                    player.status = "normal"
+                    player.giveHealth(player.getMaxHealth())
                     print player.name + " has returned to full health!"
                 else:
                     print "You don't have enough gold!"

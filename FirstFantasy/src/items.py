@@ -87,9 +87,7 @@ class SmallHealthPotion(Consumable):
 
     def use(self, target):
         print target.name + " used a " + self.name + "."
-        target.health += 20
-        if target.health > target.getMaxHealth():
-            target.health = target.getMaxHealth()
+        target.giveHealth(20)
         print target.name + " gained 20 health! ({}/{})".format(
                                           target.health, target.getMaxHealth())
 
