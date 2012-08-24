@@ -246,8 +246,10 @@ class Player(Character):
                 elif isinstance(new, items.Weapon):
                     self.weapons[new.slot] = self.inventory.pop(self.inventory.index(new))
                 self.status.append("skip")
+                break
             elif choice == 'n':
                 os.system("cls" if os.name == "nt" else "clear")
+                break
 
     def updateEquipmentStats(self):
         """Updates equipment stats after changing equipment"""
