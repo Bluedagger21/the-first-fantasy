@@ -10,7 +10,7 @@ import os
 class Character:
     """Defines an interactive character within the game"""
     def __init__(self):
-        self.status = "normal"
+        self.status = ["normal"]
         self.VITALITY_RATIO = 5
         self.POWER_RATIO = 1.5
         self.name = ""
@@ -57,7 +57,7 @@ class Character:
         damage -= round(damage * self.getArmorReduce())
         self.health -= round(damage)
         if self.health <= 0:
-            self.status = "dead"
+            self.status.append("dead")
             self.health = 0
 
     def getDamage(self):
@@ -106,13 +106,14 @@ class Player(Character):
         print self.name + " gained " + repr(exp_earned) + " experience!"
         self.exp += exp_earned
         self.checkLevelUp()
-    
+
     def giveHealth(self, given_health):
         self.health += given_health
         if self.health > self.getMaxHealth():
             self.health = self.getMaxHealth()
-        self.status = "normal"
-    
+        if "dead" in self.status:
+            self.status.remove("dead")
+
     def giveGold(self, gold_earned):
         print self.name + " gained " + repr(gold_earned) + " gold!"
         self.gold += gold_earned
@@ -125,7 +126,7 @@ class Player(Character):
         else:
             print "Inventory is full!"
 
-    def getInventory(self):
+    def getInventory(self, accessed_from="zone"):
         """Displays inventory and options"""
         if len(self.inventory) == 0:
             raw_input("Your inventory is empty.\n" +
@@ -136,9 +137,9 @@ class Player(Character):
             # Clearers should be removed from game.py if they're called here.
             os.system("cls" if os.name == "nt" else "clear")
             if len(self.inventory) == 1:
-                print "You are carrying %d item.\n" % len(self.inventory)
+                print "You are carrying {} item.\n".format(len(self.inventory))
             else:
-                print "You are carrying %d items.\n" % len(self.inventory)
+                print "You are carrying {} items.\n".format(len(self.inventory))
             print "Inventory:"
             for i, x in enumerate(self.inventory):
                 print "{}) {}".format(i + 1, x.name)
@@ -149,7 +150,7 @@ class Player(Character):
                 continue
             if choice <= i and choice >= 0:
                 os.system("cls" if os.name == "nt" else "clear")
-                option = self.inventory[choice].getOptions()
+                option = self.inventory[choice].getOptions(accessed_from)
 
                 if option == "equip":
                     if isinstance(self.inventory[choice], items.Armor):
@@ -168,7 +169,7 @@ class Player(Character):
                     if isinstance(self.inventory[choice], items.Armor):
                         if self.armor.get(
                            self.inventory[choice].slot) is not None:
-                            self.compareEquipment(self.inventory[choice],
+                            self.compareEquip(self.inventory[choice],
                                                   self.armor.get(
                                                   self.inventory[choice].slot))
                         else:
@@ -177,7 +178,7 @@ class Player(Character):
                     elif isinstance(self.inventory[choice], items.Weapon):
                         if self.weapons.get(
                            self.inventory[choice].slot) is not None:
-                            self.compareEquipment(self.inventory[choice],
+                            self.compareEquip(self.inventory[choice],
                                  self.weapons.get(self.inventory[choice].slot))
                         else:
                             print "No existing item to compare!"
@@ -197,11 +198,12 @@ class Player(Character):
 
     def equip(self, new, type_dict):
         if type_dict.get(new.slot) is not None:
-            self.compareEquipment(new, type_dict.get(new.slot))
+            self.compareEquip(new, type_dict.get(new.slot))
         else:
             type_dict[new.slot] = self.inventory.pop(self.inventory.index(new))
+            self.status.append("skip")
 
-    def compareEquipment(self, new, cur):
+    def compareEquip(self, new, cur):
         """Compares attributes of existing item with a new item"""
         while True:
             os.system("cls" if os.name == "nt" else "clear")
@@ -240,15 +242,12 @@ class Player(Character):
             choice = raw_input("\nEquip " + new.name + "? (Y/N)").lower()
             if choice == 'y':
                 if isinstance(new, items.Armor):
-                    self.armor[new.slot] = new
+                    self.armor[new.slot] = self.inventory.pop(self.inventory.index(new))
                 elif isinstance(new, items.Weapon):
-                    self.weapons[new.slot] = new
-                self.inventory.remove(new)
-                os.system("cls" if os.name == "nt" else "clear")
-                break
+                    self.weapons[new.slot] = self.inventory.pop(self.inventory.index(new))
+                self.status.append("skip")
             elif choice == 'n':
                 os.system("cls" if os.name == "nt" else "clear")
-                break
 
     def updateEquipmentStats(self):
         """Updates equipment stats after changing equipment"""

@@ -33,8 +33,6 @@ def combat(a, b):
     State machine that controls combat flow between a (typically the player)
     and b (typically player's enemy)
     """
-    a_status = a.status
-    b_status = b.status
     c_state = None
     n_state = "standby"
     while True:
@@ -43,7 +41,7 @@ def combat(a, b):
         if c_state == "standby":
             action = getAction(a, b)
             if action == "a":
-                n_state = "attack"
+                n_state = "a_attack"
             elif action == "i":
                 n_state = "inventory"
             elif action == "e":
@@ -54,24 +52,32 @@ def combat(a, b):
         elif c_state == "effects":
             pass
 
-        elif c_state == "attack":
-            a_status = a.status
-            if a_status == "normal":
+        elif c_state == "a_attack":
+            if "skip" in a.status:
+                print a.name + " skipped their turn."
+                a.status.remove("skip")
+            elif "normal" in a.status:
                 a.attack(b)
-                time.sleep(1)
-            b_status = b.status
-            if b_status == "normal":
+            time.sleep(1)
+            if "dead" in b.status:
+                n_state = "endturn"
+            else:
+                n_state = "b_attack"
+        elif c_state == "b_attack":
+            if "skip" in b.status:
+                print b.name + " skipped their turn."
+                b.status.remove("skip")
+            elif "normal" in a.status:
                 b.attack(a)
-                time.sleep(1)
-            a_status = a.status
+            time.sleep(1)
             n_state = "endturn"
 
         elif c_state == "endturn":
-            if a_status == "dead":
+            if "dead" in a.status:
                 print a.name + " has been defeated!"
                 raw_input("Press \"Enter\" to continue...")
                 break
-            elif b_status == "dead":
+            elif "dead" in b.status:
                 print b.name + " has been defeated!"
                 n_state = "win"
             else:
@@ -87,7 +93,7 @@ def combat(a, b):
             break
 
         elif c_state == "inventory":
-            a.getInventory()
+            a.getInventory("combat")
             n_state = "standby"
 
         elif c_state == "info":

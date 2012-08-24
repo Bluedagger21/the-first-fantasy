@@ -17,10 +17,12 @@ class Equipment():
         print "Toughness: " + repr(self.stats[2])
         print "Vitality: " + repr(self.stats[3])
 
-    def getOptions(self):
+    def getOptions(self, accessed_from="zone"):
         """Displays and prompts equipment options"""
         while True:
             self.show()
+            if accessed_from == "combat":
+                print "\n*** Equipping This Item Will End Your Turn ***"
             print "\n(E)quip    (C)ompare    (D)estroy    (Q)uit"
             choice = raw_input("\nSelection: ").lower()
             if choice == 'e':
@@ -60,7 +62,7 @@ class Consumable():
         self.effect = effect
         self.slot = "consumable"
 
-    def getOptions(self):
+    def getOptions(self, accessed_from="zone"):
         """Display and prompt options"""
         while True:
             self.show()
