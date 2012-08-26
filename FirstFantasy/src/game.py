@@ -1,5 +1,5 @@
 '''
-Last changed by: Dale Everett
+Last changed by: Ryan Breaker
 '''
 import characters
 import world
@@ -45,7 +45,13 @@ def newgame():
     global worldmap
     global player
     print "\n"
-    player = characters.Player(raw_input("Enter your name: "))
+    while True:
+        playername = raw_input("Enter your name: ")
+        if len(playername) < 2:
+            print "Name must be at least two characters long."
+        else:
+            player = characters.Player(playername)
+            break
     worldmap = world.Map()
     print "Prepare to begin your journey..."
     raw_input("Press \"Enter\" to continue...")
