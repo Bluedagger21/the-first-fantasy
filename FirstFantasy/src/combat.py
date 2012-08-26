@@ -4,6 +4,7 @@ Last changed by: Dale Everett
 import os
 import loottable
 import time
+import random
 
 
 def getAction(a, b):
@@ -21,8 +22,8 @@ def getAction(a, b):
            a.equipment_stat_list[1], a.stat_list[2] + a.equipment_stat_list[2],
            a.stat_list[3] + a.equipment_stat_list[3])
     print "\n[ACTIONS]-------------------"
-    choice = raw_input("(A)ttack    (I)nventory    (E)nemy Info: ").lower()
-    if choice == "a" or choice == "i" or choice == "e":
+    choice = raw_input("(A)ttack    (I)nventory\n(E)nemy Info    (R)un Away: ").lower()
+    if choice == "a" or choice == "i" or choice == "e" or choice == "r":
         return choice
     else:
         return
@@ -46,8 +47,11 @@ def combat(a, b):
                 n_state = "inventory"
             elif action == "e":
                 n_state = "info"
+            elif action == "r":
+                n_state = "run"
             else:
                 n_state = n_state
+            print "----------------------------"  # Newline
 
         elif c_state == "effects":
             pass
@@ -67,9 +71,15 @@ def combat(a, b):
             if "skip" in b.status:
                 print b.name + " skipped their turn."
                 b.status.remove("skip")
+                time.sleep(1)
+            elif "caught" in b.status:
+                time.sleep(1)
+                b.attack(a)
+                b.status.remove("caught")
+                raw_input("Press \"Enter\" to continue...")
             elif "normal" in a.status:
                 b.attack(a)
-            time.sleep(1)
+                time.sleep(1)
             n_state = "endturn"
 
         elif c_state == "endturn":
@@ -100,3 +110,13 @@ def combat(a, b):
             b.getCharacterSheet()
             raw_input("Press \"Enter\" to continue...")
             n_state = "standby"
+        
+        elif c_state == "run":
+            if random.randrange(1,3) == 1:
+                print "You were able to get away!"
+                raw_input("Press \"Enter\" to continue...")
+                break
+            else:
+                print "You couldn't get away and %s caught you!" % b.name
+                n_state = "b_attack"
+                b.status.append("caught")
