@@ -67,48 +67,31 @@ def continuegame():
     while True:
         os.system("cls" if os.name == "nt" else "clear")
         if os.name == "nt":  # WINDOWS
-            if not os.path.exists(home_dir + "\saves"):
-                print "Creating saves directory..."
-                os.makedirs(home_dir + '\saves')
-            for files in os.listdir(home_dir + "\saves"):
-                if files.endswith(".bin"):
-                    print files[:-4]
-        else:  # UNIX
-            if not os.path.exists(home_dir + "/saves"):
-                print "Creating saves directory..."
-                os.makedirs(home_dir + '/saves')
-            for files in os.listdir(home_dir + "/saves"):
-                if files.endswith(".bin"):
-                    print files[:-4]
+            path_separator = "\\"
+        else:
+            path_separator = "/"
+        if not os.path.exists(home_dir + path_separator + "saves"):
+            print "Creating saves directory..."
+            os.makedirs(home_dir + path_separator + 'saves')
+        for files in os.listdir(home_dir + path_separator + "\saves"):
+            if files.endswith(".bin"):
+                print files[:-4]
         saved_file = raw_input("\nType filename to load (C to cancel): ")
-        if os.name == "nt":  # WINDOWS
-            if os.path.exists(home_dir + "\saves\\" + saved_file + ".bin"):
-                print "Loading game..."
-                f = open(home_dir + '\saves\\' + saved_file + '.bin', 'rb')
-                player = cPickle.load(f)
-                worldmap = cPickle.load(f)
-                f.close()
-                print "...Done!"
-                raw_input("Press \"Enter\" to continue...")
-                return True
-            elif saved_file == 'c' or saved_file == 'C':
-                return False
-            else:
-                continue
-        else:  # UNIX
-            if os.path.exists(home_dir + "/saves/" + saved_file + ".bin"):
-                print "Loading game..."
-                f = open(home_dir + '/saves/' + saved_file + '.bin', 'rb')
-                player = cPickle.load(f)
-                worldmap = cPickle.load(f)
-                f.close()
-                print "...Done!"
-                raw_input("Press \"Enter\" to continue...")
-                return True
-            elif saved_file == 'c' or saved_file == 'C':
-                return False
-            else:
-                continue
+        if os.path.exists(home_dir + path_separator + "saves" +
+                          path_separator + saved_file + ".bin"):
+            print "Loading game..."
+            f = open(home_dir + path_separator + "saves" +
+                     path_separator + saved_file + '.bin', 'rb')
+            player = cPickle.load(f)
+            worldmap = cPickle.load(f)
+            f.close()
+            print "...Done!"
+            raw_input("Press \"Enter\" to continue...")
+            return True
+        elif saved_file.lower() == 'c':
+            return False
+        else:
+            continue
 
 
 def homescreen():
