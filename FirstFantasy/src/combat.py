@@ -22,7 +22,8 @@ def getAction(a, b):
            a.equipment_stat_list[1], a.stat_list[2] + a.equipment_stat_list[2],
            a.stat_list[3] + a.equipment_stat_list[3])
     print "\n[ACTIONS]-------------------"
-    choice = raw_input("(A)ttack    (I)nventory\n(E)nemy Info    (R)un Away: ").lower()
+    choice = raw_input("(A)ttack    (I)nventory\n(E)nemy Info    " \
+                       "(R)un Away: ").lower()
     if choice == "a" or choice == "i" or choice == "e" or choice == "r":
         return choice
     else:
@@ -110,9 +111,9 @@ def combat(a, b):
             b.getCharacterSheet()
             raw_input("Press \"Enter\" to continue...")
             n_state = "standby"
-        
+
         elif c_state == "run":
-            if random.randrange(1,3) == 1:
+            if random.randrange(1, 3) == 1:
                 print "You were able to get away!"
                 raw_input("Press \"Enter\" to continue...")
                 break
