@@ -137,26 +137,34 @@ def homescreen():
             sys.exit()
         elif choice == 's':
             os.system("cls" if os.name == "nt" else "clear")
-            home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-            if os.name == "nt":  # WINDOWS
-                if not os.path.exists(home_dir + '\saves'):
-                    os.makedirs(home_dir + '\saves')
-                print home_dir
-                f = open(home_dir + '\saves\\' + player.name + '.bin', 'wb')
-            else:  # UNIX
-                if not os.path.exists(home_dir + '/saves'):
-                    os.makedirs(home_dir + '/saves')
-                print home_dir
-                f = open(home_dir + '/saves/' + player.name + '.bin', 'wb')
-            print "Saving game..."
-
-            cPickle.dump(player, f, protocol=0)
-            cPickle.dump(worldmap, f, protocol=0)
-            f.close()
-            print "...Done!"
-            raw_input("Press \"Enter\" to continue...")
+            saveGame()
         else:
             continue
+
+
+def saveGame():
+    home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+    if os.name == "nt":  # WINDOWS
+        path_separator = "\\"
+    else:
+        path_separator = "/"
+    if not os.path.exists(home_dir + path_separator + 'saves'):
+        os.makedirs(home_dir + path_separator + 'saves')
+        print home_dir
+    print "Existing saves: "
+    for files in os.listdir(home_dir + path_separator + "\saves"):
+            if files.endswith(".bin"):
+                print files[:-4]
+    save_name = raw_input("\nSave game as: ")
+    f = open(home_dir + path_separator + 'saves' + path_separator \
+             + save_name + '.bin', 'wb')
+    print "Saving game..."
+
+    cPickle.dump(player, f, protocol=0)
+    cPickle.dump(worldmap, f, protocol=0)
+    f.close()
+    print "...Done!"
+    raw_input("Press \"Enter\" to continue...")
 
 
 def explore(current_zone):
