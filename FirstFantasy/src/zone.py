@@ -2,6 +2,7 @@
 Last changed by: Dale Everett
 '''
 import characters
+import market
 from weightedchoice import weighted_choice_sub
 import random
 
@@ -63,6 +64,12 @@ class Town(Zone):
         self.z_type = "town"
         self.z_options = ("(M)arket    (T)ravel    (R)est    (I)nventory    " +
                           "(C)haracter Sheet\n(Q)uit    (S)ave")
+        self.market = market.BasicMarket()
+        """
+        Prototype for future market creation
+        if dr in range(2):
+            self.market = market.BasicMarket()
+        """
 
     def getOptions(self):
         """Print options and prompt for choice"""

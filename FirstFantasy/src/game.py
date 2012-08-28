@@ -3,6 +3,7 @@ Last changed by: Ryan Breaker
 '''
 import characters
 import world
+import market
 import combat
 import cPickle
 import sys
@@ -17,6 +18,8 @@ def titlescreen():
     Display title and prompt whether to
     start a new game, continue, or quit
     """
+
+
     choice = ''
     while True:
         while True:
@@ -114,16 +117,19 @@ def homescreen():
             cost = player.level * 10 + 15
             print "Cost: {}g".format(cost)
             if raw_input("Accept? (Y/N): ").lower() == 'y':
-                if player.gold >= cost:
-                    player.gold -= cost
+                if player.takeGold(cost) is True:
                     player.giveHealth(player.getMaxHealth())
                     print player.name + " has returned to full health!"
-                else:
-                    print "You don't have enough gold!"
                 raw_input("Press \"Enter\" to continue...")
         elif choice == 'i':
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()
+        elif choice == 'm':
+            os.system("cls" if os.name == "nt" else "clear")
+            tmp_item = worldmap.current_zone.market.getInventory(player)
+            if tmp_item is not None:
+                player.giveItem(tmp_item)
+            raw_input("Press \"Enter\" to continue...")
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
             worldmap.printMap()
