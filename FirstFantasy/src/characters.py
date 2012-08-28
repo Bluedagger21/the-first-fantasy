@@ -118,6 +118,9 @@ class Player(Character):
         print self.name + " gained " + repr(gold_earned) + " gold!"
         self.gold += gold_earned
 
+    def takeGold(self, gold_taken=0):
+        print self.name + " lost " + repr(gold_taken) + " gold!"
+
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""
         print self.name + " found a " + item.name + "!"

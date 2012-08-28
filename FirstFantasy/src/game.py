@@ -127,10 +127,10 @@ def homescreen():
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
             worldmap.printMap()
-            print "You make your way to " + worldmap.current_zone.z_name
             if worldmap.current_zone.z_type == "wild":
                 explore(worldmap.current_zone)
             else:
+                print "You make your way to " + worldmap.current_zone.z_name
                 raw_input("Press \"Enter\" to continue...")
         elif choice == 'q':
             os.system("cls" if os.name == "nt" else "clear")
@@ -170,6 +170,10 @@ def saveGame():
 def explore(current_zone):
     """Decides if an encounter occurs or not"""
     os.system("cls" if os.name == "nt" else "clear")
+    if "dead" in player.status:
+        print "You're too injured to fight. Rest at a town!"
+        raw_input("Press \"Enter\" to continue...")
+        return
     action = current_zone.getAction()
     if action == "encounter":
         opponent = current_zone.getEnemy()

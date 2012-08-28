@@ -86,6 +86,7 @@ def combat(a, b):
         elif c_state == "endturn":
             if "dead" in a.status:
                 print a.name + " has been defeated!"
+                print a.takeGold(50 * a.level)
                 raw_input("Press \"Enter\" to continue...")
                 break
             elif "dead" in b.status:
