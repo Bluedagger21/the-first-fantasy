@@ -114,7 +114,7 @@ def combat(a, b):
             n_state = "standby"
 
         elif c_state == "run":
-            if random.randrange(1, 3) == 1:
+            if random.randrange(1, 4) == 1:
                 print "You were able to get away!"
                 raw_input("Press \"Enter\" to continue...")
                 break
