@@ -164,9 +164,13 @@ class Player(Character):
 
                 if option == "equip":
                     if isinstance(self.inventory[choice], items.Armor):
-                        self.equip(self.inventory[choice], self.armor)
+                        self.equip(self.inventory[choice],
+                                   self.armor,
+                                   accessed_from)
                     elif isinstance(self.inventory[choice], items.Weapon):
-                        self.equip(self.inventory[choice], self.weapons)
+                        self.equip(self.inventory[choice],
+                                   self.weapons,
+                                   accessed_from)
                     else:
                         print "Type Check Error"
                     self.updateEquipmentStats()
@@ -181,7 +185,8 @@ class Player(Character):
                            self.inventory[choice].slot) is not None:
                             self.compareEquip(self.inventory[choice],
                                                   self.armor.get(
-                                                  self.inventory[choice].slot))
+                                                  self.inventory[choice].slot),
+                                              accessed_from)
                         else:
                             print "No existing item to compare!"
                             raw_input("Press \"Enter\" to continue...")
@@ -189,7 +194,8 @@ class Player(Character):
                         if self.weapons.get(
                            self.inventory[choice].slot) is not None:
                             self.compareEquip(self.inventory[choice],
-                                 self.weapons.get(self.inventory[choice].slot))
+                                 self.weapons.get(self.inventory[choice].slot),
+                                 accessed_from)
                         else:
                             print "No existing item to compare!"
                             raw_input("Press \"Enter\" to continue...")
@@ -206,14 +212,15 @@ class Player(Character):
     def attack(self, receiver):
         self.weapons.get("Right Hand").attack(self, receiver)
 
-    def equip(self, new, type_dict):
+    def equip(self, new, type_dict, accessed_from="zone"):
         if type_dict.get(new.slot) is not None:
             self.compareEquip(new, type_dict.get(new.slot))
         else:
             type_dict[new.slot] = self.inventory.pop(self.inventory.index(new))
-            self.status.append("skip")
+            if accessed_from == "combat":
+                self.status.append("skip")
 
-    def compareEquip(self, new, cur):
+    def compareEquip(self, new, cur, accessed_from="zone"):
         """Compares attributes of existing item with a new item"""
         while True:
             os.system("cls" if os.name == "nt" else "clear")
@@ -257,7 +264,8 @@ class Player(Character):
                 elif isinstance(new, items.Weapon):
                     self.weapons[new.slot] = self.inventory \
                                               .pop(self.inventory.index(new))
-                self.status.append("skip")
+                if accessed_from == "combat":
+                    self.status.append("skip")
                 break
             elif choice == 'n':
                 os.system("cls" if os.name == "nt" else "clear")
