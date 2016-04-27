@@ -44,8 +44,8 @@ class Character:
         print "Toughness: %d" % (self.stat_list[2])
         print "Vitality: %d" % (self.stat_list[3])
         print "\nAttack: %d" % (self.getAttackDamage())
-        print "Crit Chance: {0:.2f}%".format(100 * self.getCritChance())
-        print "Armor: {0:.2f}%".format(100 * self.getArmorReduce())
+        print "Crit Chance: {:.2}%".format(self.getCritChance())
+        print "Armor: {:.2%}".format(self.getArmorReduce())
 
     def attack(self, receiver):
         damage = self.getDamage()
@@ -346,8 +346,8 @@ class Player(Character):
                                           self.equipment_stat_list[3],
                                           self.equipment_stat_list[3])
         print "\nAttack: %d" % (self.getAttackDamage())
-        print "Crit Chance: {0:.2f}%".format(100 * self.getCritChance())
-        print "Armor: {0:.2f}%".format(100 * self.getArmorReduce())
+        print "Crit Chance: {:.2%}".format(self.getCritChance())
+        print "Armor: {:.2%}".format(self.getArmorReduce())
 
         print "\n[------Equipment-----]"
         for x in self.armor.iterkeys():
