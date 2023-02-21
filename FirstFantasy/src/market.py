@@ -13,12 +13,12 @@ class Market():
 
     def getInventory(self, player):
         while True:
-            print "{:<2} {:<30} {:>5}".format("#", "Item", "Cost")
+            print ("{:<2} {:<30} {:>5}".format("#", "Item", "Cost"))
             for i, item in enumerate(self.inventory_list):
-                print "{:<}) {:<30} {:>5}".format(i + 1, item[0].name, item[1])
-            print "{}) Exit".format(i + 2)
+                print ("{:<}) {:<30} {:>5}".format(i + 1, item[0].name, item[1]))
+            print ("{}) Exit".format(i + 2))
             try:
-                choice = int(raw_input("\nSelection: ")) - 1
+                choice = int(input("\nSelection: ")) - 1
             except ValueError:
                 continue
             if choice <= i and choice >= 0:
