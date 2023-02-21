@@ -85,8 +85,8 @@ def continuegame():
             print ("Loading game...")
             f = open(home_dir + path_separator + "saves" +
                      path_separator + saved_file + '.bin', 'rb')
-            player = cPickle.load(f)
-            worldmap = cPickle.load(f)
+            player = pickle.load(f)
+            worldmap = pickle.load(f)
             f.close()
             print ("...Done!")
             input("Press \"Enter\" to continue...")
@@ -166,8 +166,8 @@ def saveGame():
              + save_name + '.bin', 'wb')
     print ("Saving game...")
 
-    cPickle.dump(player, f, protocol=0)
-    cPickle.dump(worldmap, f, protocol=0)
+    pickle.dump(player, f, protocol=0)
+    pickle.dump(worldmap, f, protocol=0)
     f.close()
     print ("...Done!")
     input("Press \"Enter\" to continue...")
