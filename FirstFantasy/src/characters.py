@@ -134,6 +134,7 @@ class Player(Character):
             self.inventory.append(item)
         else:
             print "Inventory is full!"
+            # We need to offer player a choice to replace or discard
 
     def getInventory(self, accessed_from="zone"):
         """Displays inventory and options"""
