@@ -24,10 +24,10 @@ def titlescreen():
     while True:
         while True:
             os.system("cls" if os.name == "nt" else "clear")
-            print "The First Fantasy v0.1"
-            print "Copyright (C) 2012  Dale Everett\n\n"
-            print "(N)ew Game    (C)ontinue    (Q)uit"
-            choice = raw_input().lower()
+            print ("The First Fantasy v0.1")
+            print ("Copyright (C) 2012  Dale Everett\n\n")
+            print ("(N)ew Game    (C)ontinue    (Q)uit")
+            choice = input().lower()
             if choice == 'n' or choice == 'c' or choice == 'q':
                 break
         if choice == 'n':
@@ -47,26 +47,26 @@ def newgame():
     """Get player name and create new world"""
     global worldmap
     global player
-    print "\n"
+    print ("\n")
     while True:
-        playername = raw_input("Enter your name: ")
+        playername = input("Enter your name: ")
         if len(playername) < 2:
-            print "Name must be at least two characters long."
+            print ("Name must be at least two characters long.")
         else:
             player = characters.Player(playername)
             break
     worldmap = world.Map()
-    print "Prepare to begin your journey..."
-    raw_input("Press \"Enter\" to continue...")
+    print ("Prepare to begin your journey...")
+    input("Press \"Enter\" to continue...")
 
 
 def continuegame():
     """Prompt to choose saved game and load player and worldmap states"""
     global worldmap
     global player
-    print "Retrieving current directory..."
+    print ("Retrieving current directory...")
     home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-    print home_dir
+    print (home_dir)
     while True:
         os.system("cls" if os.name == "nt" else "clear")
         if os.name == "nt":  # WINDOWS
@@ -74,22 +74,22 @@ def continuegame():
         else:
             path_separator = "/"
         if not os.path.exists(home_dir + path_separator + "saves"):
-            print "Creating saves directory..."
+            print ("Creating saves directory...")
             os.makedirs(home_dir + path_separator + 'saves')
         for files in os.listdir(home_dir + path_separator + "\saves"):
             if files.endswith(".bin"):
-                print files[:-4]
-        saved_file = raw_input("\nType filename to load (C to cancel): ")
+                print (files[:-4])
+        saved_file = input("\nType filename to load (C to cancel): ")
         if os.path.exists(home_dir + path_separator + "saves" +
                           path_separator + saved_file + ".bin"):
-            print "Loading game..."
+            print ("Loading game...")
             f = open(home_dir + path_separator + "saves" +
                      path_separator + saved_file + '.bin', 'rb')
             player = cPickle.load(f)
             worldmap = cPickle.load(f)
             f.close()
-            print "...Done!"
-            raw_input("Press \"Enter\" to continue...")
+            print ("...Done!")
+            input("Press \"Enter\" to continue...")
             return True
         elif saved_file.lower() == 'c':
             return False
@@ -112,15 +112,15 @@ def homescreen():
         elif choice == 'c':
             os.system("cls" if os.name == "nt" else "clear")
             player.getCharacterSheet()
-            raw_input("Press \"Enter\" to continue...")
+            input("Press \"Enter\" to continue...")
         elif choice == 'r':
             cost = player.level * 10 + 15
-            print "Cost: {}g".format(cost)
-            if raw_input("Accept? (Y/N): ").lower() == 'y':
+            print ("Cost: {}g".format(cost))
+            if input("Accept? (Y/N): ").lower() == 'y':
                 if player.takeGold(cost) is True:
                     player.giveHealth(player.getMaxHealth())
-                    print player.name + " has returned to full health!"
-                raw_input("Press \"Enter\" to continue...")
+                    print (player.name + " has returned to full health!")
+                input("Press \"Enter\" to continue...")
         elif choice == 'i':
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()
@@ -129,15 +129,15 @@ def homescreen():
             tmp_item = worldmap.current_zone.market.getInventory(player)
             if tmp_item is not None:
                 player.giveItem(tmp_item)
-            raw_input("Press \"Enter\" to continue...")
+            input("Press \"Enter\" to continue...")
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
             worldmap.printMap()
             if worldmap.current_zone.z_type == "wild":
                 explore(worldmap.current_zone)
             else:
-                print "You make your way to " + worldmap.current_zone.z_name
-                raw_input("Press \"Enter\" to continue...")
+                print ("You make your way to " + worldmap.current_zone.z_name)
+                input("Press \"Enter\" to continue...")
         elif choice == 'q':
             os.system("cls" if os.name == "nt" else "clear")
             sys.exit()
@@ -156,34 +156,34 @@ def saveGame():
         path_separator = "/"
     if not os.path.exists(home_dir + path_separator + 'saves'):
         os.makedirs(home_dir + path_separator + 'saves')
-        print home_dir
-    print "Existing saves: "
+        print (home_dir)
+    print ("Existing saves: ")
     for files in os.listdir(home_dir + path_separator + "\saves"):
             if files.endswith(".bin"):
-                print files[:-4]
-    save_name = raw_input("\nSave game as: ")
+                print (files[:-4])
+    save_name = input("\nSave game as: ")
     f = open(home_dir + path_separator + 'saves' + path_separator \
              + save_name + '.bin', 'wb')
-    print "Saving game..."
+    print ("Saving game...")
 
     cPickle.dump(player, f, protocol=0)
     cPickle.dump(worldmap, f, protocol=0)
     f.close()
-    print "...Done!"
-    raw_input("Press \"Enter\" to continue...")
+    print ("...Done!")
+    input("Press \"Enter\" to continue...")
 
 
 def explore(current_zone):
     """Decides if an encounter occurs or not"""
     os.system("cls" if os.name == "nt" else "clear")
     if "dead" in player.status:
-        print "You're too injured to fight. Rest at a town!"
-        raw_input("Press \"Enter\" to continue...")
+        print ("You're too injured to fight. Rest at a town!")
+        input("Press \"Enter\" to continue...")
         return
     action = current_zone.getAction()
     if action == "encounter":
         opponent = current_zone.getEnemy()
         combat.combat(player, opponent)
     elif action == "nothing":
-        print "Nothing of interest was found..."
-        raw_input("Press \"Enter\" to continue...")
+        print ("Nothing of interest was found...")
+        input("Press \"Enter\" to continue...")

@@ -81,9 +81,9 @@ class Map:
             for i in range(possiblities):
                 print (repr(i + 1) + ") " +
                        self.current_zone.neighbors[i].z_name)
-            print repr(i + 2) + ") Cancel"
+            print (repr(i + 2) + ") Cancel")
             try:
-                choice = int(raw_input("\nSelection: "))
+                choice = int(input("\nSelection: "))
             except ValueError:
                 continue
             if choice < i + 2 and choice > 0:

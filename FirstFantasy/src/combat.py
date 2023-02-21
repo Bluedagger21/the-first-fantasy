@@ -10,19 +10,19 @@ import random
 def getAction(a, b):
     """Display combat information and prompt for action"""
     os.system("cls" if os.name == "nt" else "clear")
-    print b.name
-    print "Health: " + repr(b.health) + "/" + repr(b.getMaxHealth())
-    print "P: {:2} P: {:2} T: {:2} V: {:2}".format(
-           b.stat_list[0], b.stat_list[1], b.stat_list[2], b.stat_list[3])
-    print "----------------------VERSUS"
-    print a.name
-    print "Health: " + repr(a.health) + "/" + repr(a.getMaxHealth())
-    print "P: {:2} P: {:2} T: {:2} V: {:2}".format(
+    print (b.name)
+    print ("Health: " + repr(b.health) + "/" + repr(b.getMaxHealth()))
+    print ("P: {:2} P: {:2} T: {:2} V: {:2}".format(
+           b.stat_list[0], b.stat_list[1], b.stat_list[2], b.stat_list[3]))
+    print ("----------------------VERSUS")
+    print (a.name)
+    print ("Health: " + repr(a.health) + "/" + repr(a.getMaxHealth()))
+    print ("P: {:2} P: {:2} T: {:2} V: {:2}".format(
            a.stat_list[0] + a.equipment_stat_list[0], a.stat_list[1] +
            a.equipment_stat_list[1], a.stat_list[2] + a.equipment_stat_list[2],
-           a.stat_list[3] + a.equipment_stat_list[3])
-    print "\n[ACTIONS]-------------------"
-    choice = raw_input("(A)ttack    (I)nventory\n(E)nemy Info    " \
+           a.stat_list[3] + a.equipment_stat_list[3]))
+    print ("\n[ACTIONS]-------------------")
+    choice = input("(A)ttack    (I)nventory\n(E)nemy Info    " \
                        "(R)un Away: ").lower()
     if choice == "a" or choice == "i" or choice == "e" or choice == "r":
         return choice
@@ -52,14 +52,14 @@ def combat(a, b):
                 n_state = "run"
             else:
                 n_state = n_state
-            print "----------------------------"  # Newline
+            print ("----------------------------")  # Newline
 
         elif c_state == "effects":
             pass
 
         elif c_state == "a_attack":
             if "skip" in a.status:
-                print a.name + " skipped their turn."
+                print (a.name + " skipped their turn.")
                 a.status.remove("skip")
             elif "normal" in a.status:
                 a.attack(b)
@@ -70,14 +70,14 @@ def combat(a, b):
                 n_state = "b_attack"
         elif c_state == "b_attack":
             if "skip" in b.status:
-                print b.name + " skipped their turn."
+                print (b.name + " skipped their turn.")
                 b.status.remove("skip")
                 time.sleep(1)
             elif "caught" in b.status:
                 time.sleep(1)
                 b.attack(a)
                 b.status.remove("caught")
-                raw_input("Press \"Enter\" to continue...")
+                input("Press \"Enter\" to continue...")
             elif "normal" in a.status:
                 b.attack(a)
                 time.sleep(1)
@@ -85,12 +85,12 @@ def combat(a, b):
 
         elif c_state == "endturn":
             if "dead" in a.status:
-                print a.name + " has been defeated!"
-                print a.takeGold(50 * a.level)
-                raw_input("Press \"Enter\" to continue...")
+                print (a.name + " has been defeated!")
+                print (a.takeGold(50 * a.level))
+                input("Press \"Enter\" to continue...")
                 break
             elif "dead" in b.status:
-                print b.name + " has been defeated!"
+                print (b.name + " has been defeated!")
                 n_state = "win"
             else:
                 n_state = "standby"
@@ -101,7 +101,7 @@ def combat(a, b):
                 a.giveItem(loot[1])
             a.giveGold(loot[0])
             a.giveExp((a.exp_needed / (9 + a.level)) * (b.level / a.level))
-            raw_input("Press \"Enter\" to continue...")
+            input("Press \"Enter\" to continue...")
             break
 
         elif c_state == "inventory":
@@ -110,15 +110,15 @@ def combat(a, b):
 
         elif c_state == "info":
             b.getCharacterSheet()
-            raw_input("Press \"Enter\" to continue...")
+            input("Press \"Enter\" to continue...")
             n_state = "standby"
 
         elif c_state == "run":
             if random.randrange(1, 4) == 1:
-                print "You were able to get away!"
-                raw_input("Press \"Enter\" to continue...")
+                print ("You were able to get away!")
+                input("Press \"Enter\" to continue...")
                 break
             else:
-                print "You couldn't get away and %s caught you!" % b.name
+                print ("You couldn't get away and %s caught you!" % b.name)
                 n_state = "b_attack"
                 b.status.append("caught")

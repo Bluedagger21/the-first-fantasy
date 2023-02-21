@@ -21,7 +21,7 @@ class Zone:
         """Print neighbors around this zone"""
         for z in self.neighbors:
             if z.z_name != root.z_name:
-                print z.z_name
+                print (z.z_name)
 
 
 class Wild(Zone):
@@ -52,9 +52,9 @@ class Wild(Zone):
 
     def getOptions(self):
         """Print options and prompt for choice"""
-        print "You are currently at: ", self.z_name
-        print "What would you like to do?\n", self.z_options
-        return raw_input().lower()
+        print ("You are currently at: ", self.z_name)
+        print ("What would you like to do?\n", self.z_options)
+        return input().lower()
 
 
 class Town(Zone):
@@ -73,6 +73,6 @@ class Town(Zone):
 
     def getOptions(self):
         """Print options and prompt for choice"""
-        print "You are currently at: ", self.z_name
-        print "What would you like to do?\n", self.z_options
-        return raw_input().lower()
+        print ("You are currently at: ", self.z_name)
+        print ("What would you like to do?\n", self.z_options)
+        return input().lower()
