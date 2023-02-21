@@ -276,12 +276,12 @@ class Player(Character):
         """Updates equipment stats after changing equipment"""
         for i in range(len(self.equipment_stat_list)):
             tmp_amount = 0
-            for x in self.armor.itervalues():
+            for x in self.armor.values():
                 if x is not None:
                     tmp_amount += x.stats[i]
                 else:
                     tmp_amount += 0
-            for x in self.weapons.itervalues():
+            for x in self.weapons.values():
                 if x is not None:
                     tmp_amount += x.stats[i]
                 else:
@@ -351,7 +351,7 @@ class Player(Character):
         print ("Armor: {:.2%}".format(self.getArmorReduce()))
 
         print ("\n[------Equipment-----]")
-        for x in self.armor.iterkeys():
+        for x in self.armor:
             if self.armor.get(x) != None:
                 name = self.armor.get(x).name
             else:
@@ -359,7 +359,7 @@ class Player(Character):
             print ("{}: {}".format(x, name))
 
         print ("")
-        for x in self.weapons.iterkeys():
+        for x in self.weapons:
             if self.weapons.get(x) is not None:
                 name = self.weapons.get(x).name
             else:
