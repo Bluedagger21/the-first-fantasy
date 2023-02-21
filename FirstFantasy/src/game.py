@@ -5,7 +5,7 @@ import characters
 import world
 import market
 import combat
-import cPickle
+import pickle
 import sys
 import os
 
