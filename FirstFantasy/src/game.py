@@ -162,16 +162,20 @@ def saveGame():
             if files.endswith(".bin"):
                 print (files[:-4])
     save_name = input("\nSave game as: ")
+    if save_name in files:
+        choice = input("Save files already exist for this name. Overwrite? (Y/N) ").lower()
+        if choice == "n":
+            print ("Saving cancelled.")
+            input("Press \"Enter\" to continue...")
+            return
     f = open(home_dir + path_separator + 'saves' + path_separator \
-             + save_name + '.bin', 'wb')
+        + save_name + '.bin', 'wb')
     print ("Saving game...")
-
     pickle.dump(player, f, protocol=0)
     pickle.dump(worldmap, f, protocol=0)
     f.close()
     print ("...Done!")
     input("Press \"Enter\" to continue...")
-
 
 def explore(current_zone):
     """Decides if an encounter occurs or not"""
