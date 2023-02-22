@@ -213,21 +213,21 @@ class Player(Character):
     def attack(self, receiver):
         self.weapons.get("Right Hand").attack(self, receiver)
 
-    def equip(self, new, type_dict, accessed_from="zone"):
-        if type_dict.get(new.slot) is not None:
-            self.compareEquip(new, type_dict.get(new.slot))
+    def equip(self, new_equipment, type_dict, accessed_from="zone"):
+        if type_dict.get(new_equipment.slot) is not None:
+            self.compareEquip(new_equipment, type_dict.get(new_equipment.slot))
         else:
-            type_dict[new.slot] = self.inventory.pop(self.inventory.index(new))
+            type_dict[new_equipment.slot] = self.inventory.pop(self.inventory.index(new_equipment))
             if accessed_from == "combat":
                 self.status.append("skip")
 
-    def compareEquip(self, new, cur, accessed_from="zone"):
+    def compareEquip(self, new_equipment, cur_equipment, accessed_from="zone"):
         """Compares attributes of existing item with a new item"""
         while True:
             os.system("cls" if os.name == "nt" else "clear")
             STAT_WIDTH = 12
-            CUR_NAME_WIDTH = len(cur.name) + 2
-            NEW_NAME_WIDTH = len(new.name) + 2
+            CUR_NAME_WIDTH = len(cur_equipment.name) + 2
+            NEW_NAME_WIDTH = len(new_equipment.name) + 2
             WIDTH = 4
             print ("".join(("Stat".ljust(STAT_WIDTH),
                            "New".ljust(NEW_NAME_WIDTH),
@@ -235,36 +235,36 @@ class Player(Character):
                            "Difference".ljust(WIDTH))))
 
             print ("".join(("Name".ljust(STAT_WIDTH),
-                           new.name.ljust(NEW_NAME_WIDTH),
-                           cur.name.ljust(CUR_NAME_WIDTH))))
+                           new_equipment.name.ljust(NEW_NAME_WIDTH),
+                           cur_equipment.name.ljust(CUR_NAME_WIDTH))))
 
             print ("".join(("Power".ljust(STAT_WIDTH),
-                           str(new.stats[0]).ljust(NEW_NAME_WIDTH),
-                           str(cur.stats[0]).ljust(CUR_NAME_WIDTH),
-                           str(new.stats[0] - cur.stats[0]).ljust(WIDTH))))
+                           str(new_equipment.stats[0]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.stats[0]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.stats[0] - cur_equipment.stats[0]).ljust(WIDTH))))
 
             print ("".join(("Precision".ljust(STAT_WIDTH),
-                           str(new.stats[1]).ljust(NEW_NAME_WIDTH),
-                           str(cur.stats[1]).ljust(CUR_NAME_WIDTH),
-                           str(new.stats[1] - cur.stats[1]).ljust(WIDTH))))
+                           str(new_equipment.stats[1]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.stats[1]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.stats[1] - cur_equipment.stats[1]).ljust(WIDTH))))
 
             print ("".join(("Toughness".ljust(STAT_WIDTH),
-                           str(new.stats[2]).ljust(NEW_NAME_WIDTH),
-                           str(cur.stats[2]).ljust(CUR_NAME_WIDTH),
-                           str(new.stats[2] - cur.stats[2]).ljust(WIDTH))))
+                           str(new_equipment.stats[2]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.stats[2]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.stats[2] - cur_equipment.stats[2]).ljust(WIDTH))))
 
             print ("".join(("Vitality".ljust(STAT_WIDTH),
-                           str(new.stats[3]).ljust(NEW_NAME_WIDTH),
-                           str(cur.stats[3]).ljust(CUR_NAME_WIDTH),
-                           str(new.stats[3] - cur.stats[3]).ljust(WIDTH))))
-            choice = input("\nEquip " + new.name + "? (Y/N)").lower()
+                           str(new_equipment.stats[3]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.stats[3]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.stats[3] - cur_equipment.stats[3]).ljust(WIDTH))))
+            choice = input("\nEquip " + new_equipment.name + "? (Y/N)").lower()
             if choice == 'y':
-                if isinstance(new, items.Armor):
-                    self.armor[new.slot] = self.inventory \
-                                                .pop(self.inventory.index(new))
-                elif isinstance(new, items.Weapon):
-                    self.weapons[new.slot] = self.inventory \
-                                              .pop(self.inventory.index(new))
+                if isinstance(new_equipment, items.Armor):
+                    self.armor[new_equipment.slot] = self.inventory \
+                                                .pop(self.inventory.index(new_equipment))
+                elif isinstance(new_equipment, items.Weapon):
+                    self.weapons[new_equipment.slot] = self.inventory \
+                                              .pop(self.inventory.index(new_equipment))
                 if accessed_from == "combat":
                     self.status.append("skip")
                 break
