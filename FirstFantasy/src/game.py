@@ -150,6 +150,7 @@ def homescreen():
 
 def saveGame():
     home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+    files = []
     if os.name == "nt":  # WINDOWS
         path_separator = "\\"
     else:
