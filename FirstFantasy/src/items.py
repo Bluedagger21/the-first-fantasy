@@ -5,8 +5,9 @@ Last changed by: Dale Everett
 
 class Equipment():
     """Defines base members and methods of equippable items"""
-    def __init__(self, name, stats):
+    def __init__(self, name, stats, stack_limit = 1):
         self.name = name
+        self.stack_limit = stack_limit
         self.stats = stats
 
     def show(self):
@@ -57,9 +58,10 @@ class Armor(Equipment):
 
 class Consumable():
     """Defines base members and methods for consumables"""
-    def __init__(self, name, effect):
+    def __init__(self, name, effect, stack_limit = 5):
         self.name = name
         self.effect = effect
+        self.stack_limit = stack_limit
         self.slot = "consumable"
 
     def getOptions(self, accessed_from="zone"):
