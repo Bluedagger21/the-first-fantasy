@@ -147,7 +147,7 @@ class Player(Character):
             # try:
             if (input("\nSelection: \n(Y)es\n(N)o\n")) == "y":
                 choice = 0
-                # except ValueError:
+                # except ValueError:  #might need to test if there can be exceptions here with new code
                 #    continue
             else:
                 choice = 1
