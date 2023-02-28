@@ -126,15 +126,45 @@ class Player(Character):
             self.gold -= gold_taken
             print(self.name + " lost " + repr(gold_taken) + " gold!")
             return True
+    def deathGold(self, gold_taken=0):
+        if ((self.gold < gold_taken)):
+            self.gold -= self.gold
+        else:
+            self.gold -= gold_taken
 
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""
-        print(self.name + " recieved a " + item.name + "!")
         if len(self.inventory) <= 10:
+            print(self.name + " recieved a " + item.name + "!")
             self.inventory.append(item)
         else:
             print("Inventory is full!")
-            # We need to offer player a choice to replace or discard
+            self.swapItem(item)
+            # We need to offer player a choice to replace or discard. This might work with a new swapItem method added above. Not finished yet
+    def swapItem(self, item):
+        while True:
+            print("Would you like to destroy an item out for " + item.name + "?")
+            # try:
+            if (input("\nSelection: \n(Y)es\n(N)o\n")) == "y":
+                choice = 0
+                # except ValueError:
+                #    continue
+            else:
+                choice = 1
+            if choice == 0:
+                self.getInventory(self)
+                self.giveItem(item)
+                # if len(self.inventory) <= 10:
+                #    print(self.name + " recieved a " + item.name + "!")
+                #    self.inventory.append(item)
+                break
+            elif choice == 1:
+                print(item.name + " was left behind.")
+                break
+            else:
+                continue  # need to check what this would do
+                # this would ask yes or no, if no is selected it exits. if yes is selected it lets you open inventory and destroy an item
+                # self.giveItem(self,item)  if decided yes to destory and item and there is inventory space, then give the item again
 
     def getInventory(self, accessed_from="zone"):
         """Displays inventory and options"""
@@ -153,7 +183,7 @@ class Player(Character):
                        "{} items.\n".format(len(self.inventory)))
             print("Inventory:")
             for i, x in enumerate(self.inventory):
-                print ("{}) {}".format(i + 1, x.name))
+                print ("{}) {}".format(i + 1, x.getName()))
             print ("{}) Exit".format(i + 2))
             try:
                 choice = int(input("\nSelection: ")) - 1
@@ -177,7 +207,10 @@ class Player(Character):
                     self.updateEquipmentStats()
                     break
                 elif option == "consume":
-                    self.inventory.pop(choice).use(self)
+                    self.inventory[choice].use(self)
+                    self.inventory[choice].stack_size -= 1
+                    if self.inventory[choice].stack_size == 0:
+                        self.inventory.pop(choice)                        
                     input("Press \"Enter\" to continue...")
                     break
                 elif option == "compare":
