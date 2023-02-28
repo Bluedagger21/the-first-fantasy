@@ -36,16 +36,16 @@ class Character:
                  self.POWER_RATIO)
 
     def getCharacterSheet(self):
-        print ("[---Character Sheet---]")
-        print ("Name: %s (Level: %d)" % (self.name, self.level))
-        print ("Health: %d/%d" % (self.health, self.getMaxHealth()))
-        print ("\nPower: %d" % (self.stat_list[0]))
-        print ("Precision: %d" % (self.stat_list[1]))
-        print ("Toughness: %d" % (self.stat_list[2]))
-        print ("Vitality: %d" % (self.stat_list[3]))
-        print ("\nAttack: %d" % (self.getAttackDamage()))
-        print ("Crit Chance: {:.2}%".format(self.getCritChance()))
-        print ("Armor: {:.2%}".format(self.getArmorReduce()))
+        print("[---Character Sheet---]")
+        print("Name: %s (Level: %d)" % (self.name, self.level))
+        print("Health: %d/%d" % (self.health, self.getMaxHealth()))
+        print("\nPower: %d" % (self.stat_list[0]))
+        print("Precision: %d" % (self.stat_list[1]))
+        print("Toughness: %d" % (self.stat_list[2]))
+        print("Vitality: %d" % (self.stat_list[3]))
+        print("\nAttack: %d" % (self.getAttackDamage()))
+        print("Crit Chance: {:.2}%".format(self.getCritChance()))
+        print("Armor: {:.2%}".format(self.getArmorReduce()))
 
     def attack(self, receiver):
         damage = self.getDamage()
@@ -120,51 +120,45 @@ class Player(Character):
 
     def takeGold(self, gold_taken=0):
         if self.gold < gold_taken:
-            print("You do not have enough gold!")
-            return False
+            if "dead" in self.status:
+                self.gold = 0
+                print("You've lost all your gold!")
+                return False
+            else:
+                print("You do not have enough gold!")
+                return False
         else:
             self.gold -= gold_taken
             print(self.name + " lost " + repr(gold_taken) + " gold!")
             return True
-    def deathGold(self, gold_taken=0):
-        if ((self.gold < gold_taken)):
-            self.gold -= self.gold
-        else:
-            self.gold -= gold_taken
 
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""
         if len(self.inventory) <= 10:
-            print(self.name + " recieved a " + item.name + "!")
+            print(self.name + " received a " + item.name + "!")
             self.inventory.append(item)
         else:
             print("Inventory is full!")
             self.swapItem(item)
-            # We need to offer player a choice to replace or discard. This might work with a new swapItem method added above. Not finished yet
+
     def swapItem(self, item):
         while True:
             print("Would you like to destroy an item out for " + item.name + "?")
-            # try:
-            if (input("\nSelection: \n(Y)es\n(N)o\n")) == "y":
+            if (input("\nSelection: \n(Y)es\n(N)o\n")).lower() == "y":
                 choice = 0
-                # except ValueError:  #might need to test if there can be exceptions here with new code
-                #    continue
-            else:
+            elif (input("\nSelection: \n(Y)es\n(N)o\n")).lower() == "n":
                 choice = 1
+            else:
+                continue
             if choice == 0:
                 self.getInventory(self)
                 self.giveItem(item)
-                # if len(self.inventory) <= 10:
-                #    print(self.name + " recieved a " + item.name + "!")
-                #    self.inventory.append(item)
                 break
             elif choice == 1:
                 print(item.name + " was left behind.")
                 break
             else:
-                continue  # need to check what this would do
-                # this would ask yes or no, if no is selected it exits. if yes is selected it lets you open inventory and destroy an item
-                # self.giveItem(self,item)  if decided yes to destory and item and there is inventory space, then give the item again
+                continue
 
     def getInventory(self, accessed_from="zone"):
         """Displays inventory and options"""
@@ -177,14 +171,14 @@ class Player(Character):
             # Clearers should be removed from game.py if they're called here.
             os.system("cls" if os.name == "nt" else "clear")
             if len(self.inventory) == 1:
-                print ("You are carrying {} item.\n".format(len(self.inventory)))
+                print("You are carrying {} item.\n".format(len(self.inventory)))
             else:
                 print("You are carrying " \
                        "{} items.\n".format(len(self.inventory)))
             print("Inventory:")
             for i, x in enumerate(self.inventory):
-                print ("{}) {}".format(i + 1, x.getName()))
-            print ("{}) Exit".format(i + 2))
+                print("{}) {}".format(i + 1, x.getName()))
+            print("{}) Exit".format(i + 2))
             try:
                 choice = int(input("\nSelection: ")) - 1
             except ValueError:
@@ -222,7 +216,7 @@ class Player(Character):
                                                   self.inventory[choice].slot),
                                               accessed_from)
                         else:
-                            print ("No existing item to compare!")
+                            print("No existing item to compare!")
                             input("Press \"Enter\" to continue...")
                     elif isinstance(self.inventory[choice], items.Weapon):
                         if self.weapons.get(
@@ -231,7 +225,7 @@ class Player(Character):
                                  self.weapons.get(self.inventory[choice].slot),
                                  accessed_from)
                         else:
-                            print ("No existing item to compare!")
+                            print("No existing item to compare!")
                             input("Press \"Enter\" to continue...")
                     self.updateEquipmentStats()
 
@@ -262,31 +256,31 @@ class Player(Character):
             CUR_NAME_WIDTH = len(cur_equipment.name) + 2
             NEW_NAME_WIDTH = len(new_equipment.name) + 2
             WIDTH = 4
-            print ("".join(("Stat".ljust(STAT_WIDTH),
+            print("".join(("Stat".ljust(STAT_WIDTH),
                            "New".ljust(NEW_NAME_WIDTH),
                            "Current".ljust(CUR_NAME_WIDTH),
                            "Difference".ljust(WIDTH))))
 
-            print ("".join(("Name".ljust(STAT_WIDTH),
+            print("".join(("Name".ljust(STAT_WIDTH),
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
                            cur_equipment.name.ljust(CUR_NAME_WIDTH))))
 
-            print ("".join(("Power".ljust(STAT_WIDTH),
+            print("".join(("Power".ljust(STAT_WIDTH),
                            str(new_equipment.stats[0]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[0]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[0] - cur_equipment.stats[0]).ljust(WIDTH))))
 
-            print ("".join(("Precision".ljust(STAT_WIDTH),
+            print("".join(("Precision".ljust(STAT_WIDTH),
                            str(new_equipment.stats[1]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[1]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[1] - cur_equipment.stats[1]).ljust(WIDTH))))
 
-            print ("".join(("Toughness".ljust(STAT_WIDTH),
+            print("".join(("Toughness".ljust(STAT_WIDTH),
                            str(new_equipment.stats[2]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[2]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[2] - cur_equipment.stats[2]).ljust(WIDTH))))
 
-            print ("".join(("Vitality".ljust(STAT_WIDTH),
+            print("".join(("Vitality".ljust(STAT_WIDTH),
                            str(new_equipment.stats[3]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[3]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[3] - cur_equipment.stats[3]).ljust(WIDTH))))
@@ -325,7 +319,7 @@ class Player(Character):
         """Checks to see if enough experience has been gained to level up"""
         level_gain = 0
         while self.exp >= self.exp_needed:
-            print ("\nLevel up!!!")
+            print("\nLevel up!!!")
             self.level += 1
             self.exp -= self.exp_needed
             self.exp_needed += self.level * 100
@@ -340,12 +334,12 @@ class Player(Character):
         points_gain = level_gain * 5
         while points_gain != 0:
 
-            print ("Points available: ", points_gain)
-            print ("[------------------]")
-            print ("(1) Power: ", self.stat_list[0])
-            print ("(2) Precision: ", self.stat_list[1])
-            print ("(3) Toughness: ", self.stat_list[2])
-            print ("(4) Vitality: ", self.stat_list[3])
+            print("Points available: ", points_gain)
+            print("[------------------]")
+            print("(1) Power: ", self.stat_list[0])
+            print("(2) Precision: ", self.stat_list[1])
+            print("(3) Toughness: ", self.stat_list[2])
+            print("(4) Vitality: ", self.stat_list[3])
             choice = input("Place point into: ")
             if choice == '1':
                 self.stat_list[0] += 1
@@ -363,38 +357,38 @@ class Player(Character):
             os.system("cls" if os.name == "nt" else "clear")
 
     def getCharacterSheet(self):
-        print ("[---Character Sheet---]")
-        print ("Name: %s (Level: %d)" % (self.name, self.level))
-        print ("Health: %d/%d" % (self.health, self.getMaxHealth()))
-        print ("Gold: %d" % (self.gold))
-        print ("Exp: %d/%d" % (self.exp, self.exp_needed))
-        print ("\nPower: {} (+{})".format(self.stat_list[0] +
+        print("[---Character Sheet---]")
+        print("Name: %s (Level: %d)" % (self.name, self.level))
+        print("Health: %d/%d" % (self.health, self.getMaxHealth()))
+        print("Gold: %d" % (self.gold))
+        print("Exp: %d/%d" % (self.exp, self.exp_needed))
+        print("\nPower: {} (+{})".format(self.stat_list[0] +
                                          self.equipment_stat_list[0],
                                          self.equipment_stat_list[0]))
-        print ("Precision: {} (+{})".format(self.equipment_stat_list[1],
+        print("Precision: {} (+{})".format(self.equipment_stat_list[1],
                                            self.equipment_stat_list[1]))
-        print ("Toughness: {} (+{})".format(self.stat_list[2] +
+        print("Toughness: {} (+{})".format(self.stat_list[2] +
                                            self.equipment_stat_list[2],
                                            self.equipment_stat_list[2]))
-        print ("Vitality: {} (+{})".format(self.stat_list[3] +
+        print("Vitality: {} (+{})".format(self.stat_list[3] +
                                           self.equipment_stat_list[3],
                                           self.equipment_stat_list[3]))
-        print ("\nAttack: %d" % (self.getAttackDamage()))
-        print ("Crit Chance: {:.2%}".format(self.getCritChance()))
-        print ("Armor: {:.2%}".format(self.getArmorReduce()))
+        print("\nAttack: %d" % (self.getAttackDamage()))
+        print("Crit Chance: {:.2%}".format(self.getCritChance()))
+        print("Armor: {:.2%}".format(self.getArmorReduce()))
 
-        print ("\n[------Equipment-----]")
+        print("\n[------Equipment-----]")
         for x in self.armor:
             if self.armor.get(x) != None:
                 name = self.armor.get(x).name
             else:
                 name = "None"
-            print ("{}: {}".format(x, name))
+            print("{}: {}".format(x, name))
 
-        print ("")
+        print("")
         for x in self.weapons:
             if self.weapons.get(x) is not None:
                 name = self.weapons.get(x).name
             else:
                 name = "None"
-            print ("{}: {}".format(x, name))
+            print("{}: {}".format(x, name))
