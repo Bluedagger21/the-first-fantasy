@@ -130,11 +130,24 @@ class Player(Character):
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""
         print(self.name + " recieved a " + item.name + "!")
-        if len(self.inventory) <= 10:
-            self.inventory.append(item)
+        if item.slot == "consumable":
+            for i,x in enumerate(self.inventory):
+                if (x.name == item.name) and (x.stack_size < x.stack_limit) :
+                    self.inventory[i].stack_size += 1
+                    return
+            if len(self.inventory) <= 10:
+                self.inventory.append(item)
+            else:
+                print("Inventory is full!")
+                # We need to offer player a choice to replace or discard
+            return
         else:
-            print("Inventory is full!")
-            # We need to offer player a choice to replace or discard
+            if len(self.inventory) <= 10:
+                self.inventory.append(item)
+            else:
+                print("Inventory is full!")
+                # We need to offer player a choice to replace or discard
+            return
 
     def getInventory(self, accessed_from="zone"):
         """Displays inventory and options"""
@@ -153,7 +166,7 @@ class Player(Character):
                        "{} items.\n".format(len(self.inventory)))
             print("Inventory:")
             for i, x in enumerate(self.inventory):
-                print ("{}) {}".format(i + 1, x.name))
+                print ("{}) {}".format(i + 1, x.getName()))
             print ("{}) Exit".format(i + 2))
             try:
                 choice = int(input("\nSelection: ")) - 1
@@ -177,7 +190,10 @@ class Player(Character):
                     self.updateEquipmentStats()
                     break
                 elif option == "consume":
-                    self.inventory.pop(choice).use(self)
+                    self.inventory[choice].use(self)
+                    self.inventory[choice].stack_size -= 1
+                    if self.inventory[choice].stack_size == 0:
+                        self.inventory.pop(choice)                        
                     input("Press \"Enter\" to continue...")
                     break
                 elif option == "compare":

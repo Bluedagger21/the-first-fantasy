@@ -10,9 +10,12 @@ class Equipment():
         self.stack_limit = stack_limit
         self.stats = stats
 
+    def getName(self):
+        return self.name
+
     def show(self):
         """Shows attributes of the item"""
-        print (self.name)
+        self.name
         print ("Power: " + repr(self.stats[0]))
         print ("Precision: " + repr(self.stats[1]))
         print ("Toughness: " + repr(self.stats[2]))
@@ -58,11 +61,15 @@ class Armor(Equipment):
 
 class Consumable():
     """Defines base members and methods for consumables"""
-    def __init__(self, name, effect, stack_limit = 5):
+    def __init__(self, name, effect, stack_limit = 5, stack_size = 1):
         self.name = name
         self.effect = effect
         self.stack_limit = stack_limit
+        self.stack_size = stack_size
         self.slot = "consumable"
+
+    def getName(self):
+        return self.name + " (" + str(self.stack_size) + "/" + str(self.stack_limit) + ")"
 
     def getOptions(self, accessed_from="zone"):
         """Display and prompt options"""
@@ -79,9 +86,8 @@ class Consumable():
 
     def show(self):
         """Print name and effect"""
-        print (self.name)
+        print (self.getName())
         print (self.effect)
-
 
 class SmallHealthPotion(Consumable):
     def __init__(self):
