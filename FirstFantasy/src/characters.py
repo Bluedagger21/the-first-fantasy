@@ -4,6 +4,7 @@ Last changed by: Ryan Breaker
 from weightedchoice import weighted_choice_sub
 from random import random
 import items
+import inventory
 import os
 
 
@@ -95,10 +96,8 @@ class Player(Character):
         self.exp_needed = 1000
         self.stat_list = [10, 10, 10, 10]
         self.equipment_stat_list = [0, 0, 0, 0]
-        self.inventory = []
-        self.armor = {"Helm": None, "Coat": None, "Gloves": None,
-                      "Leggings": None, "Boots": None}
-        self.weapons = {"Right Hand": items.Sword("Rusty Sword", [0, 0, 0, 0])}
+        self.inventory = inventory.Storage(10)
+        self.equipped_gear = inventory.Equipment()
         self.health = self.getMaxHealth()
 
     def giveExp(self, exp_earned):
@@ -130,26 +129,9 @@ class Player(Character):
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""
         print(self.name + " recieved a " + item.name + "!")
-        if item.slot == "consumable":
-            for i,x in enumerate(self.inventory):
-                if (x.name == item.name) and (x.stack_size < x.stack_limit) :
-                    self.inventory[i].stack_size += 1
-                    return
-            if len(self.inventory) <= 10:
-                self.inventory.append(item)
-            else:
-                print("Inventory is full!")
-                # We need to offer player a choice to replace or discard
-            return
-        else:
-            if len(self.inventory) <= 10:
-                self.inventory.append(item)
-            else:
-                print("Inventory is full!")
-                # We need to offer player a choice to replace or discard
-            return
+        self.inventory.add(item)
 
-    def getInventory(self, accessed_from="zone"):
+    def getInventory(self, from_where="zone"):
         """Displays inventory and options"""
         if len(self.inventory) == 0:
             input("Your inventory is empty.\n" +
@@ -157,147 +139,67 @@ class Player(Character):
             return
 
         while True:
-            # Clearers should be removed from game.py if they're called here.
             os.system("cls" if os.name == "nt" else "clear")
-            if len(self.inventory) == 1:
-                print ("You are carrying {} item.\n".format(len(self.inventory)))
-            else:
-                print("You are carrying " \
-                       "{} items.\n".format(len(self.inventory)))
             print("Inventory:")
             for i, x in enumerate(self.inventory):
                 print ("{}) {}".format(i + 1, x.getName()))
             print ("{}) Exit".format(i + 2))
             try:
-                choice = int(input("\nSelection: ")) - 1
+                inv_choice = int(input("\nSelection: ")) - 1
             except ValueError:
                 continue
-            if choice <= i and choice >= 0:
-                os.system("cls" if os.name == "nt" else "clear")
-                option = self.inventory[choice].getOptions(accessed_from)
 
-                if option == "equip":
-                    if isinstance(self.inventory[choice], items.Armor):
-                        self.equip(self.inventory[choice],
-                                   self.armor,
-                                   accessed_from)
-                    elif isinstance(self.inventory[choice], items.Weapon):
-                        self.equip(self.inventory[choice],
-                                   self.weapons,
-                                   accessed_from)
-                    else:
-                        print ("Type Check Error")
-                    self.updateEquipmentStats()
+            if inv_choice == i + 1:
+                break
+            if (inv_choice >= 0) and (inv_choice <= i):
+                os.system("cls" if os.name == "nt" else "clear")
+                item_choice = self.inventory[inv_choice].getOptions(from_where)
+
+                if item_choice == "equip":
+                    replaced = self.equipped_gear.compareEquip(self.inventory.item_list[inv_choice],
+                                from_where)
+                    if replaced:
+                        self.inventory.item_list[inv_choice].remove()
+                        self.updateEquipmentStats()
                     break
-                elif option == "consume":
-                    self.inventory[choice].use(self)
-                    self.inventory[choice].stack_size -= 1
-                    if self.inventory[choice].stack_size == 0:
-                        self.inventory.pop(choice)                        
+                elif item_choice == "consume":
+                    self.inventory.item_list[inv_choice].use()
+                    self.inventory.item_list[inv_choice].stack_size -= 1
+                    if self.inventory.item_list[inv_choice].stack_size == 0:
+                        self.inventory.item_list.pop(inv_choice)                        
                     input("Press \"Enter\" to continue...")
                     break
-                elif option == "compare":
-                    if isinstance(self.inventory[choice], items.Armor):
-                        if self.armor.get(
-                           self.inventory[choice].slot) is not None:
-                            self.compareEquip(self.inventory[choice],
-                                                  self.armor.get(
-                                                  self.inventory[choice].slot),
-                                              accessed_from)
-                        else:
-                            print ("No existing item to compare!")
-                            input("Press \"Enter\" to continue...")
-                    elif isinstance(self.inventory[choice], items.Weapon):
-                        if self.weapons.get(
-                           self.inventory[choice].slot) is not None:
-                            self.compareEquip(self.inventory[choice],
-                                 self.weapons.get(self.inventory[choice].slot),
-                                 accessed_from)
-                        else:
-                            print ("No existing item to compare!")
-                            input("Press \"Enter\" to continue...")
+                elif item_choice == "compare":
+                    if self.equipped_gear.slots_dict.get(
+                        self.inventory.item_list[inv_choice].slot) is not None:
+                        result = self.equipped_gear.compareEquip(self.inventory.item_list[inv_choice],
+                                self.equipped_gear.slots_dict.get(self.inventory.item_list[inv_choice].slot),
+                                from_where)
+                        if result == True:
+                            self.inventory.item_list.remove(self.inventory.item_list[inv_choice].name)
+                    else:
+                        print ("No existing item to compare!")
+                        input("Press \"Enter\" to continue...")
                     self.updateEquipmentStats()
 
-                elif option == "destroy":
-                    self.inventory.pop(choice)
-
-            elif choice == i + 1:
-                break
+                elif item_choice == "destroy":
+                    self.inventory.item_list.remove(self.inventory.item_list[inv_choice].name)
             else:
                 continue
 
     def attack(self, receiver):
-        self.weapons.get("Right Hand").attack(self, receiver)
-
-    def equip(self, new_equipment, type_dict, accessed_from="zone"):
-        if type_dict.get(new_equipment.slot) is not None:
-            self.compareEquip(new_equipment, type_dict.get(new_equipment.slot))
-        else:
-            type_dict[new_equipment.slot] = self.inventory.pop(self.inventory.index(new_equipment))
-            if accessed_from == "combat":
-                self.status.append("skip")
-
-    def compareEquip(self, new_equipment, cur_equipment, accessed_from="zone"):
-        """Compares attributes of existing item with a new item"""
-        while True:
-            os.system("cls" if os.name == "nt" else "clear")
-            STAT_WIDTH = 12
-            CUR_NAME_WIDTH = len(cur_equipment.name) + 2
-            NEW_NAME_WIDTH = len(new_equipment.name) + 2
-            WIDTH = 4
-            print ("".join(("Stat".ljust(STAT_WIDTH),
-                           "New".ljust(NEW_NAME_WIDTH),
-                           "Current".ljust(CUR_NAME_WIDTH),
-                           "Difference".ljust(WIDTH))))
-
-            print ("".join(("Name".ljust(STAT_WIDTH),
-                           new_equipment.name.ljust(NEW_NAME_WIDTH),
-                           cur_equipment.name.ljust(CUR_NAME_WIDTH))))
-
-            print ("".join(("Power".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[0]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[0]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[0] - cur_equipment.stats[0]).ljust(WIDTH))))
-
-            print ("".join(("Precision".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[1]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[1]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[1] - cur_equipment.stats[1]).ljust(WIDTH))))
-
-            print ("".join(("Toughness".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[2]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[2]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[2] - cur_equipment.stats[2]).ljust(WIDTH))))
-
-            print ("".join(("Vitality".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[3]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[3]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[3] - cur_equipment.stats[3]).ljust(WIDTH))))
-            choice = input("\nEquip " + new_equipment.name + "? (Y/N)").lower()
-            if choice == 'y':
-                if isinstance(new_equipment, items.Armor):
-                    self.armor[new_equipment.slot] = self.inventory \
-                                                .pop(self.inventory.index(new_equipment))
-                elif isinstance(new_equipment, items.Weapon):
-                    self.weapons[new_equipment.slot] = self.inventory \
-                                              .pop(self.inventory.index(new_equipment))
-                if accessed_from == "combat":
-                    self.status.append("skip")
-                break
-            elif choice == 'n':
-                os.system("cls" if os.name == "nt" else "clear")
-                break
+        self.equipped_gear.get("Right Hand").attack(self, receiver)
 
     def updateEquipmentStats(self):
         """Updates equipment stats after changing equipment"""
         for i in range(len(self.equipment_stat_list)):
             tmp_amount = 0
-            for x in self.armor.values():
+            for x in self.equipped_gear.values():
                 if x is not None:
                     tmp_amount += x.stats[i]
                 else:
                     tmp_amount += 0
-            for x in self.weapons.values():
+            for x in self.equipped_gear.values():
                 if x is not None:
                     tmp_amount += x.stats[i]
                 else:
@@ -367,17 +269,17 @@ class Player(Character):
         print ("Armor: {:.2%}".format(self.getArmorReduce()))
 
         print ("\n[------Equipment-----]")
-        for x in self.armor:
-            if self.armor.get(x) != None:
-                name = self.armor.get(x).name
+        for x in self.equipped_gear:
+            if self.equipped_gear.get(x) != None:
+                name = self.equipped_gear.get(x).name
             else:
                 name = "None"
             print ("{}: {}".format(x, name))
 
         print ("")
-        for x in self.weapons:
-            if self.weapons.get(x) is not None:
-                name = self.weapons.get(x).name
+        for x in self.equipped_gear:
+            if self.equipped_gear.get(x) is not None:
+                name = self.equipped_gear.get(x).name
             else:
                 name = "None"
             print ("{}: {}".format(x, name))
