@@ -120,17 +120,17 @@ class Player(Character):
 
     def takeGold(self, gold_taken=0):
         if self.gold < gold_taken:
-            print("You do not have enough gold!")
-            return False
+            if "dead" in self.status:
+                self.gold = 0
+                print("You've lost all your gold!")
+                return True
+            else:
+                print("You do not have enough gold!")
+                return False
         else:
             self.gold -= gold_taken
             print(self.name + " lost " + repr(gold_taken) + " gold!")
             return True
-    def deathGold(self, gold_taken=0):
-        if ((self.gold < gold_taken)):
-            self.gold -= self.gold
-        else:
-            self.gold -= gold_taken
 
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""

@@ -84,52 +84,24 @@ def combat(a, b):
             n_state = "endturn"
 
         elif c_state == "endturn":
-
             if "dead" in a.status:
-
                 print(a.name + " has been defeated!")
-
-                if a.gold == 0:
-
-                    print(a.name + " has no gold!")
-
-                elif a.gold < 50 * a.level:
-
-                    print(a.name + " lost " + repr(a.gold) + " gold!")
-
-                else:
-
-                    print(a.name + " lost " + repr(50 * a.level) + " gold!")
-
-                a.deathGold(50 * a.level)
-
+                a.takeGold(50 * a.level)
                 input("Press \"Enter\" to continue...")
-
                 break
-
             elif "dead" in b.status:
-
                 print(b.name + " has been defeated!")
-
                 n_state = "win"
-
             else:
-
                 n_state = "standby"
 
         elif c_state == "win":
-
             loot = loottable.Loot(b.level)
-
-            a.giveGold(loot[0])
-
-            a.giveExp((a.exp_needed / (9 + a.level)) * (b.level / a.level))
-
             if loot[1] is not None:
                 a.giveItem(loot[1])
-
+            a.giveGold(loot[0])
+            a.giveExp((a.exp_needed / (9 + a.level)) * (b.level / a.level))
             input("Press \"Enter\" to continue...")
-
             break
 
         elif c_state == "inventory":
