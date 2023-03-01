@@ -108,19 +108,27 @@ def homescreen():
         choice = current_zone.getOptions()
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
-            explore(current_zone)
+            if worldmap.current_zone.z_type != "town":
+                explore(current_zone)
         elif choice == 'c':
             os.system("cls" if os.name == "nt" else "clear")
             player.getCharacterSheet()
             input("Press \"Enter\" to continue...")
         elif choice == 'r':
-            cost = player.level * 10 + 15
-            print ("Cost: {}g".format(cost))
-            if input("Accept? (Y/N): ").lower() == 'y':
-                if player.takeGold(cost) is True:
-                    player.giveHealth(player.getMaxHealth())
-                    print (player.name + " has returned to full health!")
+            if "dead" in player.status:
+                print("You may rest up for free! Get back out there, adventurer.")
+                player.takeGold(0)
+                player.giveHealth(player.getMaxHealth())
+                print(player.name + " has returned to full health!")
                 input("Press \"Enter\" to continue...")
+            else:
+                cost = player.level * 10 + 15
+                print("Cost: {}g".format(cost))
+                if input("Accept? (Y/N): ").lower() == 'y':
+                    if player.takeGold(cost) is True:
+                        player.giveHealth(player.getMaxHealth())
+                        print(player.name + " has returned to full health!")
+                    input("Press \"Enter\" to continue...")
         elif choice == 'i':
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()

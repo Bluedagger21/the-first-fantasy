@@ -37,16 +37,16 @@ class Character:
                  self.POWER_RATIO)
 
     def getCharacterSheet(self):
-        print ("[---Character Sheet---]")
-        print ("Name: %s (Level: %d)" % (self.name, self.level))
-        print ("Health: %d/%d" % (self.health, self.getMaxHealth()))
-        print ("\nPower: %d" % (self.stat_list[0]))
-        print ("Precision: %d" % (self.stat_list[1]))
-        print ("Toughness: %d" % (self.stat_list[2]))
-        print ("Vitality: %d" % (self.stat_list[3]))
-        print ("\nAttack: %d" % (self.getAttackDamage()))
-        print ("Crit Chance: {:.2}%".format(self.getCritChance()))
-        print ("Armor: {:.2%}".format(self.getArmorReduce()))
+        print("[---Character Sheet---]")
+        print("Name: %s (Level: %d)" % (self.name, self.level))
+        print("Health: %d/%d" % (self.health, self.getMaxHealth()))
+        print("\nPower: %d" % (self.stat_list[0]))
+        print("Precision: %d" % (self.stat_list[1]))
+        print("Toughness: %d" % (self.stat_list[2]))
+        print("Vitality: %d" % (self.stat_list[3]))
+        print("\nAttack: %d" % (self.getAttackDamage()))
+        print("Crit Chance: {:.2}%".format(self.getCritChance()))
+        print("Armor: {:.2%}".format(self.getArmorReduce()))
 
     def attack(self, receiver):
         damage = self.getDamage()
@@ -119,8 +119,13 @@ class Player(Character):
 
     def takeGold(self, gold_taken=0):
         if self.gold < gold_taken:
-            print("You do not have enough gold!")
-            return False
+            if "dead" in self.status:
+                self.gold = 0
+                print("You've lost all your gold!")
+                return False
+            else:
+                print("You do not have enough gold!")
+                return False
         else:
             self.gold -= gold_taken
             print(self.name + " lost " + repr(gold_taken) + " gold!")
@@ -184,7 +189,7 @@ class Player(Character):
         """Checks to see if enough experience has been gained to level up"""
         level_gain = 0
         while self.exp >= self.exp_needed:
-            print ("\nLevel up!!!")
+            print("\nLevel up!!!")
             self.level += 1
             self.exp -= self.exp_needed
             self.exp_needed += self.level * 100
@@ -199,12 +204,12 @@ class Player(Character):
         points_gain = level_gain * 5
         while points_gain != 0:
 
-            print ("Points available: ", points_gain)
-            print ("[------------------]")
-            print ("(1) Power: ", self.stat_list[0])
-            print ("(2) Precision: ", self.stat_list[1])
-            print ("(3) Toughness: ", self.stat_list[2])
-            print ("(4) Vitality: ", self.stat_list[3])
+            print("Points available: ", points_gain)
+            print("[------------------]")
+            print("(1) Power: ", self.stat_list[0])
+            print("(2) Precision: ", self.stat_list[1])
+            print("(3) Toughness: ", self.stat_list[2])
+            print("(4) Vitality: ", self.stat_list[3])
             choice = input("Place point into: ")
             if choice == '1':
                 self.stat_list[0] += 1
@@ -222,25 +227,25 @@ class Player(Character):
             os.system("cls" if os.name == "nt" else "clear")
 
     def getCharacterSheet(self):
-        print ("[---Character Sheet---]")
-        print ("Name: %s (Level: %d)" % (self.name, self.level))
-        print ("Health: %d/%d" % (self.health, self.getMaxHealth()))
-        print ("Gold: %d" % (self.gold))
-        print ("Exp: %d/%d" % (self.exp, self.exp_needed))
-        print ("\nPower: {} (+{})".format(self.stat_list[0] +
+        print("[---Character Sheet---]")
+        print("Name: %s (Level: %d)" % (self.name, self.level))
+        print("Health: %d/%d" % (self.health, self.getMaxHealth()))
+        print("Gold: %d" % (self.gold))
+        print("Exp: %d/%d" % (self.exp, self.exp_needed))
+        print("\nPower: {} (+{})".format(self.stat_list[0] +
                                          self.equipment_stat_list[0],
                                          self.equipment_stat_list[0]))
-        print ("Precision: {} (+{})".format(self.equipment_stat_list[1],
+        print("Precision: {} (+{})".format(self.equipment_stat_list[1],
                                            self.equipment_stat_list[1]))
-        print ("Toughness: {} (+{})".format(self.stat_list[2] +
+        print("Toughness: {} (+{})".format(self.stat_list[2] +
                                            self.equipment_stat_list[2],
                                            self.equipment_stat_list[2]))
-        print ("Vitality: {} (+{})".format(self.stat_list[3] +
+        print("Vitality: {} (+{})".format(self.stat_list[3] +
                                           self.equipment_stat_list[3],
                                           self.equipment_stat_list[3]))
-        print ("\nAttack: %d" % (self.getAttackDamage()))
-        print ("Crit Chance: {:.2%}".format(self.getCritChance()))
-        print ("Armor: {:.2%}".format(self.getArmorReduce()))
+        print("\nAttack: %d" % (self.getAttackDamage()))
+        print("Crit Chance: {:.2%}".format(self.getCritChance()))
+        print("Armor: {:.2%}".format(self.getArmorReduce()))
 
         print ("\n[------Equipment-----]")
         for x in self.equipped_gear.slots_dict:
@@ -248,4 +253,4 @@ class Player(Character):
                 name = self.equipped_gear.slots_dict.get(x).name
             else:
                 name = "None"
-            print ("{}: {}".format(x, name))
+            print("{}: {}".format(x, name))
