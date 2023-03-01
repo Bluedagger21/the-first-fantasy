@@ -147,9 +147,10 @@ class Player(Character):
             item_choice = accessed_item.getOptions(from_where)
 
             if item_choice == "equip":
-                replaced = self.equipped_gear.equip(accessed_item,
-                            from_where)
-                if replaced:
+                unequipped_item = self.equipped_gear.equip(accessed_item,
+                                                    self.inventory,
+                                                    from_where)
+                if unequipped_item is not False:
                     self.inventory.remove(accessed_item)
                     self.updateEquipmentStats()
                 break
@@ -158,18 +159,6 @@ class Player(Character):
                 self.inventory.remove(accessed_item)                      
                 input("Press \"Enter\" to continue...")
                 break
-            elif item_choice == "compare":
-                if self.equipped_gear.slots_dict.get(accessed_item.slot) is not None:
-                    result = self.equipped_gear.compareEquip(accessed_item,
-                            self.equipped_gear.slots_dict.get(accessed_item.slot),
-                            from_where)
-                    if result == True:
-                        self.inventory.remove(accessed_item)
-                else:
-                    print ("No existing item to compare!")
-                    input("Press \"Enter\" to continue...")
-                self.updateEquipmentStats()
-
             elif item_choice == "destroy":
                 self.inventory.remove(accessed_item)
 

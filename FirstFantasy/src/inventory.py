@@ -77,12 +77,18 @@ class Equipment():
                            "Right Hand": items.Sword("Rusty Sword", [0, 0, 0, 0]),
                            "Left Hand": None}
     
-    def equip(self, new_equipment, accessed_from="zone"):
+    def equip(self, new_equipment, inventory, accessed_from="zone"):
         slot = new_equipment.slot
         if self.slots_dict.get(slot) is not None:
-            self.compareEquip(new_equipment, self.slots_dict.get(slot))
+            replaced_equipment = self.compareEquip(new_equipment, self.slots_dict.get(slot), slot)
+            if (replaced_equipment is False):
+                return False
+            if (replaced_equipment is not None):
+                inventory.add(replaced_equipment)
+            inventory.remove(new_equipment)
         else:
             self.actuallyEquip(new_equipment, slot)
+            inventory.remove(new_equipment)
         return True
     
     def actuallyEquip(self, new_equipment, slot):
@@ -94,11 +100,13 @@ class Equipment():
             STAT_WIDTH = 12
             CUR_NAME_WIDTH = len(cur_equipment.name) + 2
             NEW_NAME_WIDTH = len(new_equipment.name) + 2
-            WIDTH = 4
+            DIF_WIDTH = len("Difference")
             print ("".join(("Stat".ljust(STAT_WIDTH),
                            "New".ljust(NEW_NAME_WIDTH),
                            "Current".ljust(CUR_NAME_WIDTH),
-                           "Difference".ljust(WIDTH))))
+                           "Difference".ljust(DIF_WIDTH))))
+
+            print ("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
             print ("".join(("Name".ljust(STAT_WIDTH),
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
@@ -107,26 +115,30 @@ class Equipment():
             print ("".join(("Power".ljust(STAT_WIDTH),
                            str(new_equipment.stats[0]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[0]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[0] - cur_equipment.stats[0]).ljust(WIDTH))))
+                           str(new_equipment.stats[0] - cur_equipment.stats[0]).ljust(DIF_WIDTH))))
 
             print ("".join(("Precision".ljust(STAT_WIDTH),
                            str(new_equipment.stats[1]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[1]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[1] - cur_equipment.stats[1]).ljust(WIDTH))))
+                           str(new_equipment.stats[1] - cur_equipment.stats[1]).ljust(DIF_WIDTH))))
 
             print ("".join(("Toughness".ljust(STAT_WIDTH),
                            str(new_equipment.stats[2]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[2]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[2] - cur_equipment.stats[2]).ljust(WIDTH))))
+                           str(new_equipment.stats[2] - cur_equipment.stats[2]).ljust(DIF_WIDTH))))
 
             print ("".join(("Vitality".ljust(STAT_WIDTH),
                            str(new_equipment.stats[3]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[3]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[3] - cur_equipment.stats[3]).ljust(WIDTH))))
+                           str(new_equipment.stats[3] - cur_equipment.stats[3]).ljust(DIF_WIDTH))))
+            
+            print ("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
+
             choice = input("\nEquip " + new_equipment.name + "? (Y/N)").lower()
             if choice == "y":
+                unequipped_item = self.unequip(slot)
                 self.actuallyEquip(new_equipment, slot)
-                return True
+                return unequipped_item
             elif choice == 'n':
                 os.system("cls" if os.name == "nt" else "clear")
                 return False
@@ -134,6 +146,6 @@ class Equipment():
     def get(self, slot):
         return self.slots_dict.get(slot)
     
-    def unequip(self, item_key):
-        return
+    def unequip(self, slot):
+        return self.slots_dict.pop(slot)
     
