@@ -32,25 +32,31 @@ class Storage:
             self.item_list.append(item)
             return True
 
-    def remove(self, item):
+    def remove(self, item, amount = 1):
         for i,x in enumerate(self.item_list):
             if x == item:
-                if x.stack_size == 1:
+                self.item_list[i].stack_size -= amount
+                if x.stack_size <= 0:
                     self.item_list.pop(i)
-                    return True
-                else:
-                    choice = input("Remove entire stack? (Y/N)").lower()
-                    if choice == "y":
-                        self.item_list.pop(i)
-                    else:
-                        self.item_list[i].stack_size -= 1
     
     # May be unnecessary to directly use an item like this
-    def use(self, item_key):
-        for i,x in enumerate(self.item_list):
-            if x.name == item_key:
-                return self.item_list[i].getOptions()
-        return False
+    def use(self, item, target):
+        while True:
+            if item.stack_size > 1:
+                try:
+                    amount_to_use = int(input("How many? (Max: {}): ".format(item.stack_size)))
+                except ValueError:
+                    continue
+            else:
+                amount_to_use = 1
+            if 0 < amount_to_use <= item.stack_size:
+                while amount_to_use > 0:
+                    item.use(target)
+                    self.remove(item)
+                    amount_to_use -= 1
+                return
+            else:
+                continue        
     
     def access(self, from_where):
         while True:

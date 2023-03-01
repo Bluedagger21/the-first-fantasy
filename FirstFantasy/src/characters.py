@@ -155,8 +155,7 @@ class Player(Character):
                     self.updateEquipmentStats()
                 break
             elif item_choice == "consume":
-                self.inventory.use(accessed_item)
-                self.inventory.remove(accessed_item)                      
+                self.inventory.use(accessed_item, self)             
                 input("Press \"Enter\" to continue...")
                 break
             elif item_choice == "destroy":

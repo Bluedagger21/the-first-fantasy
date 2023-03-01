@@ -1,8 +1,4 @@
-'''
-Last changed by: Dale Everett
-'''
-
-
+import os
 class Equipment():
     """Defines base members and methods of equippable items"""
     def __init__(self, name, stats, stack_limit = 1):
@@ -73,9 +69,13 @@ class Consumable():
     def getOptions(self, accessed_from="zone"):
         """Display and prompt options"""
         while True:
+            os.system("cls" if os.name == "nt" else "clear")
             self.show()
             print ("\n(U)se    (D)estroy    (Q)uit")
-            choice = input("\nSelection: ").lower()
+            try:
+                choice = input("\nSelection: ").lower()
+            except ValueError:
+                continue
             if choice == 'u':
                 return "consume"
             elif choice == 'd':
@@ -98,7 +98,8 @@ class SmallHealthPotion(Consumable):
         print (target.name + " used a " + self.name + ".")
         target.giveHealth(20)
         print (target.name + " gained 20 health! ({}/{})".format(
-                                          target.health, target.getMaxHealth()))
+                                          target.health, 
+                                          target.getMaxHealth()))
 
 
 class SmallExperienceBoost(Consumable):
