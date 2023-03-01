@@ -133,59 +133,45 @@ class Player(Character):
 
     def getInventory(self, from_where="zone"):
         """Displays inventory and options"""
-        if len(self.inventory) == 0:
+        if self.inventory.isEmpty():
             input("Your inventory is empty.\n" +
                       "Press enter to continue...")
             return
 
         while True:
+            accessed_item = self.inventory.access(from_where)
+            if accessed_item is False:
+                break;
             os.system("cls" if os.name == "nt" else "clear")
-            print("Inventory:")
-            for i, x in enumerate(self.inventory):
-                print ("{}) {}".format(i + 1, x.getName()))
-            print ("{}) Exit".format(i + 2))
-            try:
-                inv_choice = int(input("\nSelection: ")) - 1
-            except ValueError:
-                continue
 
-            if inv_choice == i + 1:
-                break
-            if (inv_choice >= 0) and (inv_choice <= i):
-                os.system("cls" if os.name == "nt" else "clear")
-                item_choice = self.inventory[inv_choice].getOptions(from_where)
+            item_choice = accessed_item.getOptions(from_where)
 
-                if item_choice == "equip":
-                    replaced = self.equipped_gear.compareEquip(self.inventory.item_list[inv_choice],
-                                from_where)
-                    if replaced:
-                        self.inventory.item_list[inv_choice].remove()
-                        self.updateEquipmentStats()
-                    break
-                elif item_choice == "consume":
-                    self.inventory.item_list[inv_choice].use()
-                    self.inventory.item_list[inv_choice].stack_size -= 1
-                    if self.inventory.item_list[inv_choice].stack_size == 0:
-                        self.inventory.item_list.pop(inv_choice)                        
-                    input("Press \"Enter\" to continue...")
-                    break
-                elif item_choice == "compare":
-                    if self.equipped_gear.slots_dict.get(
-                        self.inventory.item_list[inv_choice].slot) is not None:
-                        result = self.equipped_gear.compareEquip(self.inventory.item_list[inv_choice],
-                                self.equipped_gear.slots_dict.get(self.inventory.item_list[inv_choice].slot),
-                                from_where)
-                        if result == True:
-                            self.inventory.item_list.remove(self.inventory.item_list[inv_choice].name)
-                    else:
-                        print ("No existing item to compare!")
-                        input("Press \"Enter\" to continue...")
+            if item_choice == "equip":
+                replaced = self.equipped_gear.equip(accessed_item,
+                            from_where)
+                if replaced:
+                    self.inventory.remove(accessed_item)
                     self.updateEquipmentStats()
+                break
+            elif item_choice == "consume":
+                self.inventory.use(accessed_item)
+                self.inventory.remove(accessed_item)                      
+                input("Press \"Enter\" to continue...")
+                break
+            elif item_choice == "compare":
+                if self.equipped_gear.slots_dict.get(accessed_item.slot) is not None:
+                    result = self.equipped_gear.compareEquip(accessed_item,
+                            self.equipped_gear.slots_dict.get(accessed_item.slot),
+                            from_where)
+                    if result == True:
+                        self.inventory.remove(accessed_item)
+                else:
+                    print ("No existing item to compare!")
+                    input("Press \"Enter\" to continue...")
+                self.updateEquipmentStats()
 
-                elif item_choice == "destroy":
-                    self.inventory.item_list.remove(self.inventory.item_list[inv_choice].name)
-            else:
-                continue
+            elif item_choice == "destroy":
+                self.inventory.remove(accessed_item)
 
     def attack(self, receiver):
         self.equipped_gear.get("Right Hand").attack(self, receiver)
@@ -194,12 +180,12 @@ class Player(Character):
         """Updates equipment stats after changing equipment"""
         for i in range(len(self.equipment_stat_list)):
             tmp_amount = 0
-            for x in self.equipped_gear.values():
+            for x in self.equipped_gear.slots_dict.values():
                 if x is not None:
                     tmp_amount += x.stats[i]
                 else:
                     tmp_amount += 0
-            for x in self.equipped_gear.values():
+            for x in self.equipped_gear.slots_dict.values():
                 if x is not None:
                     tmp_amount += x.stats[i]
                 else:
@@ -269,17 +255,9 @@ class Player(Character):
         print ("Armor: {:.2%}".format(self.getArmorReduce()))
 
         print ("\n[------Equipment-----]")
-        for x in self.equipped_gear:
-            if self.equipped_gear.get(x) != None:
-                name = self.equipped_gear.get(x).name
-            else:
-                name = "None"
-            print ("{}: {}".format(x, name))
-
-        print ("")
-        for x in self.equipped_gear:
-            if self.equipped_gear.get(x) is not None:
-                name = self.equipped_gear.get(x).name
+        for x in self.equipped_gear.slots_dict:
+            if self.equipped_gear.slots_dict.get(x) != None:
+                name = self.equipped_gear.slots_dict.get(x).name
             else:
                 name = "None"
             print ("{}: {}".format(x, name))

@@ -6,6 +6,15 @@ class Storage:
         self.capacity = capacity
         self.item_list = []
 
+    def length(self):
+        return len(self.item_list)
+    
+    def isEmpty(self):
+        return self.length() == 0
+    
+    def isFull(self):
+        return self.length() == self.capacity
+
     def add(self, item):
         # Is item stackable?
         if item.stack_limit > 1:
@@ -23,9 +32,9 @@ class Storage:
             self.item_list.append(item)
             return True
 
-    def remove(self, item_key):
+    def remove(self, item):
         for i,x in enumerate(self.item_list):
-            if x.name == item_key:
+            if x == item:
                 if x.stack_size == 1:
                     self.item_list.pop(i)
                     return True
@@ -44,8 +53,20 @@ class Storage:
         return False
     
     def access(self, from_where):
-        return
-        
+        while True:
+            os.system("cls" if os.name == "nt" else "clear")
+            print("Inventory:")
+            for i, x in enumerate(self.item_list):
+                print ("{}) {}".format(i + 1, x.getName()))
+            print ("{}) Exit".format(i + 2))
+            try:
+                choice = int(input("\nSelection: "))
+            except ValueError:
+                continue
+            if 0 <= (choice - 1) <= i:
+                return self.item_list[choice - 1]
+            else:
+                return False
 class Equipment():
     def __init__(self):
         self.slots_dict = {"Helm": None, 
@@ -55,7 +76,7 @@ class Equipment():
                            "Boots": None,
                            "Right Hand": items.Sword("Rusty Sword", [0, 0, 0, 0]),
                            "Left Hand": None}
-        
+    
     def equip(self, new_equipment, accessed_from="zone"):
         slot = new_equipment.slot
         if self.slots_dict.get(slot) is not None:
@@ -110,6 +131,9 @@ class Equipment():
                 os.system("cls" if os.name == "nt" else "clear")
                 return False
 
+    def get(self, slot):
+        return self.slots_dict.get(slot)
+    
     def unequip(self, item_key):
         return
     
