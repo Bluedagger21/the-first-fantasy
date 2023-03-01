@@ -1,15 +1,11 @@
-'''
-Last changed by: Dale Everett
-'''
 import zone
 import random
 import os
 import pprint
 
-
 class Map:
     def __init__(self):
-        """Define zone names and sets of enemies to use in zones"""
+        # Define zone names and sets of enemies to use in zones
         self.wild_names = ["Dark Forest", "Evil Bridge", "Desolate Plains",
                            "Old Ruins", "Torched Grassland", "Black Swamp",
                            "Endless Wastes", "Sunless Canyon", "Foul Bog",
@@ -28,7 +24,7 @@ class Map:
         self.placeZone(self.current_zone, 1)
 
     def placeZone(self, cur, dr, root=None):
-        """Recursively place zones outwards from 'Your House'"""
+        # Recursively place zones outwards from 'Your House'
         if root is None:
             home_flag = 1
         else:
@@ -60,7 +56,7 @@ class Map:
                     self.placeZone(cur.neighbors[i], dr, cur)
 
     def printMap(self):
-        """Uses pprint to print zone list in map_layer"""
+        # Uses pprint to print zone list in map_layer
         map_layer = []
         j_map = 0
         for i in range(len(self.current_zone.neighbors)):
@@ -95,7 +91,7 @@ class Map:
                 continue
 
     def generateMapLayer(self, cur_zone, root_zone, map_layer):
-        """Recursively places neighboring zones in in current layer"""
+        # Recursively places neighboring zones in in current layer
         j_map = 0
         for i in range(len(cur_zone.neighbors)):
             if cur_zone.neighbors[i].z_name != root_zone.z_name:

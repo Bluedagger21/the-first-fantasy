@@ -1,11 +1,5 @@
-'''
-Created on Aug 28, 2012
-
-@author: deverett
-'''
 import items
 import copy
-
 
 class Market():
     def __init__(self):
@@ -22,8 +16,7 @@ class Market():
             except ValueError:
                 continue
             if choice <= i and choice >= 0:
-                if player.takeGold(self.inventory_list[int(choice)][1]) \
-                is True:
+                if player.takeGold(self.inventory_list[int(choice)][1]) is True:
                     return copy.deepcopy(self.inventory_list[int(choice)][0])
                 else:
                     break

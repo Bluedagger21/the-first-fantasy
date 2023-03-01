@@ -1,17 +1,11 @@
-'''
-Last changed by: Dale Everett
-'''
 import items
 import random
 from weightedchoice import weighted_choice_sub
 
-
 def createUnique(quality):
-    """
-    Chooses an unique item.
-    Quality 0 armor have 8 stat points total.
-    Quality 0 weapons have 12 stat points total.
-    """
+    # Chooses an unique item.
+    # Quality 0 armor have 8 stat points total.
+    # Quality 0 weapons have 12 stat points total.
     unique_list = ((items.Sword("Demonforged Blade", [3, 3, 3, 3])),
                    (items.Mace("Bane of Darkness", [3, 1, 5, 3])),
                    (items.Dagger("Throatslitter", [3, 6, 1, 2])),
@@ -24,9 +18,8 @@ def createUnique(quality):
                    (items.Armor("Gravestompers", "Boots", [2, 2, 2, 2])))
     return random.choice(unique_list)
 
-
 def Loot(level):
-    """Decides loot given for the kill"""
+    # Decides loot given for the kill
     gold = random.randint(0, 10) * level + 10
     quality = level // 4
     item_type_list = [("None", 2), ("Armor", 10), ("Weapon", 7),
@@ -63,9 +56,8 @@ suffixes = [("", (10, [0, 0, 0, 0])),
              (" of Finesse", (1, [0, 1, 1, 0])),
              (" of Dueling", (1, [1, 0, 0, 1]))]
 
-
 def createArmor(quality, armor_slot=""):
-    """Creates a piece of armor"""
+    # Creates a piece of armor
     stats = []
 
     if armor_slot == "":
@@ -79,9 +71,8 @@ def createArmor(quality, armor_slot=""):
         stats.append(prefix[1][i] + suffix[1][1][i])
     return items.Armor(name, slot, stats)
 
-
 def createWeapon(quality, weapon_type=""):
-    """Creates a weapon"""
+    # Creates a weapon
     stats = []
     if weapon_type == "":
         w_type = random.choice(weapon_types)
@@ -99,9 +90,8 @@ def createWeapon(quality, weapon_type=""):
     if w_type[0] == "Dagger":
         return items.Dagger(name, stats)
 
-
 def createConsumable(quality):
-    """Chooses a consumable"""
+    # Chooses a consumable
     consumable_weights = (10, 2)
     choice = weighted_choice_sub(consumable_weights)
     if choice == 0:
