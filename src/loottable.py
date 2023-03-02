@@ -18,7 +18,7 @@ def createUnique(quality):
                    (items.Armor("Gravestompers", "Boots", [2, 2, 2, 2])))
     return random.choice(unique_list)
 
-def Loot(level):
+def loot(level):
     # Decides loot given for the kill
     gold = random.randint(0, 10) * level + 10
     quality = level // 4
