@@ -130,8 +130,31 @@ class Player(Character):
 
     def giveItem(self, item):
         # Checks to see if inventory has space and gives item to player
-        print(self.name + " received a " + item.name + "!")
-        self.inventory.add(item)
+        if len(self.inventory) <= 10:
+            print(self.name + " received a " + item.name + "!")
+            self.inventory.append(item)
+        else:
+            print("Inventory is full!")
+            self.swapItem(item)
+
+        def swapItem(self, item):
+            while True:
+                print("Would you like to destroy an item out for " + item.name + "?")
+                if (input("\nSelection: \n(Y)es\n(N)o\n")).lower() == "y":
+                    choice = 0
+                elif (input("\nSelection: \n(Y)es\n(N)o\n")).lower() == "n":
+                    choice = 1
+                else:
+                    continue
+                if choice == 0:
+                    self.getInventory(self)
+                    self.giveItem(item)
+                    break
+                elif choice == 1:
+                    print(item.name + " was left behind.")
+                    break
+                else:
+                    continue
 
     def getInventory(self, from_where="zone"):
         # Displays inventory and options
