@@ -8,7 +8,7 @@ from weightedchoice import weighted_choice_sub
 
 def createUnique(quality):
     """
-    Chooses an unique item.
+    Chooses a unique item.
     Quality 0 armor have 8 stat points total.
     Quality 0 weapons have 12 stat points total.
     """

@@ -15,7 +15,7 @@ class Map:
                            "Endless Wastes", "Sunless Canyon", "Foul Bog",
                            "Terror Isle"]
         self.town_names = ["Your House", "Cheery Inn", "Joe's Bed & Breakfast"]
-        self.enemy_types = [("Theif", 10, [5, 5, 5, 5]),
+        self.enemy_types = [("Thief", 10, [5, 5, 5, 5]),
                             ("Goblin", 5, [3, 7, 7, 3]),
                             ("Spider", 5, [7, 7, 3, 3])]
 
@@ -73,15 +73,15 @@ class Map:
             j_map += 1
 
         pp = pprint.PrettyPrinter(indent=4)
-        possiblities = len(self.current_zone.neighbors)
+        possibilities = len(self.current_zone.neighbors)
         i = 0
         while True:
             os.system("cls" if os.name == "nt" else "clear")
             pp.pprint(map_layer)
-            for i in range(possiblities):
-                print (repr(i + 1) + ") " +
+            for i in range(possibilities):
+                print(repr(i + 1) + ") " +
                        self.current_zone.neighbors[i].z_name)
-            print (repr(i + 2) + ") Cancel")
+            print(repr(i + 2) + ") Cancel")
             try:
                 choice = int(input("\nSelection: "))
             except ValueError:
@@ -95,7 +95,7 @@ class Map:
                 continue
 
     def generateMapLayer(self, cur_zone, root_zone, map_layer):
-        """Recursively places neighboring zones in in current layer"""
+        """Recursively places neighboring zones in current layer"""
         j_map = 0
         for i in range(len(cur_zone.neighbors)):
             if cur_zone.neighbors[i].z_name != root_zone.z_name:

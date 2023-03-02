@@ -133,7 +133,7 @@ class Player(Character):
 
     def giveItem(self, item):
         """Checks to see if inventory has space and gives item to player"""
-        print(self.name + " recieved a " + item.name + "!")
+        print(self.name + " received a " + item.name + "!")
         self.inventory.add(item)
 
     def getInventory(self, from_where="zone"):
@@ -146,7 +146,7 @@ class Player(Character):
         while True:
             accessed_item = self.inventory.access(from_where)
             if accessed_item is False:
-                break;
+                break
             os.system("cls" if os.name == "nt" else "clear")
 
             item_choice = accessed_item.getOptions(from_where)
@@ -247,9 +247,9 @@ class Player(Character):
         print("Crit Chance: {:.2%}".format(self.getCritChance()))
         print("Armor: {:.2%}".format(self.getArmorReduce()))
 
-        print ("\n[------Equipment-----]")
+        print("\n[------Equipment-----]")
         for x in self.equipped_gear.slots_dict:
-            if self.equipped_gear.slots_dict.get(x) != None:
+            if self.equipped_gear.slots_dict.get(x) is not None:
                 name = self.equipped_gear.slots_dict.get(x).name
             else:
                 name = "None"

@@ -19,7 +19,7 @@ class Storage:
         # Is item stackable?
         if item.stack_limit > 1:
             # Determine if stackable item is already in item_list
-            for i,x in enumerate(self.item_list):
+            for i, x in enumerate(self.item_list):
                 if x.name == item.name:
                     if x.stack_size < x.stack_limit:
                         self.item_list[i].stack_size += 1
@@ -32,8 +32,8 @@ class Storage:
             self.item_list.append(item)
             return True
 
-    def remove(self, item, amount = 1):
-        for i,x in enumerate(self.item_list):
+    def remove(self, item, amount=1):
+        for i, x in enumerate(self.item_list):
             if x == item:
                 self.item_list[i].stack_size -= amount
                 if x.stack_size <= 0:
@@ -63,8 +63,8 @@ class Storage:
             os.system("cls" if os.name == "nt" else "clear")
             print("Inventory:")
             for i, x in enumerate(self.item_list):
-                print ("{}) {}".format(i + 1, x.getName()))
-            print ("{}) Exit".format(i + 2))
+                print("{}) {}".format(i + 1, x.getName()))
+            print("{}) Exit".format(i + 2))
             try:
                 choice = int(input("\nSelection: "))
             except ValueError:
@@ -87,9 +87,9 @@ class Equipment():
         slot = new_equipment.slot
         if self.slots_dict.get(slot) is not None:
             replaced_equipment = self.compareEquip(new_equipment, self.slots_dict.get(slot), slot)
-            if (replaced_equipment is False):
+            if replaced_equipment is False:
                 return False
-            if (replaced_equipment is not None):
+            if replaced_equipment is not None:
                 inventory.add(replaced_equipment)
             inventory.remove(new_equipment)
         else:
@@ -107,38 +107,38 @@ class Equipment():
             CUR_NAME_WIDTH = len(cur_equipment.name) + 2
             NEW_NAME_WIDTH = len(new_equipment.name) + 2
             DIF_WIDTH = len("Difference")
-            print ("".join(("Stat".ljust(STAT_WIDTH),
+            print("".join(("Stat".ljust(STAT_WIDTH),
                            "New".ljust(NEW_NAME_WIDTH),
                            "Current".ljust(CUR_NAME_WIDTH),
                            "Difference".ljust(DIF_WIDTH))))
 
-            print ("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
+            print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
-            print ("".join(("Name".ljust(STAT_WIDTH),
+            print("".join(("Name".ljust(STAT_WIDTH),
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
                            cur_equipment.name.ljust(CUR_NAME_WIDTH))))
 
-            print ("".join(("Power".ljust(STAT_WIDTH),
+            print("".join(("Power".ljust(STAT_WIDTH),
                            str(new_equipment.stats[0]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[0]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[0] - cur_equipment.stats[0]).ljust(DIF_WIDTH))))
 
-            print ("".join(("Precision".ljust(STAT_WIDTH),
+            print("".join(("Precision".ljust(STAT_WIDTH),
                            str(new_equipment.stats[1]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[1]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[1] - cur_equipment.stats[1]).ljust(DIF_WIDTH))))
 
-            print ("".join(("Toughness".ljust(STAT_WIDTH),
+            print("".join(("Toughness".ljust(STAT_WIDTH),
                            str(new_equipment.stats[2]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[2]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[2] - cur_equipment.stats[2]).ljust(DIF_WIDTH))))
 
-            print ("".join(("Vitality".ljust(STAT_WIDTH),
+            print("".join(("Vitality".ljust(STAT_WIDTH),
                            str(new_equipment.stats[3]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.stats[3]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.stats[3] - cur_equipment.stats[3]).ljust(DIF_WIDTH))))
             
-            print ("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
+            print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
             choice = input("\nEquip " + new_equipment.name + "? (Y/N)").lower()
             if choice == "y":
