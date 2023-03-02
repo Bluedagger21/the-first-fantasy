@@ -133,21 +133,6 @@ class Player(Character):
         print(self.name + " received a " + item.name + "!")
         self.inventory.add(item)
 
-    def swapItem(self, item):
-        while True:
-            print("Would you like to destroy an item out for " + item.name + "?")
-            inputChoice = input("\nSelection: \n(Y)es\n(N)o\n").lower()
-            if inputChoice == "y":
-                self.getInventory(self)
-                self.giveItem(item)  # can use this right now to replicate what giveItem is doing
-                # self.giveItem(item) #giveItem looks like it should work when an item is destroyed. is destroy not lowering the length count?
-                break
-            elif inputChoice == "n":
-                print(item.name + " was left behind.")
-                break
-            else:
-                continue
-
     def getInventory(self, from_where="zone"):
         # Displays inventory and options
         if self.inventory.isEmpty():
