@@ -233,7 +233,8 @@ class Player(Character):
         print("\nPower: {} (+{})".format(self.stat_list[0] +
                                          self.equipment_stat_list[0],
                                          self.equipment_stat_list[0]))
-        print("Precision: {} (+{})".format(self.equipment_stat_list[1],
+        print("Precision: {} (+{})".format(self.stat_list[1] +
+                                           self.equipment_stat_list[1],
                                            self.equipment_stat_list[1]))
         print("Toughness: {} (+{})".format(self.stat_list[2] +
                                            self.equipment_stat_list[2],

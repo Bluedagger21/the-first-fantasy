@@ -11,9 +11,12 @@ def createUnique(quality):
                    (items.Dagger("Throatslitter", [3, 6, 1, 2])),
                    (items.Armor("Judgement Chestguard", "Chest",
                                 [3, 1, 3, 1])),
+                   (items.Armor("Warrior's Chestwraps", "Chest",
+                                [6, 6, -2, -2])),
                    (items.Armor("Sanctuary", "Helm", [0, 1, 4, 3])),
-                   (items.Armor("Fiercegrip", "Gloves", [3, 2, 2, 1])),
+                   (items.Armor("Thorned Crown", "Helm", [3, 3, 3, -1])),
                    (items.Armor("Dragonhide Cloak", "Coat", [2, 1, 3, 2])),
+                   (items.Armor("Fiercegrip", "Gloves", [3, 2, 2, 1])),
                    (items.Armor("Veracious Leggings", "Leggings",
                                 [2, 3, 3, 0])),
                    (items.Armor("Gravestompers", "Boots", [2, 2, 2, 2])))
