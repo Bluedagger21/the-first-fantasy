@@ -141,7 +141,7 @@ class Equipment():
             
             print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
-            choice = input("\nEquip " + new_equipment.name + "? (Y/N)").lower()
+            choice = input("\nEquip " + new_equipment.name + "? (Y/N): ").lower()
             if choice == "y":
                 unequipped_item = self.unequip(slot)
                 self.actuallyEquip(new_equipment, slot)
