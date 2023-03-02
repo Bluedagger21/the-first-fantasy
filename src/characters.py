@@ -1,6 +1,3 @@
-'''
-Last changed by: Ryan Breaker
-'''
 from weightedchoice import weighted_choice_sub
 from random import random
 import items
@@ -9,7 +6,7 @@ import os
 
 
 class Character:
-    """Defines an interactive character within the game"""
+    # Defines an interactive character within the game
     def __init__(self):
         self.status = ["normal"]
         self.VITALITY_RATIO = 5
@@ -70,7 +67,7 @@ class Character:
 
 
 class Enemy(Character):
-    """Enemy object"""
+    # Enemy object
     def __init__(self, name, stats, level):
         Character.__init__(self)
         self.name = name
@@ -86,7 +83,7 @@ class Enemy(Character):
 
 
 class Player(Character):
-    """Player object"""
+    # Player object
     def __init__(self, playername):
         Character.__init__(self)
         self.name = playername
@@ -101,7 +98,7 @@ class Player(Character):
         self.health = self.getMaxHealth()
 
     def giveExp(self, exp_earned):
-        """Gives the player exp_earned experience and checks for level up"""
+        # Gives the player exp_earned experience and checks for level up
         print(self.name + " gained " + repr(exp_earned) + " experience!")
         self.exp += exp_earned
         self.checkLevelUp()
@@ -132,12 +129,12 @@ class Player(Character):
             return True
 
     def giveItem(self, item):
-        """Checks to see if inventory has space and gives item to player"""
+        # Checks to see if inventory has space and gives item to player
         print(self.name + " received a " + item.name + "!")
         self.inventory.add(item)
 
     def getInventory(self, from_where="zone"):
-        """Displays inventory and options"""
+        # Displays inventory and options
         if self.inventory.isEmpty():
             input("Your inventory is empty.\n" +
                       "Press enter to continue...")
@@ -170,7 +167,7 @@ class Player(Character):
         self.equipped_gear.get("Right Hand").attack(self, receiver)
 
     def updateEquipmentStats(self):
-        """Updates equipment stats after changing equipment"""
+        # Updates equipment stats after changing equipment
         for i in range(len(self.equipment_stat_list)):
             tmp_amount = 0
             for x in self.equipped_gear.slots_dict.values():
@@ -186,7 +183,7 @@ class Player(Character):
             self.equipment_stat_list[i] = tmp_amount
 
     def checkLevelUp(self):
-        """Checks to see if enough experience has been gained to level up"""
+        # Checks to see if enough experience has been gained to level up
         level_gain = 0
         while self.exp >= self.exp_needed:
             print("\nLevel up!!!")
@@ -200,7 +197,7 @@ class Player(Character):
             self.levelUp(level_gain)
 
     def levelUp(self, level_gain):
-        """Allocate points to attributes"""
+        # Allocate points to attributes
         points_gain = level_gain * 5
         while points_gain != 0:
 
@@ -227,6 +224,7 @@ class Player(Character):
             os.system("cls" if os.name == "nt" else "clear")
 
     def getCharacterSheet(self):
+        # Print Character stats and equipped gear
         print("[---Character Sheet---]")
         print("Name: %s (Level: %d)" % (self.name, self.level))
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))

@@ -2,6 +2,7 @@ import items
 import os
 
 class Storage:
+    # Defines base members and methods for storing and accessing generic items
     def __init__(self, capacity):
         self.capacity = capacity
         self.item_list = []
@@ -39,7 +40,6 @@ class Storage:
                 if x.stack_size <= 0:
                     self.item_list.pop(i)
     
-    # May be unnecessary to directly use an item like this
     def use(self, item, target):
         while True:
             if item.stack_size > 1:
@@ -74,6 +74,7 @@ class Storage:
             else:
                 return False
 class Equipment():
+    # Defines base members and methods for managing equipped items
     def __init__(self):
         self.slots_dict = {"Helm": None, 
                            "Coat": None, 

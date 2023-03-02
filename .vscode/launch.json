@@ -8,7 +8,7 @@
             "name": "Python: main.py File",
             "type": "python",
             "request": "launch",
-            "program": "FirstFantasy/src/main.py",
+            "program": "src/main.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }

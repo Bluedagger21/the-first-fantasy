@@ -1,6 +1,3 @@
-'''
-Last changed by: Dale Everett
-'''
 import os
 import loottable
 import time
@@ -8,7 +5,7 @@ import random
 
 
 def getAction(a, b):
-    """Display combat information and prompt for action"""
+    # Display combat information and prompt for action
     os.system("cls" if os.name == "nt" else "clear")
     print(b.name)
     print("Health: " + repr(b.health) + "/" + repr(b.getMaxHealth()))
@@ -31,10 +28,9 @@ def getAction(a, b):
 
 
 def combat(a, b):
-    """
-    State machine that controls combat flow between a (typically the player)
-    and b (typically player's enemy)
-    """
+    # State machine that controls combat flow between a (typically the player)
+    # and b (typically player's enemy)
+
     c_state = None
     n_state = "standby"
     while True:

@@ -1,7 +1,4 @@
 #! /usr/bin/python3.9
-'''
-Last changed by: Dale Everett
-'''
 import game
 
 if __name__ == '__main__':

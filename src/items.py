@@ -1,6 +1,6 @@
 import os
 class Equipment():
-    """Defines base members and methods of equippable items"""
+    # Base equippable item class
     def __init__(self, name, stats, stack_limit = 1):
         self.name = name
         self.stack_limit = stack_limit
@@ -11,7 +11,7 @@ class Equipment():
         return self.name
 
     def show(self):
-        """Shows attributes of the item"""
+        # Print attributes of the equipment
         print(self.name)
         print("Power: " + repr(self.stats[0]))
         print("Precision: " + repr(self.stats[1]))
@@ -19,7 +19,7 @@ class Equipment():
         print("Vitality: " + repr(self.stats[3]))
 
     def getOptions(self, accessed_from="zone"):
-        """Displays and prompts equipment options"""
+        # Displays and prompts equipment options
         while True:
             self.show()
             if accessed_from == "combat":
@@ -33,9 +33,14 @@ class Equipment():
             elif choice == 'q':
                 return "quit"
 
+class Armor(Equipment):
+    # Derived class from Equipment
+    def __init__(self, name, slot, stats=[0, 0, 0, 0]):
+        Equipment.__init__(self, name, stats)
+        self.slot = slot
 
 class Weapon(Equipment):
-    """Derived class from Equipment"""
+    # Derived class from Equipment
     def __init__(self, name, stats):
         Equipment.__init__(self, name, stats)
         pass
@@ -46,16 +51,26 @@ class Weapon(Equipment):
                                      round(damage * receiver.getArmorReduce())))
         receiver.takeDamage(damage)
 
+class Sword(Weapon):
+    def __init__(self, name, stats):
+        Weapon.__init__(self, name, stats)
+        self.slot = "Right Hand"
+        self.options = ["Swing"]
 
-class Armor(Equipment):
-    """Derived class from Equipment"""
-    def __init__(self, name, slot, stats=[0, 0, 0, 0]):
-        Equipment.__init__(self, name, stats)
-        self.slot = slot
+class Mace(Weapon):
+    def __init__(self, name, stats):
+        Weapon.__init__(self, name, stats)
+        self.slot = "Right Hand"
+        self.options = ["Swing"]
 
+class Dagger(Weapon):
+    def __init__(self, name, stats):
+        Weapon.__init__(self, name, stats)
+        self.slot = "Right Hand"
+        self.options = ["Swing"]
 
 class Consumable():
-    """Defines base members and methods for consumables"""
+    # Defines base members and methods for consumables
     def __init__(self, name, effect, stack_limit = 5, stack_size = 1):
         self.name = name
         self.effect = effect
@@ -67,7 +82,7 @@ class Consumable():
         return self.name + " (" + str(self.stack_size) + "/" + str(self.stack_limit) + ")"
 
     def getOptions(self, accessed_from="zone"):
-        """Display and prompt options"""
+        # Display and prompt options
         while True:
             os.system("cls" if os.name == "nt" else "clear")
             self.show()
@@ -84,7 +99,7 @@ class Consumable():
                 return "quit"
 
     def show(self):
-        """Print name and effect"""
+        # Print name and effect
         print(self.getName())
         print(self.effect)
 
@@ -101,7 +116,6 @@ class SmallHealthPotion(Consumable):
                                           target.health, 
                                           target.getMaxHealth()))
 
-
 class SmallExperienceBoost(Consumable):
     def __init__(self):
         self.name = "Small Experience Boost"
@@ -111,24 +125,3 @@ class SmallExperienceBoost(Consumable):
     def use(self, target):
         print(target.name + " used a " + self.name + ".")
         target.giveExp(100)
-
-
-class Sword(Weapon):
-    def __init__(self, name, stats):
-        Weapon.__init__(self, name, stats)
-        self.slot = "Right Hand"
-        self.options = ["Swing"]
-
-
-class Mace(Weapon):
-    def __init__(self, name, stats):
-        Weapon.__init__(self, name, stats)
-        self.slot = "Right Hand"
-        self.options = ["Swing"]
-
-
-class Dagger(Weapon):
-    def __init__(self, name, stats):
-        Weapon.__init__(self, name, stats)
-        self.slot = "Right Hand"
-        self.options = ["Swing"]

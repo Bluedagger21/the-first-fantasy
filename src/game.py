@@ -1,6 +1,3 @@
-'''
-Last changed by: Ryan Breaker
-'''
 import characters
 import world
 import market
@@ -12,19 +9,15 @@ import os
 player = None
 worldmap = None
 
-
 def titlescreen():
-    """
-    Display title and prompt whether to
-    start a new game, continue, or quit
-    """
+    # Display title and prompt whether to
+    # start a new game, continue, or quit
 
-    choice = ''
     while True:
         while True:
             os.system("cls" if os.name == "nt" else "clear")
-            print("The First Fantasy v0.1")
-            print("Copyright (C) 2012  Dale Everett\n\n")
+            print("The First Fantasy v0.1 DEV")
+            print("Copyright (C) 2023  Dale Everett\n\n")
             print("(N)ew Game    (C)ontinue    (Q)uit")
             choice = input().lower()
             if choice == 'n' or choice == 'c' or choice == 'q':
@@ -43,7 +36,7 @@ def titlescreen():
 
 
 def newgame():
-    """Get player name and create new world"""
+    # Get player name and create new world
     global worldmap
     global player
     print("\n")
@@ -60,7 +53,7 @@ def newgame():
 
 
 def continuegame():
-    """Prompt to choose saved game and load player and worldmap states"""
+    # Prompt to choose saved game and load player and worldmap states
     global worldmap
     global player
     print("Retrieving current directory...")
@@ -97,10 +90,10 @@ def continuegame():
 
 
 def homescreen():
-    """Displays current location information and prompts for actions
+    # Displays current location information and prompts for actions
 
-    NOTE -- Need to reduce this function into something more manageable"""
-    choice = ''
+    # NOTE -- Need to reduce this function into something more manageable
+
     while True:
         current_zone = worldmap.loadZone()
         os.system("cls" if os.name == "nt" else "clear")
@@ -186,7 +179,7 @@ def saveGame():
     input("Press \"Enter\" to continue...")
 
 def explore(current_zone):
-    """Decides if an encounter occurs or not"""
+    # Decides if an encounter occurs or not
     os.system("cls" if os.name == "nt" else "clear")
     if "dead" in player.status:
         print("You're too injured to fight. Rest at a town!")
