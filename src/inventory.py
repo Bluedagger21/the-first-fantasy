@@ -115,8 +115,8 @@ class Equipment():
             if replaced_equipment is False:
                 return False
             if replaced_equipment is not None:
+                inventory.remove(new_equipment)
                 inventory.add(replaced_equipment)
-            inventory.remove(new_equipment)
         else:
             self.actuallyEquip(new_equipment, slot)
             inventory.remove(new_equipment)
