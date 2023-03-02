@@ -125,11 +125,7 @@ def homescreen():
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()
         elif choice == 'm':
-            os.system("cls" if os.name == "nt" else "clear")
-            tmp_item = worldmap.current_zone.market.getInventory(player)
-            if tmp_item is not None:
-                player.giveItem(tmp_item)
-            input("Press \"Enter\" to continue...")
+            worldmap.current_zone.market.getInventory(player)
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
             worldmap.printMap()
