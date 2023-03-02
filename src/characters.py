@@ -93,8 +93,8 @@ class Player(Character):
         self.exp_needed = 1000
         self.stat_list = [10, 10, 10, 10]
         self.equipment_stat_list = [0, 0, 0, 0]
-        self.inventory = inventory.Storage(10)
-        self.equipped_gear = inventory.Equipment()
+        self.inventory = inventory.Storage(10, self)
+        self.equipped_gear = inventory.Equipment(self)
         self.health = self.getMaxHealth()
 
     def giveExp(self, exp_earned):
@@ -130,14 +130,8 @@ class Player(Character):
 
     def giveItem(self, item):
         # Checks to see if inventory has space and gives item to player
-        if self.inventory.isFull():
-        #if (self.inventory.isFull() and item.name != "SmallHealthPotion" and item.name != "SmallExperienceBoost")
-            print("Inventory is full!")
-            self.swapItem(item)
-        else:
-            print(self.name + " received a " + item.name + "!")
-            #self.giveItem(item)
-            self.inventory.add(item)
+        print(self.name + " received a " + item.name + "!")
+        self.inventory.add(item)
 
     def swapItem(self, item):
         while True:

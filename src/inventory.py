@@ -3,10 +3,11 @@ import os
 
 class Storage:
     # Defines base members and methods for storing and accessing generic items
-    def __init__(self, capacity):
+    def __init__(self, capacity, owner):
         self.capacity = capacity
+        self.owner = owner
         self.item_list = []
-
+        
     def length(self):
         return len(self.item_list)
     
@@ -14,7 +15,7 @@ class Storage:
         return self.length() == 0
     
     def isFull(self):
-        return self.length() == self.capacity
+        return self.length() >= self.capacity
 
     def add(self, item):
         # Is item stackable?
@@ -22,13 +23,35 @@ class Storage:
             # Determine if stackable item is already in item_list
             for i, x in enumerate(self.item_list):
                 if x.name == item.name:
+                    # Is there room in the stack?
                     if x.stack_size < x.stack_limit:
                         self.item_list[i].stack_size += 1
                         return True
         
         # Is item_list full?
-        if len(self.item_list) >= self.capacity:
-            return False
+        if self.isFull() is True:
+            while True:
+                print("\nInventory full!")
+                print("What do you want to do with {}?".format(item.name))
+                if(isinstance(item, items.Consumable)):
+                    print("(R)eplace   (D)iscard    (U)se")
+                else:
+                    print("(R)eplace   (D)iscard")
+                choice = input("\nSelection: ").lower()
+                if choice == 'r':
+                    item_to_remove = self.access()
+                    if item_to_remove is False:
+                        os.system("cls" if os.name == "nt" else "clear")
+                        continue
+                    else:
+                        self.remove(item_to_remove)
+                        self.add(item)
+                        return True
+                elif choice == 'd':
+                    return False
+                elif choice == 'u':
+                    self.use(item, self.owner)
+                    return False
         else:
             self.item_list.append(item)
             return True
@@ -58,7 +81,7 @@ class Storage:
             else:
                 continue        
     
-    def access(self, from_where):
+    def access(self, from_where = "zone"):
         while True:
             os.system("cls" if os.name == "nt" else "clear")
             print("Inventory:")
@@ -75,7 +98,7 @@ class Storage:
                 return False
 class Equipment():
     # Defines base members and methods for managing equipped items
-    def __init__(self):
+    def __init__(self, owner):
         self.slots_dict = {"Helm": None, 
                            "Coat": None, 
                            "Gloves": None,
@@ -83,6 +106,7 @@ class Equipment():
                            "Boots": None,
                            "Right Hand": items.Sword("Rusty Sword", [0, 0, 0, 0]),
                            "Left Hand": None}
+        self.owner = owner
     
     def equip(self, new_equipment, inventory, accessed_from="zone"):
         slot = new_equipment.slot
