@@ -155,9 +155,10 @@ def saveGame():
         os.makedirs(home_dir + path_separator + 'saves')
         print(home_dir)
     print("Existing saves: ")
-    for files in os.listdir(home_dir + path_separator + "\saves"):
-        if files.endswith(".bin"):
-            print(files[:-4])
+    for file in os.listdir(home_dir + path_separator + "\saves"):
+        if file.endswith(".bin"):
+            print(file[:-4])
+            files.append(file[:-4])
     save_name = input("\nSave game as: ")
     if save_name in files:
         choice = input("Save files already exist for this name. Overwrite? (Y/N) ").lower()
