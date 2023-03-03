@@ -8,10 +8,6 @@ Execute TheFirstFantasy.exe within the dist directory.
 Any OS with Python3:
 Change directory into the src folder and type the command: python main.py 
 
-To Build Distributable on Windows:
-
-Python and py2exe is needed create a new dist. Once installed, run build.bat.
-
 Features:
 
 -Randomized world creation ensuring that each new game provides a different experience.
