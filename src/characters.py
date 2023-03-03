@@ -42,7 +42,7 @@ class Character:
         print("Toughness: %d" % (self.stat_list[2]))
         print("Vitality: %d" % (self.stat_list[3]))
         print("\nAttack: %d" % (self.getAttackDamage()))
-        print("Crit Chance: {:.2}%".format(self.getCritChance()))
+        print("Crit Chance: {:.2%}".format(self.getCritChance()))
         print("Armor: {:.2%}".format(self.getArmorReduce()))
 
     def attack(self, receiver):
