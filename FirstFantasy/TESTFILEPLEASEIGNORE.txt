@@ -1,3 +1,0 @@
-This is only a test.
-
-Used for checking local <-> remote repo setup.
