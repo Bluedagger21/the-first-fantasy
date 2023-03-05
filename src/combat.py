@@ -9,15 +9,17 @@ def getAction(a, b):
     os.system("cls" if os.name == "nt" else "clear")
     print(b.name)
     print("Health: " + repr(b.health) + "/" + repr(b.getMaxHealth()))
-    print("P: {:2} P: {:2} T: {:2} V: {:2}".format(
-           b.stat_list[0], b.stat_list[1], b.stat_list[2], b.stat_list[3]))
+    print("STR: {:2} DEX: {:2} INT: {:2}".format(
+           b.total_attributes["Strength"],
+           b.total_attributes["Dexterity"], 
+           b.total_attributes["Intelligence"]))
     print("----------------------VERSUS")
     print(a.name)
     print("Health: " + repr(a.health) + "/" + repr(a.getMaxHealth()))
-    print("P: {:2} P: {:2} T: {:2} V: {:2}".format(
-           a.stat_list[0] + a.equipment_stat_list[0], a.stat_list[1] +
-           a.equipment_stat_list[1], a.stat_list[2] + a.equipment_stat_list[2],
-           a.stat_list[3] + a.equipment_stat_list[3]))
+    print("STR: {:2} DEX: {:2} INT: {:2}".format(
+           a.total_attributes["Strength"],
+           a.total_attributes["Dexterity"], 
+           a.total_attributes["Intelligence"]))
     print("\n[ACTIONS]-------------------")
     choice = input("(A)ttack    (I)nventory\n(E)nemy Info    " \
                        "(R)un Away: ").lower()

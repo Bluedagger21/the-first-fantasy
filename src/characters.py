@@ -8,12 +8,12 @@ import os
 
 class Character:
     # Defines an interactive character within the game
-    def __init__(self, name, level, attributes):
+    def __init__(self, name, base_attributes, level = 0, ):
         self.status = ["normal"]
         self.name = name
         self.equipped_gear = inventory.Equipment(self)
-        self.attributes = attributes
-        self.total_attributes = self.getTotalAttributes()
+        self.attributes = base_attributes
+        self.total_attributes = None
         self.attribute_bonuses = {"str_base_dmg" : ["Strength", 1/5, 0],
                                     "str_hp" : ["Strength", 3, 0],
                                     "str_phy_resist": ["Strength", 1/10, 0],
@@ -24,26 +24,28 @@ class Character:
                                     "int_mana_regen" : ["Intelligence", 1/3, 0],
                                     "int_mag_resist" : ["Intelligence", 1/10, 0]
                                     }
+        self.health = 0
+        self.level = level
+
+    def update(self):
+        self.updateTotalAttributes()
         self.updateBonuses()
-        self.health = self.getMaxHealth()
-        self.level = 1
 
     def updateBonuses(self):
         for bonus in self.attribute_bonuses.values():
             bonus[2] = self.total_attributes[bonus[0]] * bonus[1]
 
-    def getTotalAttributes(self):
-        total_attributes = self.attributes
+    def updateTotalAttributes(self):
+        self.total_attributes = self.attributes
         gear_attributes = self.equipped_gear.getAttributes()
         
-        total_attributes["Strength"] += gear_attributes["Strength"]
-        total_attributes["Dexterity"] += gear_attributes["Dexterity"]
-        total_attributes["Intelligence"] += gear_attributes["Intelligence"]
+        self.total_attributes["Strength"] += gear_attributes["Strength"]
+        self.total_attributes["Dexterity"] += gear_attributes["Dexterity"]
+        self.total_attributes["Intelligence"] += gear_attributes["Intelligence"]
 
-        return total_attributes
 
     def getMaxHealth(self):
-        return (self.attributes["Strength"]) * self.attribute_bonuses["str_hp"][2]
+        return self.attribute_bonuses["str_hp"][2]
 
     def getPhysResist(self):
         return (self.attribute_bonuses["str_phy_resist"][2] / 100)
@@ -62,13 +64,12 @@ class Character:
         print("[---Character Sheet---]")
         print("Name: %s (Level: %d)" % (self.name, self.level))
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
-        print("\nPower: %d" % (self.stat_list[0]))
-        print("Precision: %d" % (self.stat_list[1]))
-        print("Toughness: %d" % (self.stat_list[2]))
-        print("Vitality: %d" % (self.stat_list[3]))
-        print("\Weapon Damage: %d" % (self.showStringWeaponDamage()))
+        print("\nStrength: {}".format(self.attributes["Strength"]))
+        print("Dexterity: {}".format(self.attributes["Dexterity"]))
+        print("Intelligence: {}".format(self.attributes["Intelligence"]))
+        print("\nAttack: {}".format(self.showStringWeaponDamage()))
         print("Crit Chance: {:.2%}".format(self.getCritRate()))
-        print("Armor: {:.2%}".format(self.getPhysResist()))
+        print("Physical Resist: {:.2%}".format(self.getPhysResist()))
 
     def attack(self, receiver):
         damage = self.getDamage()
@@ -96,9 +97,11 @@ class Enemy(Character):
     def __init__(self, name, level, attribute_weights, attributes = {"Strength" : 0,
                                                                      "Dexterity" : 0,
                                                                      "Intelligence" : 0}):
-        super().__init__(name, level, attributes)
+        super().__init__(name, attributes, level)
         self.att_weights = attribute_weights
         self.initLevel(self.level * 10)
+        self.update()
+        self.health = self.getMaxHealth()
         self.loot_table = loottable.LootGenerator(level, self)
 
     def initLevel(self, amount):
@@ -113,11 +116,13 @@ class Player(Character):
                  attributes = {"Strength" : 10,
                                "Dexterity" : 10, 
                                "Intelligence" : 10}):
-        super().__init__(name, level, attributes)
+        super().__init__(name, attributes, level)
         self.gold = 0
         self.exp = 0
         self.exp_needed = 1000
         self.inventory = inventory.Storage(10, self)
+        self.update()
+        self.health = self.getMaxHealth()
 
     def giveExp(self, exp_earned):
         # Gives the player exp_earned experience and checks for level up
