@@ -70,8 +70,10 @@ class Weapon(Equipment):
             self.base_increase += 5
 
     def getCalculatedDamage(self, dealer):
-        base_dmg_inc = (1 + (self.base_increase/1))
-        rnd_dmg_inc = (1 + (self.random_increase/1))
+        base_dmg_inc = (1 + (self.base_increase/1)) + \
+            dealer.attribute_bonuses["str_base_dmg"][2]
+        rnd_dmg_inc = (1 + (self.random_increase/1)) + \
+            dealer.attribute_bonuses["dex_rnd_dmg"][2]
 
         base_dmg = self.base_damage + base_dmg_inc
         rnd_dmg = 0

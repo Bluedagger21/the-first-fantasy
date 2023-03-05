@@ -60,6 +60,9 @@ class Character:
         return self.equipped_gear.slots_dict["Main Hand"].base_crit_rate + \
             (self.attribute_bonuses["dex_crit_rate"][2] / 100)
 
+    def getCritMult(self):
+        return self.equipped_gear.slots_dict["Main Hand"].crit_mult
+    
     def getCharacterSheet(self):
         print("[---Character Sheet---]")
         print("Name: %s (Level: %d)" % (self.name, self.level))
@@ -191,7 +194,15 @@ class Player(Character):
                 self.inventory.remove(accessed_item)
 
     def attack(self, receiver):
-        self.equipped_gear.get("Main Hand").attack(self, receiver)
+        weapon_damage = self.equipped_gear.get("Main Hand").getCalculatedDamage(self)
+        if random.random() <= self.getCritRate():
+            print("CRITICAL STRIKE!!!")
+            weapon_damage *= self.getCritMult()
+        round(weapon_damage)
+
+        print(self.name + " attacked for " + repr(weapon_damage) +
+              " (-{})".format(round(weapon_damage * ((1 + receiver.getPhysResist())/100))))
+        receiver.takeDamage(weapon_damage)
 
     def updateEquipmentStats(self):
         # Updates equipment stats after changing equipment

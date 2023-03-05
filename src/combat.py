@@ -94,7 +94,7 @@ def combat(a, b):
                 n_state = "standby"
 
         elif c_state == "win":
-            loot = loottable.loot(b.level)
+            loot = b.loot_table.generateLoot()
             a.giveGold(loot[0])
             a.giveExp((a.exp_needed / (9 + a.level)) * (b.level / a.level))
             if loot[1] is not None:
