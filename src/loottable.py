@@ -13,10 +13,10 @@ class LootGenerator:
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
         self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]
 
-        self.item_types = {items.Consumable: (items.SmallExperienceBoost,
-                                              items.SmallHealthPotion),
-                           items.Equipment: (items.Weapon, 
-                                             items.Armor)
+        self.item_types = {"Consumable": ("SmallXPBoost",
+                                          "SmallHP"),
+                           "Equipment": ("Weapon",
+                                         "Armor")
                           }
         
         self.weapon_dict = {"Sword": {"Base Damage" : 5,
@@ -53,27 +53,27 @@ class LootGenerator:
         item_type = self.determineItemType()
         item_rarity = self.determineRarity()
 
-        if isinstance(item_type, items.Consumable):
+        if item_type is "Consumable":
             generated_item = self.createConsumable()
-        elif isinstance(item_type, items.Equipment):
-            type_of_equipment = random.choices(self.item_types[items.Equipment], weights=[2,5])
-            if isinstance(type_of_equipment, items.Weapon):
+        elif item_type is "Equipment":
+            type_of_equipment = random.choices(self.item_types["Equipment"], weights=[2,5])[0]
+            if type_of_equipment is "Weapon":
                 generated_item = self.createWeapon(item_rarity)
-            elif isinstance(type_of_equipment, items.Armor):
+            elif type_of_equipment is "Armor":
                 generated_item = self.createArmor(item_rarity)
         return generated_item
             
 
     def determineItemType(self):
-        return random.choices(list(self.item_types.items()), weights=self.drop_types_wieghts)
+        return random.choices(list(self.item_types.items()), weights=self.drop_types_wieghts)[0][0]
 
     def determineRarity(self):
         for i,x in enumerate(self.rarity):   
             self.rarity_weights[i] = self.rarity_weights[i] * ((1 + self.ilvl) * self.rarity_scales[i])
-        return random.choices(self.rarity, weights=self.rarity_weights)
+        return random.choices(self.rarity, weights=self.rarity_weights)[0]
         
     def createConsumable(self):
-        created_item_type = random.choices(self.item_types[items.Consumable], weights=[10,2])
+        created_item_type = random.choices(self.item_types["Consumable"], weights=[10,2])[0]
         return created_item_type()
     
     def createWeapon(self, item_rarity):
