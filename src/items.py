@@ -85,9 +85,7 @@ class Weapon(Equipment):
 
 class Consumable():
     # Defines base members and methods for consumables
-    def __init__(self, name, effect, stack_limit = 5, stack_size = 1):
-        self.name = name
-        self.effect = effect
+    def __init__(self, stack_limit = 5, stack_size = 1):
         self.stack_limit = stack_limit
         self.stack_size = stack_size
         self.slot = "consumable"
@@ -112,16 +110,14 @@ class Consumable():
             elif choice == 'q':
                 return "quit"
 
-    def show(self):
-        # Print name and effect
-        print(self.getName())
-        print(self.effect)
+
 
 class SmallHealthPotion(Consumable):
-    def __init__(self):
+    def __init__(self, stack_limit=5, stack_size=1):
+        super().__init__(stack_limit, stack_size)
         self.name = "Small Health Potion"
         self.effect = "Effect: Restores 20 health"
-        Consumable.__init__(self, self.name, self.effect)
+        
 
     def use(self, target):
         print(target.name + " used a " + self.name + ".")
@@ -129,13 +125,23 @@ class SmallHealthPotion(Consumable):
         print(target.name + " gained 20 health! ({}/{})".format(
                                           target.health, 
                                           target.getMaxHealth()))
+    
+    def show(self):
+        # Print name and effect
+        print(self.getName())
+        print(self.effect)
 
 class SmallExperienceBoost(Consumable):
-    def __init__(self):
+    def __init__(self, stack_limit=5, stack_size=1):
+        super().__init__(stack_limit, stack_size)
         self.name = "Small Experience Boost"
         self.effect = "Effect: Grants 100 experience"
-        Consumable.__init__(self, self.name, self.effect)
 
     def use(self, target):
         print(target.name + " used a " + self.name + ".")
         target.giveExp(100)
+    
+    def show(self):
+        # Print name and effect
+        print(self.getName())
+        print(self.effect)

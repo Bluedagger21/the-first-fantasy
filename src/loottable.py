@@ -13,7 +13,7 @@ class LootGenerator:
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
         self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]
 
-        self.item_types = {"Consumable": ("SmallXPBoost",
+        self.item_types = {"Consumable": ("SmallXP",
                                           "SmallHP"),
                            "Equipment": ("Weapon",
                                          "Armor")
@@ -74,6 +74,10 @@ class LootGenerator:
         
     def createConsumable(self):
         created_item_type = random.choices(self.item_types["Consumable"], weights=[10,2])[0]
+        if created_item_type == "SmallXP":
+            return items.SmallExperienceBoost()
+        elif created_item_type == "SmallHP":
+            return items.SmallHealthPotion
         return created_item_type()
     
     def createWeapon(self, item_rarity):
@@ -81,12 +85,11 @@ class LootGenerator:
                           "Strength" : 0,
                           "Dexterity" : 0,
                           "Intelligence" : 0}
-        weapon_type = random.choice(self.weapon_dict)
-        name = list(weapon_type.keys())[0]
-        for modifier in weapon_type:
+        base_name, stats = random.choice(list(self.weapon_dict.items()))
+        for modifier in list(stats.items()):
             modifiers_dict.update(modifier)
 
-        return items.Weapon(name, modifiers_dict)
+        return items.Weapon(base_name, modifiers_dict)
         
     def createArmor(self, item_rarity):
         modifiers_dict = {"Rarity" : item_rarity,
@@ -94,14 +97,12 @@ class LootGenerator:
                           "Dexterity" : 0,
                           "Intelligence" : 0}
 
-        slot_choice = random.choice(self.armor_dict)
-        slot = list(slot_choice.keys())[0]
-        base_choice = random.choice(slot_choice)
-        name = list(base_choice.keys())[0]
-        for modifier in base_choice:
+        slot, base_dict = random.choice(list(self.armor_dict.items()))
+        base_name, stats = random.choice(list(base_dict.items()))
+        for modifier in list(stats.items()):
             modifiers_dict.update(modifier)
         
-        return items.Armor(name, slot, modifiers_dict)
+        return items.Armor(base_name, slot, modifiers_dict)
         
 # def createUnique(quality):
 #     # Chooses a unique item.
