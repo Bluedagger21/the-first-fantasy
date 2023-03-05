@@ -11,9 +11,14 @@ class Map:
                            "Endless Wastes", "Sunless Canyon", "Foul Bog",
                            "Terror Isle"]
         self.town_names = ["Your House", "Cheery Inn", "Joe's Bed & Breakfast"]
-        self.enemy_types = [("Thief", 10, [5, 5, 5, 5]),
-                            ("Goblin", 5, [3, 7, 7, 3]),
-                            ("Spider", 5, [7, 7, 3, 3])]
+        self.enemy_types = {"Thief": {"weight" : 10, 
+                                       "attribute_weights" : [2,5,3]},
+                            "Goblin": {"weight" : 5, 
+                                       "attribute_weights" : [3,4,3]},
+                            "Spider": {"weight" : 5, 
+                                       "attribute_weights" : [3,5,2]},
+                            "Kobold": {"weight" : 5,
+                                       "attribute_weights" : [5,3,2]}}
 
         random.shuffle(self.wild_names)
         random.shuffle(self.town_names)

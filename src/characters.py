@@ -1,37 +1,62 @@
 from weightedchoice import weighted_choice_sub
-from random import random
+import random
 import items
+import loottable
 import inventory
 import os
 
 
 class Character:
     # Defines an interactive character within the game
-    def __init__(self):
+    def __init__(self, name, level, attributes):
         self.status = ["normal"]
-        self.VITALITY_RATIO = 5
-        self.POWER_RATIO = 1.5
-        self.name = ""
-        self.health = 5
-        self.stat_list = [5, 7, 7, 5]
-        self.equipment_stat_list = [0, 0, 0, 0]
+        self.name = name
+        self.equipped_gear = inventory.Equipment(self)
+        self.attributes = attributes
+        self.total_attributes = self.getTotalAttributes()
+        self.attribute_bonuses = {"str_base_dmg" : ["Strength", 1/5, 0],
+                                    "str_hp" : ["Strength", 3, 0],
+                                    "str_phy_resist": ["Strength", 1/10, 0],
+                                    "dex_rnd_dmg" : ["Dexterity", 1/5, 0],
+                                    "dex_crit_rate" : ["Dexterity", 1/10, 0],
+                                    "dex_eva" : ["Dexterity", 1/10, 0],
+                                    "int_mag_dmg" : ["Intelligence", 1/5, 0],
+                                    "int_mana_regen" : ["Intelligence", 1/3, 0],
+                                    "int_mag_resist" : ["Intelligence", 1/10, 0]
+                                    }
+        self.updateBonuses()
+        self.health = self.getMaxHealth()
         self.level = 1
 
+    def updateBonuses(self):
+        for bonus in self.attribute_bonuses.values():
+            bonus[2] = self.total_attributes[bonus[0]] * bonus[1]
+
+    def getTotalAttributes(self):
+        total_attributes = self.attributes
+        gear_attributes = self.equipped_gear.getAttributes()
+        
+        total_attributes["Strength"] += gear_attributes["Strength"]
+        total_attributes["Dexterity"] += gear_attributes["Dexterity"]
+        total_attributes["Intelligence"] += gear_attributes["Intelligence"]
+
+        return total_attributes
+
     def getMaxHealth(self):
-        return ((self.stat_list[3] + self.equipment_stat_list[3]) *
-                 self.VITALITY_RATIO)
+        return (self.attributes["Strength"]) * self.attribute_bonuses["str_hp"][2]
 
-    def getCritChance(self):
-        return (0.1 * ((self.stat_list[1] + self.equipment_stat_list[1]) /
-                      ((self.level * 2.0) + 8.0)))
+    def getPhysResist(self):
+        return (self.attribute_bonuses["str_phy_resist"][2] / 100)
 
-    def getArmorReduce(self):
-        return (0.1 * ((self.stat_list[2] + self.equipment_stat_list[2]) /
-                      ((self.level * 3.0) + 7.0)))
-
-    def getAttackDamage(self):
-        return ((self.stat_list[0] + self.equipment_stat_list[0]) *
-                 self.POWER_RATIO)
+    def showStringWeaponDamage(self):
+        base_dmg = self.equipped_gear.slots_dict["Main Hand"].base_damage
+        random_dmg = self.equipped_gear.slots_dict["Main Hand"].random_damage
+        random_mult = self.equipped_gear.slots_dict["Main Hand"].random_mult
+        return "{} + ({} to {})".format(base_dmg, random_mult, random_dmg)
+    
+    def getCritRate(self):
+        return self.equipped_gear.slots_dict["Main Hand"].base_crit_rate + \
+            (self.attribute_bonuses["dex_crit_rate"][2] / 100)
 
     def getCharacterSheet(self):
         print("[---Character Sheet---]")
@@ -41,9 +66,9 @@ class Character:
         print("Precision: %d" % (self.stat_list[1]))
         print("Toughness: %d" % (self.stat_list[2]))
         print("Vitality: %d" % (self.stat_list[3]))
-        print("\nAttack: %d" % (self.getAttackDamage()))
-        print("Crit Chance: {:.2%}".format(self.getCritChance()))
-        print("Armor: {:.2%}".format(self.getArmorReduce()))
+        print("\Weapon Damage: %d" % (self.showStringWeaponDamage()))
+        print("Crit Chance: {:.2%}".format(self.getCritRate()))
+        print("Armor: {:.2%}".format(self.getPhysResist()))
 
     def attack(self, receiver):
         damage = self.getDamage()
@@ -52,7 +77,7 @@ class Character:
               " (-{})".format(round(damage * receiver.getArmorReduce())))
 
     def takeDamage(self, damage):
-        damage -= round(damage * self.getArmorReduce())
+        damage -= round(damage * self.getPhysResist())
         self.health -= round(damage)
         if self.health <= 0:
             self.status.append("dead")
@@ -60,7 +85,7 @@ class Character:
 
     def getDamage(self):
         damage = self.getAttackDamage()
-        if random() <= self.getCritChance():
+        if random() <= self.getCritRate():
             print("CRITICAL STRIKE!!!")
             damage *= 2
         return round(damage)
@@ -68,34 +93,31 @@ class Character:
 
 class Enemy(Character):
     # Enemy object
-    def __init__(self, name, stats, level):
-        Character.__init__(self)
-        self.name = name
-        self.level = level
-        self.stat_weights = stats
-        self.initLevel(level * 5)
-        self.health = self.getMaxHealth()
+    def __init__(self, name, level, attribute_weights, attributes = {"Strength" : 0,
+                                                                     "Dexterity" : 0,
+                                                                     "Intelligence" : 0}):
+        super().__init__(name, level, attributes)
+        self.att_weights = attribute_weights
+        self.initLevel(self.level * 10)
+        self.loot_table = loottable.LootGenerator(level, self)
 
-    def initLevel(self, level):
-        for _ in range(level - 1):
-            tmp_index = weighted_choice_sub(self.stat_weights)
-            self.stat_list[tmp_index] += 1
-
+    def initLevel(self, amount):
+        key_list = random.choices(list(self.attributes.keys()), self.att_weights, k=amount)
+        for att in key_list:
+            self.attributes[att] += 1
 
 class Player(Character):
     # Player object
-    def __init__(self, playername):
-        Character.__init__(self)
-        self.name = playername
-        self.level = 1
+    def __init__(self, name, 
+                 level = 0,
+                 attributes = {"Strength" : 10,
+                               "Dexterity" : 10, 
+                               "Intelligence" : 10}):
+        super().__init__(name, level, attributes)
         self.gold = 0
         self.exp = 0
         self.exp_needed = 1000
-        self.stat_list = [10, 10, 10, 10]
-        self.equipment_stat_list = [0, 0, 0, 0]
         self.inventory = inventory.Storage(10, self)
-        self.equipped_gear = inventory.Equipment(self)
-        self.health = self.getMaxHealth()
 
     def giveExp(self, exp_earned):
         # Gives the player exp_earned experience and checks for level up
@@ -164,7 +186,7 @@ class Player(Character):
                 self.inventory.remove(accessed_item)
 
     def attack(self, receiver):
-        self.equipped_gear.get("Right Hand").attack(self, receiver)
+        self.equipped_gear.get("Main Hand").attack(self, receiver)
 
     def updateEquipmentStats(self):
         # Updates equipment stats after changing equipment
@@ -230,21 +252,12 @@ class Player(Character):
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
         print("Gold: %d" % (self.gold))
         print("Exp: %d/%d" % (self.exp, self.exp_needed))
-        print("\nPower: {} (+{})".format(self.stat_list[0] +
-                                         self.equipment_stat_list[0],
-                                         self.equipment_stat_list[0]))
-        print("Precision: {} (+{})".format(self.stat_list[1] +
-                                           self.equipment_stat_list[1],
-                                           self.equipment_stat_list[1]))
-        print("Toughness: {} (+{})".format(self.stat_list[2] +
-                                           self.equipment_stat_list[2],
-                                           self.equipment_stat_list[2]))
-        print("Vitality: {} (+{})".format(self.stat_list[3] +
-                                          self.equipment_stat_list[3],
-                                          self.equipment_stat_list[3]))
-        print("\nAttack: %d" % (self.getAttackDamage()))
-        print("Crit Chance: {:.2%}".format(self.getCritChance()))
-        print("Armor: {:.2%}".format(self.getArmorReduce()))
+        print("\nStrength: {}".format(self.attributes["Strength"]))
+        print("Dexterity: {}".format(self.attributes["Dexterity"]))
+        print("Intelligence: {}".format(self.attributes["Intelligence"]))
+        print("\nAttack: {}".format(self.showStringWeaponDamage()))
+        print("Crit Chance: {:.2%}".format(self.getCritRate()))
+        print("Physical Resist: {:.2%}".format(self.getPhysResist()))
 
         print("\n[------Equipment-----]")
         for x in self.equipped_gear.slots_dict:

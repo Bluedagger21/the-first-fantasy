@@ -23,23 +23,32 @@ class Zone:
 class Wild(Zone):
     # Wild zones are hostile and contain enemies
 
-    def __init__(self, name, dr, enemy_list, first_neighbor=None):
+    def __init__(self, name, dr, enemy_dict, first_neighbor=None):
         Zone.__init__(self, name, dr, first_neighbor)
 
         self.z_type = "wild"
         self.z_options = ("(E)xplore    (T)ravel    (I)nventory    " +
                           "(C)haracter Sheet\n(Q)uit    (S)ave")
         self.z_actions = [("encounter", 20), ("nothing", 4)]
-        self.z_enemy_list = enemy_list
+        self.z_enemy_dict = enemy_dict
 
     def getEnemy(self):
         # Create an enemy and return it
         minimum = round(self.z_dr * .75)
         maximum = round(self.z_dr * 1.25)
         random_value = random.randint(minimum, maximum)
-        stats = self.z_enemy_list[weighted_choice_sub(
-                                 [x[1] for x in self.z_enemy_list])]
-        return characters.Enemy(stats[0], stats[2], random_value)
+
+        enemy_spawn_weights = []
+        for enemy in self.z_enemy_dict.values():
+            enemy_spawn_weights.append(enemy["weight"])
+
+        enemy_name_list = list(self.z_enemy_dict.keys())
+
+        spawned_enemy = random.choices(enemy_name_list, weights=enemy_spawn_weights)[0]
+                
+        return characters.Enemy(spawned_enemy, 
+                                random_value, 
+                                self.z_enemy_dict[spawned_enemy]["attribute_weights"])
 
     def getAction(self):
         # Decide if an encounter happens or not

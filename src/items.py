@@ -1,11 +1,19 @@
 import os
+import random
 class Equipment():
     # Base equippable item class
-    def __init__(self, name, stats, stack_limit = 1):
+    def __init__(self, name, modifiers, stack_limit = 1):
         self.name = name
         self.stack_limit = stack_limit
         self.stack_size = 1
-        self.stats = stats
+        self.modifiers = modifiers
+        self.attributes = {"Strength" : self.modifiers.setdefault("Strength", 0),
+                           "Dexterity" : self.modifiers.setdefault("Dexterity", 0),
+                           "Intelligence" : self.modifiers.setdefault("Intelligence", 0)}
+        self.rarity = self.modifiers.setdefault("Rarity", "+0")
+
+        if self.rarity != "+0":
+            self.name += " {}".format(self.rarity)
 
     def getName(self):
         return self.name
@@ -13,10 +21,9 @@ class Equipment():
     def show(self):
         # Print attributes of the equipment
         print(self.name)
-        print("Power: " + repr(self.stats[0]))
-        print("Precision: " + repr(self.stats[1]))
-        print("Toughness: " + repr(self.stats[2]))
-        print("Vitality: " + repr(self.stats[3]))
+        print("STR: " + repr(self.attributes["Strength"]))
+        print("DEX: " + repr(self.attributes["Dexterity"]))
+        print("INT: " + repr(self.attributes["Intelligence"]))
 
     def getOptions(self, accessed_from="zone"):
         # Displays and prompts equipment options
@@ -32,42 +39,47 @@ class Equipment():
                 return "destroy"
             elif choice == 'q':
                 return "quit"
-
 class Armor(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, slot, stats=[0, 0, 0, 0]):
-        Equipment.__init__(self, name, stats)
+    def __init__(self, name, modifiers, slot, stack_limit=1):
+        super().__init__(name, modifiers, stack_limit )
         self.slot = slot
 
 class Weapon(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, stats):
-        Equipment.__init__(self, name, stats)
-        pass
+    def __init__(self, name, modifiers, slot = "Main Hand", stack_limit=1):
+        super().__init__(name, modifiers, stack_limit)
+        self.slot = slot
+        self.base_damage = modifiers.setdefault("Base Damage", 5)
+        self.base_increase = modifiers.setdefault("Base Increase", 0)
+        self.random_damage = modifiers.setdefault("Random Damage", 5)
+        self.random_increase = modifiers.setdefault("Random Damage Increase", 0)
+        self.random_mult = modifiers.setdefault("Random Multiplier", 1)
+        self.base_crit_rate = modifiers.setdefault("Base Crit Rate", .05)
+        self.crit_mult = modifiers.setdefault("Crit Multiplier", 2)
 
-    def attack(self, dealer, receiver):
-        damage = dealer.getDamage()
-        print(dealer.name + " attacked for " + repr(damage) + " (-{})".format(
-                                     round(damage * receiver.getArmorReduce())))
-        receiver.takeDamage(damage)
+        if self.rarity is "+1":
+            self.base_increase += 1
+        elif self.rarity is "+2":
+            self.base_increase += 2
+        elif self.rarity is "+3":
+            self.base_increase += 3
+        elif self.rarity is "+4":
+            self.base_increase += 4
+        elif self.rarity is "+5":
+            self.base_increase += 5
 
-class Sword(Weapon):
-    def __init__(self, name, stats):
-        Weapon.__init__(self, name, stats)
-        self.slot = "Right Hand"
-        self.options = ["Swing"]
+    def getCalculatedDamage(self, dealer):
+        base_dmg_inc = (1 + (self.base_increase/1))
+        rnd_dmg_inc = (1 + (self.random_increase/1))
 
-class Mace(Weapon):
-    def __init__(self, name, stats):
-        Weapon.__init__(self, name, stats)
-        self.slot = "Right Hand"
-        self.options = ["Swing"]
-
-class Dagger(Weapon):
-    def __init__(self, name, stats):
-        Weapon.__init__(self, name, stats)
-        self.slot = "Right Hand"
-        self.options = ["Swing"]
+        base_dmg = self.base_damage + base_dmg_inc
+        rnd_dmg = 0
+    
+        for i in range(self.random_mult):
+            rnd_dmg += random.randrange(self.random_damage + rnd_dmg_inc)
+        
+        return base_dmg + rnd_dmg
 
 class Consumable():
     # Defines base members and methods for consumables

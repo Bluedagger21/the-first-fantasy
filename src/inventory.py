@@ -99,14 +99,36 @@ class Storage:
 class Equipment():
     # Defines base members and methods for managing equipped items
     def __init__(self, owner):
-        self.slots_dict = {"Helm": None, 
-                           "Coat": None, 
-                           "Gloves": None,
-                           "Leggings": None, 
-                           "Boots": None,
-                           "Right Hand": items.Sword("Rusty Sword", [0, 0, 0, 0]),
-                           "Left Hand": None}
+        self.slots_dict = {"Head": None, 
+                           "Body": None, 
+                           "Hands": None,
+                           "Feet": None,
+                           "Main Hand": items.Weapon("Rusty Sword",
+                                                      {"Base Damage" : 5, 
+                                                       "Random Damage" : 5,
+                                                       "Rarity" : "+0",
+                                                       "Strength" : 0,
+                                                       "Dexterity" : 0,
+                                                       "Intelligence" : 0}),
+                           "Off Hand": None}
         self.owner = owner
+        self.total_attributes = self.updateAttributes()
+    
+    def getAttributes(self):
+        return self.total_attributes
+
+    def updateAttributes(self):
+        self.total_attributes = {"Strength" : 0,
+                                 "Dexterity" : 0,
+                                 "Intelligence" : 0}
+        for slot in self.slots_dict.values():
+            if slot is None:
+                continue
+            else:
+                self.total_attributes["Strength"] += slot.attributes.get("Strength", 0)
+                self.total_attributes["Dexterity"] += slot.attributes.get("Dexterity", 0)
+                self.total_attributes["Intelligence"] += slot.attributes.get("Intelligence", 0)
+        return self.total_attributes
     
     def equip(self, new_equipment, inventory, accessed_from="zone"):
         slot = new_equipment.slot
@@ -124,6 +146,7 @@ class Equipment():
     
     def actuallyEquip(self, new_equipment, slot):
         self.slots_dict[slot] = new_equipment
+        self.updateAttributes()
     
     def compareEquip(self, new_equipment, cur_equipment, slot):
         while True:
