@@ -74,12 +74,6 @@ class Character:
         print("Crit Chance: {:.2%}".format(self.getCritRate()))
         print("Physical Resist: {:.2%}".format(self.getPhysResist()))
 
-    def attack(self, receiver):
-        damage = self.getDamage()
-        receiver.takeDamage(damage)
-        print(self.name + " attacked for " + repr(damage) +
-              " (-{})".format(round(damage * receiver.getArmorReduce())))
-
     def takeDamage(self, damage):
         damage -= round(damage * self.getPhysResist())
         self.health -= round(damage)
@@ -87,35 +81,45 @@ class Character:
             self.status.append("dead")
             self.health = 0
 
-    def getDamage(self):
-        damage = self.getAttackDamage()
-        if random() <= self.getCritRate():
-            print("CRITICAL STRIKE!!!")
-            damage *= 2
-        return round(damage)
-
-
 class Enemy(Character):
     # Enemy object
-    def __init__(self, name, level, attribute_weights, attributes = {"Strength" : 0,
-                                                                     "Dexterity" : 0,
-                                                                     "Intelligence" : 0}):
+    def __init__(self, 
+                 name, 
+                 level, 
+                 attribute_weights,
+                 weapon_modifiers,
+                 attributes = {"Strength" : 0,
+                               "Dexterity" : 0,
+                                "Intelligence" : 0}):
         super().__init__(name, attributes, level)
         self.att_weights = attribute_weights
         self.initLevel(self.level * 10)
         self.update()
         self.health = self.getMaxHealth()
         self.loot_table = loottable.LootGenerator(level, self)
-
+        self.weapon = items.Weapon("", weapon_modifiers)
+    
     def initLevel(self, amount):
         key_list = random.choices(list(self.attributes.keys()), self.att_weights, k=amount)
         for att in key_list:
             self.attributes[att] += 1
 
+    def attack(self, receiver):
+        weapon_damage = self.weapon.getCalculatedDamage(self)
+        if random.random() <= self.getCritRate():
+            print("CRITICAL STRIKE!!!")
+            weapon_damage *= self.getCritMult()
+        round(weapon_damage)
+
+        print(self.name + " attacked for " + repr(weapon_damage) +
+              " (-{})".format(round(weapon_damage * ((1 + receiver.getPhysResist())/100))))
+        receiver.takeDamage(weapon_damage)
+
+
 class Player(Character):
     # Player object
     def __init__(self, name, 
-                 level = 0,
+                 level = 1,
                  attributes = {"Strength" : 10,
                                "Dexterity" : 10, 
                                "Intelligence" : 10}):

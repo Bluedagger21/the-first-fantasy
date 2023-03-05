@@ -44,6 +44,7 @@ class LootGenerator:
 
         self.loot_list = []
     def generateLoot(self):
+        self.loot_list.append(self.ilvl * random.randrange(8, 20))
         self.loot_list.append(self.generateItem())
         return self.loot_list
 
@@ -64,10 +65,10 @@ class LootGenerator:
             
 
     def determineItemType(self):
-        return random.choices(self.item_types, weights=self.drop_types_wieghts)
+        return random.choices(list(self.item_types.items()), weights=self.drop_types_wieghts)
 
     def determineRarity(self):
-        for x,i in enumerate(self.rarity):   
+        for i,x in enumerate(self.rarity):   
             self.rarity_weights[i] = self.rarity_weights[i] * ((1 + self.ilvl) * self.rarity_scales[i])
         return random.choices(self.rarity, weights=self.rarity_weights)
         
