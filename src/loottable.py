@@ -77,7 +77,7 @@ class LootGenerator:
         if created_item_type == "SmallXP":
             return items.SmallExperienceBoost()
         elif created_item_type == "SmallHP":
-            return items.SmallHealthPotion
+            return items.SmallHealthPotion()
         return created_item_type()
     
     def createWeapon(self, item_rarity):
@@ -86,8 +86,8 @@ class LootGenerator:
                           "Dexterity" : 0,
                           "Intelligence" : 0}
         base_name, stats = random.choice(list(self.weapon_dict.items()))
-        for modifier in list(stats.items()):
-            modifiers_dict.update(modifier)
+        
+        modifiers_dict.update(stats)
 
         return items.Weapon(base_name, modifiers_dict)
         

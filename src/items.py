@@ -41,7 +41,7 @@ class Equipment():
                 return "quit"
 class Armor(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, modifiers, slot, stack_limit=1):
+    def __init__(self, name, slot, modifiers, stack_limit=1):
         super().__init__(name, modifiers, stack_limit )
         self.slot = slot
 
