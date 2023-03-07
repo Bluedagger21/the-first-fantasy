@@ -1,5 +1,6 @@
 from weightedchoice import weighted_choice_sub
 import random
+import math
 import items
 import loottable
 import inventory
@@ -33,7 +34,7 @@ class Character:
 
     def updateBonuses(self):
         for bonus in self.attribute_bonuses.values():
-            bonus[2] = self.total_attributes[bonus[0]] * bonus[1]
+            bonus[2] = math.floor(self.total_attributes[bonus[0]] * bonus[1])
 
     def updateTotalAttributes(self):
         self.total_attributes.update(self.character_attributes)
