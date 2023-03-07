@@ -151,7 +151,7 @@ class Equipment():
     def compareEquip(self, new_equipment, cur_equipment, slot):
         while True:
             os.system("cls" if os.name == "nt" else "clear")
-            STAT_WIDTH = 12
+            STAT_WIDTH = 14
             CUR_NAME_WIDTH = len(cur_equipment.name) + 2
             NEW_NAME_WIDTH = len(new_equipment.name) + 2
             DIF_WIDTH = len("Difference")
@@ -166,25 +166,20 @@ class Equipment():
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
                            cur_equipment.name.ljust(CUR_NAME_WIDTH))))
 
-            print("".join(("Power".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[0]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[0]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[0] - cur_equipment.stats[0]).ljust(DIF_WIDTH))))
+            print("".join(("Strength".ljust(STAT_WIDTH),
+                           str(new_equipment.attributes["Strength"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.attributes["Strength"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.attributes["Strength"] - cur_equipment.attributes["Strength"]).ljust(DIF_WIDTH))))
 
-            print("".join(("Precision".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[1]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[1]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[1] - cur_equipment.stats[1]).ljust(DIF_WIDTH))))
+            print("".join(("Dexterity".ljust(STAT_WIDTH),
+                           str(new_equipment.attributes["Dexterity"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.attributes["Dexterity"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.attributes["Dexterity"] - cur_equipment.attributes["Dexterity"]).ljust(DIF_WIDTH))))
 
-            print("".join(("Toughness".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[2]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[2]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[2] - cur_equipment.stats[2]).ljust(DIF_WIDTH))))
-
-            print("".join(("Vitality".ljust(STAT_WIDTH),
-                           str(new_equipment.stats[3]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.stats[3]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.stats[3] - cur_equipment.stats[3]).ljust(DIF_WIDTH))))
+            print("".join(("Intelligence".ljust(STAT_WIDTH),
+                           str(new_equipment.attributes["Intelligence"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.attributes["Intelligence"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.attributes["Intelligence"] - cur_equipment.attributes["Intelligence"]).ljust(DIF_WIDTH))))
             
             print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
