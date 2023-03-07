@@ -88,9 +88,11 @@ class Enemy(Character):
                  level, 
                  attribute_weights,
                  weapon_modifiers,
-                 attributes = {"Strength" : 0,
-                               "Dexterity" : 0,
-                                "Intelligence" : 0}):
+                 attributes = None):
+        if attributes == None:
+            attributes = {"Strength" : 0,
+                          "Dexterity" : 0,
+                          "Intelligence" : 0}
         super().__init__(name, attributes, level)
         self.att_weights = attribute_weights
         self.initLevel(self.level * 10)

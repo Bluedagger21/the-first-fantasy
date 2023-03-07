@@ -99,8 +99,10 @@ class LootGenerator:
 
         slot, base_dict = random.choice(list(self.armor_dict.items()))
         base_name, stats = random.choice(list(base_dict.items()))
-        for modifier in list(stats.items()):
-            modifiers_dict.update(modifier)
+
+        modifiers_dict.update(stats)
+        # for modifier in list(stats.items()):
+        #     modifiers_dict.update(modifier)
         
         return items.Armor(base_name, slot, modifiers_dict)
         
