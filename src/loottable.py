@@ -8,7 +8,7 @@ class LootGenerator:
         self.owner = owner
 
         self.drop_types=["Consumable", "Equipment"]
-        self.drop_types_wieghts = [10, 5]
+        self.drop_types_wieghts = [8, 5]
         self.rarity_weights = [200, 40, 20, 10, 5, 1]
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
         self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]

@@ -52,9 +52,9 @@ class Character:
         return (self.attribute_bonuses["str_phy_resist"][2] / 100)
 
     def showStringWeaponDamage(self):
-        base_dmg = self.equipped_gear.slots_dict["Main Hand"].base_damage + \
+        base_dmg = self.equipped_gear.slots_dict["Main Hand"].base_damage_total + \
             self.attribute_bonuses["str_base_dmg"][2]
-        random_dmg = self.equipped_gear.slots_dict["Main Hand"].random_damage + \
+        random_dmg = self.equipped_gear.slots_dict["Main Hand"].random_damage_total + \
             self.attribute_bonuses["dex_rnd_dmg"][2]
         random_mult = self.equipped_gear.slots_dict["Main Hand"].random_mult
         return "{} + ({} to {})".format(base_dmg, random_mult, random_dmg * random_mult)

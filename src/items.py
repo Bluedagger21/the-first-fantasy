@@ -50,15 +50,15 @@ class Weapon(Equipment):
     def __init__(self, name, modifiers, slot = "Main Hand", stack_limit=1):
         super().__init__(name, modifiers, stack_limit)
         self.slot = slot
-        self.base_damage_total = modifiers.setdefault("Base Damage Total", 5)
-        self.base_damage = modifiers.setdefault("Base Damage", 5)
-        self.base_increase = modifiers.setdefault("Base Increase", 0)
-        self.random_damage_total = modifiers.setdefault("Random Damage Total", 5)
-        self.random_damage = modifiers.setdefault("Random Damage", 5)
-        self.random_increase = modifiers.setdefault("Random Damage Increase", 0)
-        self.random_mult = modifiers.setdefault("Random Multiplier", 1)
-        self.base_crit_rate = modifiers.setdefault("Base Crit Rate", .05)
-        self.crit_mult = modifiers.setdefault("Crit Multiplier", 2)
+        self.base_damage_total = self.modifiers.setdefault("Base Damage Total", 5)
+        self.base_damage = self.modifiers.setdefault("Base Damage", 5)
+        self.base_increase = self.modifiers.setdefault("Base Increase", 0)
+        self.random_damage_total = self.modifiers.setdefault("Random Damage Total", 5)
+        self.random_damage = self.modifiers.setdefault("Random Damage", 5)
+        self.random_increase = self.modifiers.setdefault("Random Damage Increase", 0)
+        self.random_mult = self.modifiers.setdefault("Random Multiplier", 1)
+        self.base_crit_rate = self.modifiers.setdefault("Base Crit Rate", .05)
+        self.crit_mult = self.modifiers.setdefault("Crit Multiplier", 2)
 
         if self.rarity == "+1":
             self.base_increase += 1
@@ -72,7 +72,9 @@ class Weapon(Equipment):
             self.base_increase += 5
 
         self.base_damage_total = self.base_damage + self.base_increase
+        self.modifiers.update({"Base Damage Total": self.base_damage_total})
         self.random_damage_total = self.random_damage + self.random_increase
+        self.modifiers.update({"Random Damage Total": self.random_damage_total})
 
     def getCalculatedDamage(self, dealer):
         dealer_dmg_inc = dealer.attribute_bonuses["str_base_dmg"][2]
@@ -82,7 +84,7 @@ class Weapon(Equipment):
         rnd_dmg = 0
     
         for i in range(self.random_mult):
-            rnd_dmg += random.randrange(self.random_damage + dealer_rnd_dmg_inc)
+            rnd_dmg += random.randrange(self.random_damage_total + dealer_rnd_dmg_inc + 1)
         
         return calc_base_dmg + rnd_dmg
     
