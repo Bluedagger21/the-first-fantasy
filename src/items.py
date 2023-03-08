@@ -2,7 +2,7 @@ import os
 import random
 class Equipment():
     # Base equippable item class
-    def __init__(self, name, modifiers, stack_limit = 1):
+    def __init__(self, name, modifiers, stack_limit=1):
         self.name = name
         self.stack_limit = stack_limit
         self.stack_size = 1
@@ -39,15 +39,16 @@ class Equipment():
                 return "destroy"
             elif choice == 'q':
                 return "quit"
+            # might need else continue here as well for input validation?
 class Armor(Equipment):
     # Derived class from Equipment
     def __init__(self, name, modifiers, slot, stack_limit=1):
-        super().__init__(name, modifiers, stack_limit )
+        super().__init__(name, modifiers, stack_limit)
         self.slot = slot
 
 class Weapon(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, modifiers, slot = "Main Hand", stack_limit=1):
+    def __init__(self, name, modifiers, slot="Main Hand", stack_limit=1):
         super().__init__(name, modifiers, stack_limit)
         self.slot = slot
         self.base_damage = modifiers.setdefault("Base Damage", 5)
@@ -85,7 +86,7 @@ class Weapon(Equipment):
 
 class Consumable():
     # Defines base members and methods for consumables
-    def __init__(self, stack_limit = 5, stack_size = 1):
+    def __init__(self, stack_limit=5, stack_size=1):
         self.stack_limit = stack_limit
         self.stack_size = stack_size
         self.slot = "consumable"

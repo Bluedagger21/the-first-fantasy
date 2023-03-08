@@ -53,13 +53,13 @@ class LootGenerator:
         item_type = self.determineItemType()
         item_rarity = self.determineRarity()
 
-        if item_type is "Consumable":
+        if item_type == "Consumable":
             generated_item = self.createConsumable()
-        elif item_type is "Equipment":
+        elif item_type == "Equipment":
             type_of_equipment = random.choices(self.item_types["Equipment"], weights=[2,5])[0]
-            if type_of_equipment is "Weapon":
+            if type_of_equipment == "Weapon":
                 generated_item = self.createWeapon(item_rarity)
-            elif type_of_equipment is "Armor":
+            elif type_of_equipment == "Armor":
                 generated_item = self.createArmor(item_rarity)
         return generated_item
             
