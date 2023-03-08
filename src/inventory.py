@@ -181,6 +181,11 @@ class Equipment():
                            str(cur_equipment.attributes["Intelligence"]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.attributes["Intelligence"] - cur_equipment.attributes["Intelligence"]).ljust(DIF_WIDTH))))
             
+            print("".join(("Base Damage".ljust(STAT_WIDTH),
+                           str(new_equipment.modifiers["Base Damage Total"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.modifiers["Base Damage Total"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.modifiers["Base Damage Total"] - cur_equipment.modifiers["Base Damage Total"]).ljust(DIF_WIDTH))))
+            
             print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
             choice = input("\nEquip " + new_equipment.name + "? (Y/N): ").lower()
