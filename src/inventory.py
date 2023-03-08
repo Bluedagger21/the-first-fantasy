@@ -151,7 +151,7 @@ class Equipment():
     def compareEquip(self, new_equipment, cur_equipment, slot):
         while True:
             os.system("cls" if os.name == "nt" else "clear")
-            STAT_WIDTH = 14
+            STAT_WIDTH = 20
             CUR_NAME_WIDTH = len(cur_equipment.name) + 2
             NEW_NAME_WIDTH = len(new_equipment.name) + 2
             DIF_WIDTH = len("Difference")
@@ -165,26 +165,38 @@ class Equipment():
             print("".join(("Name".ljust(STAT_WIDTH),
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
                            cur_equipment.name.ljust(CUR_NAME_WIDTH))))
-
             print("".join(("Strength".ljust(STAT_WIDTH),
                            str(new_equipment.attributes["Strength"]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.attributes["Strength"]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.attributes["Strength"] - cur_equipment.attributes["Strength"]).ljust(DIF_WIDTH))))
-
             print("".join(("Dexterity".ljust(STAT_WIDTH),
                            str(new_equipment.attributes["Dexterity"]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.attributes["Dexterity"]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.attributes["Dexterity"] - cur_equipment.attributes["Dexterity"]).ljust(DIF_WIDTH))))
-
             print("".join(("Intelligence".ljust(STAT_WIDTH),
                            str(new_equipment.attributes["Intelligence"]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.attributes["Intelligence"]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.attributes["Intelligence"] - cur_equipment.attributes["Intelligence"]).ljust(DIF_WIDTH))))
-            
             print("".join(("Base Damage".ljust(STAT_WIDTH),
                            str(new_equipment.modifiers["Base Damage Total"]).ljust(NEW_NAME_WIDTH),
                            str(cur_equipment.modifiers["Base Damage Total"]).ljust(CUR_NAME_WIDTH),
                            str(new_equipment.modifiers["Base Damage Total"] - cur_equipment.modifiers["Base Damage Total"]).ljust(DIF_WIDTH))))
+            print("".join(("Random Damage".ljust(STAT_WIDTH),
+                           str(new_equipment.modifiers["Random Damage Total"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.modifiers["Random Damage Total"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.modifiers["Random Damage Total"] - cur_equipment.modifiers["Random Damage Total"]).ljust(DIF_WIDTH))))
+            print("".join(("Random Multiplier".ljust(STAT_WIDTH),
+                           str(new_equipment.modifiers["Random Multiplier"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.modifiers["Random Multiplier"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.modifiers["Random Multiplier"] - cur_equipment.modifiers["Random Multiplier"]).ljust(DIF_WIDTH))))
+            print("".join(("Base Crit Rate".ljust(STAT_WIDTH),
+                           str(new_equipment.modifiers["Base Crit Rate"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.modifiers["Base Crit Rate"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.modifiers["Base Crit Rate"] - cur_equipment.modifiers["Base Crit Rate"]).ljust(DIF_WIDTH))))
+            print("".join(("Crit Multiplier".ljust(STAT_WIDTH),
+                           str(new_equipment.modifiers["Crit Multiplier"]).ljust(NEW_NAME_WIDTH),
+                           str(cur_equipment.modifiers["Crit Multiplier"]).ljust(CUR_NAME_WIDTH),
+                           str(new_equipment.modifiers["Crit Multiplier"] - cur_equipment.modifiers["Crit Multiplier"]).ljust(DIF_WIDTH))))
             
             print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
