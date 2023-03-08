@@ -7,7 +7,6 @@ class LootGenerator:
         self.ilvl = ilvl
         self.owner = owner
 
-        self.drop_types_wieghts = [10, 10, 10]
         self.rarity_weights = [200, 40, 20, 10, 5, 1]
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
         self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]
@@ -80,8 +79,11 @@ class LootGenerator:
         return random.choices(list_of_items, weights=weight_of_items)[0][0]
 
     def determineRarity(self):
-        for i,x in enumerate(self.rarity):   
-            self.rarity_weights[i] = self.rarity_weights[i] * ((1 + self.ilvl) * self.rarity_scales[i])
+        for i,x in enumerate(self.rarity):
+            if i > self.ilvl:
+                self.rarity_weights[i] = 0
+            else:
+                self.rarity_weights[i] = self.rarity_weights[i] * ((1 + self.ilvl) * self.rarity_scales[i])
         return random.choices(self.rarity, weights=self.rarity_weights)[0]
         
     def createConsumable(self):
