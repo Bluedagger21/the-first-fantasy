@@ -7,16 +7,23 @@ class LootGenerator:
         self.ilvl = ilvl
         self.owner = owner
 
-        self.drop_types=["None", "Consumable", "Equipment"]
         self.drop_types_wieghts = [10, 10, 10]
         self.rarity_weights = [200, 40, 20, 10, 5, 1]
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
         self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]
 
-        self.item_types = {"Consumable": ("SmallXP",
-                                          "SmallHP"),
-                           "Equipment": ("Weapon",
-                                         "Armor")
+        self.item_types = {"Consumable": {"Subtypes" : ("SmallXP",
+                                                        "SmallHP"),
+                                          "Subtype Weights" : [1,2],
+                                          "Type Weight" : 10},
+
+                           "Equipment": {"Subtypes" : ("Weapon",
+                                                       "Armor"),
+                                         "Subtype Weights" : [2,8],
+                                         "Type Weight" : 10}, 
+                           "None" : {"Subtypes" : None,
+                                     "Subtype Weights" : None,
+                                     "Type Weight" : 10}                                        
                           }
         
         self.weapon_dict = {"Sword": {"Base Damage" : 5,
@@ -53,19 +60,24 @@ class LootGenerator:
         item_type = self.determineItemType()
         item_rarity = self.determineRarity()
 
-        if item_type is "Consumable":
+        if item_type == "Consumable":
             generated_item = self.createConsumable()
-        elif item_type is "Equipment":
-            type_of_equipment = random.choices(self.item_types["Equipment"], weights=[2,5])[0]
-            if type_of_equipment is "Weapon":
+        elif item_type == "Equipment":
+            type_of_equipment = random.choices(self.item_types["Equipment"]["Subtypes"], weights=self.item_types["Equipment"]["Subtype Weights"])[0]
+            if type_of_equipment == "Weapon":
                 generated_item = self.createWeapon(item_rarity)
-            elif type_of_equipment is "Armor":
+            elif type_of_equipment == "Armor":
                 generated_item = self.createArmor(item_rarity)
         return generated_item
             
 
     def determineItemType(self):
-        return random.choices(list(self.item_types.items()), weights=self.drop_types_wieghts)[0][0]
+        list_of_items = list(self.item_types.items())
+        weight_of_items = []
+
+        for value in self.item_types.values():
+            weight_of_items.append(value["Type Weight"])
+        return random.choices(list_of_items, weights=weight_of_items)[0][0]
 
     def determineRarity(self):
         for i,x in enumerate(self.rarity):   
@@ -73,7 +85,7 @@ class LootGenerator:
         return random.choices(self.rarity, weights=self.rarity_weights)[0]
         
     def createConsumable(self):
-        created_item_type = random.choices(self.item_types["Consumable"], weights=[10,2])[0]
+        created_item_type = random.choices(self.item_types["Consumable"]["Subtypes"], weights=self.item_types["Consumable"]["Subtype Weights"])[0]
         if created_item_type == "SmallXP":
             return items.SmallExperienceBoost()
         elif created_item_type == "SmallHP":
