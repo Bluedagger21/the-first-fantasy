@@ -44,12 +44,13 @@ class Wild(Zone):
 
         enemy_name_list = list(self.z_enemy_dict.keys())
 
-        spawned_enemy = random.choices(enemy_name_list, weights=enemy_spawn_weights)[0]
-                
-        return characters.Enemy(spawned_enemy, 
-                                random_value,
-                                self.z_enemy_dict[spawned_enemy]["attribute_weights"],
-                                self.z_enemy_dict[spawned_enemy]["weapon"])
+        spawned_enemy_name = random.choices(enemy_name_list, weights=enemy_spawn_weights)[0]
+        
+        self.new_spawned_enemy = characters.Enemy(spawned_enemy_name, 
+                                                random_value,
+                                                self.z_enemy_dict[spawned_enemy_name]["attribute_weights"],
+                                                self.z_enemy_dict[spawned_enemy_name]["weapon"])
+        return self.new_spawned_enemy
 
     def getAction(self):
         # Decide if an encounter happens or not

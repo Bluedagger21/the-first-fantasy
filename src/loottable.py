@@ -8,7 +8,7 @@ class LootGenerator:
         self.owner = owner
 
         self.drop_types=["Consumable", "Equipment"]
-        self.drop_types_wieghts = [10, 5]
+        self.drop_types_wieghts = [8, 5]
         self.rarity_weights = [200, 40, 20, 10, 5, 1]
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
         self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]
@@ -77,7 +77,7 @@ class LootGenerator:
         if created_item_type == "SmallXP":
             return items.SmallExperienceBoost()
         elif created_item_type == "SmallHP":
-            return items.SmallHealthPotion
+            return items.SmallHealthPotion()
         return created_item_type()
     
     def createWeapon(self, item_rarity):
@@ -86,8 +86,8 @@ class LootGenerator:
                           "Dexterity" : 0,
                           "Intelligence" : 0}
         base_name, stats = random.choice(list(self.weapon_dict.items()))
-        for modifier in list(stats.items()):
-            modifiers_dict.update(modifier)
+        
+        modifiers_dict.update(stats)
 
         return items.Weapon(base_name, modifiers_dict)
         
@@ -99,8 +99,10 @@ class LootGenerator:
 
         slot, base_dict = random.choice(list(self.armor_dict.items()))
         base_name, stats = random.choice(list(base_dict.items()))
-        for modifier in list(stats.items()):
-            modifiers_dict.update(modifier)
+
+        modifiers_dict.update(stats)
+        # for modifier in list(stats.items()):
+        #     modifiers_dict.update(modifier)
         
         return items.Armor(base_name, slot, modifiers_dict)
         

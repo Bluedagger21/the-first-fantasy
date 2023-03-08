@@ -18,7 +18,7 @@ class Equipment():
     def getName(self):
         return self.name
 
-    def show(self):
+    def showEverything(self):
         # Print attributes of the equipment
         print(self.name)
         print("STR: " + repr(self.attributes["Strength"]))
@@ -28,7 +28,7 @@ class Equipment():
     def getOptions(self, accessed_from="zone"):
         # Displays and prompts equipment options
         while True:
-            self.show()
+            self.showEverything()
             if accessed_from == "combat":
                 print("\n*** Equipping This Item Will End Your Turn ***")
             print("\n(E)quip/Compare   (D)estroy    (Q)uit")
@@ -42,7 +42,7 @@ class Equipment():
             # might need else continue here as well for input validation?
 class Armor(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, modifiers, slot, stack_limit=1):
+    def __init__(self, name, slot, modifiers, stack_limit=1):
         super().__init__(name, modifiers, stack_limit)
         self.slot = slot
 
@@ -51,38 +51,51 @@ class Weapon(Equipment):
     def __init__(self, name, modifiers, slot="Main Hand", stack_limit=1):
         super().__init__(name, modifiers, stack_limit)
         self.slot = slot
-        self.base_damage = modifiers.setdefault("Base Damage", 5)
-        self.base_increase = modifiers.setdefault("Base Increase", 0)
-        self.random_damage = modifiers.setdefault("Random Damage", 5)
-        self.random_increase = modifiers.setdefault("Random Damage Increase", 0)
-        self.random_mult = modifiers.setdefault("Random Multiplier", 1)
-        self.base_crit_rate = modifiers.setdefault("Base Crit Rate", .05)
-        self.crit_mult = modifiers.setdefault("Crit Multiplier", 2)
+        self.base_damage_total = self.modifiers.setdefault("Base Damage Total", 5)
+        self.base_damage = self.modifiers.setdefault("Base Damage", 5)
+        self.base_increase = self.modifiers.setdefault("Base Increase", 0)
+        self.random_damage_total = self.modifiers.setdefault("Random Damage Total", 5)
+        self.random_damage = self.modifiers.setdefault("Random Damage", 5)
+        self.random_increase = self.modifiers.setdefault("Random Damage Increase", 0)
+        self.random_mult = self.modifiers.setdefault("Random Multiplier", 1)
+        self.base_crit_rate = self.modifiers.setdefault("Base Crit Rate", .05)
+        self.crit_mult = self.modifiers.setdefault("Crit Multiplier", 2)
 
-        if self.rarity is "+1":
+        if self.rarity == "+1":
             self.base_increase += 1
-        elif self.rarity is "+2":
+        elif self.rarity == "+2":
             self.base_increase += 2
-        elif self.rarity is "+3":
+        elif self.rarity == "+3":
             self.base_increase += 3
-        elif self.rarity is "+4":
+        elif self.rarity == "+4":
             self.base_increase += 4
-        elif self.rarity is "+5":
+        elif self.rarity == "+5":
             self.base_increase += 5
 
-    def getCalculatedDamage(self, dealer):
-        base_dmg_inc = round((1 + (self.base_increase/1)) + \
-            dealer.attribute_bonuses["str_base_dmg"][2])
-        rnd_dmg_inc = round((1 + (self.random_increase/1)) + \
-            dealer.attribute_bonuses["dex_rnd_dmg"][2])
+        self.base_damage_total = self.base_damage + self.base_increase
+        self.modifiers.update({"Base Damage Total": self.base_damage_total})
+        self.random_damage_total = self.random_damage + self.random_increase
+        self.modifiers.update({"Random Damage Total": self.random_damage_total})
 
-        base_dmg = self.base_damage + base_dmg_inc
+    def getCalculatedDamage(self, dealer):
+        dealer_dmg_inc = dealer.attribute_bonuses["str_base_dmg"][2]
+        dealer_rnd_dmg_inc = dealer.attribute_bonuses["dex_rnd_dmg"][2]
+
+        calc_base_dmg = self.base_damage_total + dealer_dmg_inc
         rnd_dmg = 0
     
         for i in range(self.random_mult):
-            rnd_dmg += random.randrange(self.random_damage + rnd_dmg_inc)
+            rnd_dmg += random.randrange(self.random_damage_total + dealer_rnd_dmg_inc + 1)
         
-        return base_dmg + rnd_dmg
+        return calc_base_dmg + rnd_dmg
+
+    def showEverything(self):
+        # Print everything from the equipment
+        print(self.name)
+        print("STR: " + repr(self.attributes["Strength"]))
+        print("DEX: " + repr(self.attributes["Dexterity"]))
+        print("INT: " + repr(self.attributes["Intelligence"]))
+        print("Attack: {} + {}d({})".format(self.base_damage_total, self.random_mult, self.random_damage_total))
 
 class Consumable():
     # Defines base members and methods for consumables
