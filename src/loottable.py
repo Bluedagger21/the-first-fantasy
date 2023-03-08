@@ -92,10 +92,10 @@ class LootGenerator:
         return items.Weapon(base_name, modifiers_dict)
         
     def createArmor(self, item_rarity):
-        modifiers_dict = {"Rarity" : item_rarity,
-                          "Strength" : 0,
-                          "Dexterity" : 0,
-                          "Intelligence" : 0}
+        modifiers_dict = {"Rarity": item_rarity,
+                          "Strength": 0,
+                          "Dexterity": 0,
+                          "Intelligence": 0}
 
         slot, base_dict = random.choice(list(self.armor_dict.items()))
         base_name, stats = random.choice(list(base_dict.items()))
