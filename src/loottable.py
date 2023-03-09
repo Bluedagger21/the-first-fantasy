@@ -31,7 +31,7 @@ class LootGenerator:
                                      "Random Damage" : 4},
                             "Dagger": {"Base Damage" : 4,
                                        "Random Damage" : 6}}
-        self.armor_dict = {"Helm": {"Helmet" : {"Strength" : 1,
+        self.armor_dict = {"Head": {"Helmet" : {"Strength" : 1,
                                                 "Dexterity" : 0},
                                     "Tricorn" : {"Strength" : 0,
                                                  "Dexterity" : 1}},
