@@ -133,7 +133,7 @@ class Enemy(Character):
 
     def attack(self, receiver):
         if random.random() <= receiver.getEvasionRate():
-            print("{} missed their attack!")
+            print("{} missed their attack!".format(self.name))
         else:
             weapon_damage = self.weapon.getCalculatedDamage(self)
             if random.random() <= self.getCritRate():
