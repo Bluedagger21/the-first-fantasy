@@ -15,26 +15,38 @@ class Character:
         self.equipped_gear = inventory.Equipment(self)
         self.character_attributes = base_attributes
         self.total_attributes = {}
-        self.attribute_bonuses = {"str_base_dmg" : ["Strength", 1/5, 0],
-                                    "str_hp" : ["Strength", 3, 0],
-                                    "str_phy_resist": ["Strength", 1/10, 0],
-                                    "dex_rnd_dmg" : ["Dexterity", 1/5, 0],
-                                    "dex_crit_rate" : ["Dexterity", 1/10, 0],
-                                    "dex_eva" : ["Dexterity", 1/10, 0],
-                                    "int_mag_dmg" : ["Intelligence", 1/5, 0],
-                                    "int_mana_regen" : ["Intelligence", 1/3, 0],
-                                    "int_mag_resist" : ["Intelligence", 1/10, 0]
+        self.attribute_bonuses = {"Base Damage" : ["Strength", 1/5, 0],
+                                    "HP" : ["Strength", 3, 0],
+                                    "Physical Resist": ["Strength", 1/1000, 0],
+                                    "Random Damage" : ["Dexterity", 1/5, 0],
+                                    "Crit Rate" : ["Dexterity", 1/1000, 0],
+                                    "Evasion" : ["Dexterity", 1/1000, 0],
+                                    "Magic Damage" : ["Intelligence", 1/5, 0],
+                                    "Mana Regen" : ["Intelligence", 1/3, 0],
+                                    "Magical Resist" : ["Intelligence", 1/1000, 0]
                                     }
+        self.total_modifiers = {}
         self.health = 0
         self.level = level
 
     def update(self):
         self.updateTotalAttributes()
         self.updateBonuses()
+        self.updateTotalModifiers()
+
+    def updateTotalModifiers(self):
+        self.total_modifiers.update(self.equipped_gear.getModifiers())
+
+        for modifier in self.attribute_bonuses:
+            if modifier in self.total_modifiers:
+                self.total_modifiers[modifier] += self.attribute_bonuses[modifier][2]
+            else:
+                self.total_modifiers.update({modifier:self.attribute_bonuses[modifier][2]})
 
     def updateBonuses(self):
         for bonus in self.attribute_bonuses.values():
-            bonus[2] = math.floor(self.total_attributes[bonus[0]] * bonus[1])
+            bonus[2] = self.total_attributes[bonus[0]] * bonus[1]
+        
 
     def updateTotalAttributes(self):
         self.total_attributes.update(self.character_attributes)
@@ -46,25 +58,30 @@ class Character:
 
 
     def getMaxHealth(self):
-        return self.attribute_bonuses["str_hp"][2]
+        return self.total_modifiers["HP"]
 
     def getPhysResist(self):
-        return (self.attribute_bonuses["str_phy_resist"][2] / 100)
+        return self.total_modifiers["Physical Resist"]
+    
+    def getMagResist(self):
+        return self.total_modifiers["Magical Resist"]
+    
+    def getEvasionRate(self):
+        return self.total_modifiers["Evasion"]
 
     def showStringWeaponDamage(self):
-        base_dmg = self.equipped_gear.slots_dict["Main Hand"].base_damage_total + \
-            self.attribute_bonuses["str_base_dmg"][2]
-        random_dmg = self.equipped_gear.slots_dict["Main Hand"].random_damage_total + \
-            self.attribute_bonuses["dex_rnd_dmg"][2]
-        random_mult = self.equipped_gear.slots_dict["Main Hand"].random_mult
+        base_dmg = self.equipped_gear.slots_dict["Main Hand"].modifiers["Base Damage"] + \
+            self.total_modifiers["Base Damage"]
+        random_dmg = self.equipped_gear.slots_dict["Main Hand"].modifiers["Random Damage"] + \
+            self.total_modifiers["Random Damage"]
+        random_mult = self.equipped_gear.slots_dict["Main Hand"].modifiers["Random Multiplier"]
         return "{} + ({} to {})".format(base_dmg, random_mult, random_dmg * random_mult)
     
     def getCritRate(self):
-        return self.equipped_gear.slots_dict["Main Hand"].base_crit_rate + \
-            (self.attribute_bonuses["dex_crit_rate"][2] / 100)
+        return self.total_modifiers["Crit Rate"]
 
     def getCritMult(self):
-        return self.equipped_gear.slots_dict["Main Hand"].crit_mult
+        return self.total_modifiers["Crit Multiplier"]
     
     def getCharacterSheet(self):
         print("[---Character Sheet---]")
@@ -75,7 +92,9 @@ class Character:
         print("Intelligence: {}".format(self.character_attributes["Intelligence"]))
         print("\nAttack: {}".format(self.showStringWeaponDamage()))
         print("Crit Chance: {:.2%}".format(self.getCritRate()))
-        print("Physical Resist: {:.2%}".format(self.getPhysResist()))
+        print("\nPhysical Resist: {:.2%}".format(self.getPhysResist()))
+        print("Magical Resist: {:.2%}".format(self.getMagResist()))
+        print("Evasion Chance: {:.2%}".format(self.getEvasionRate()))
 
     def takeDamage(self, damage):
         damage -= round(damage * self.getPhysResist())
@@ -98,7 +117,7 @@ class Enemy(Character):
                           "Intelligence" : attribute_weights[2]}
         super().__init__(name, attributes, level)
         self.att_weights = attribute_weights
-        self.initLevel(self.level * 10)
+        self.initLevel(self.level * 8)
         self.update()
         self.health = self.getMaxHealth()
         self.loot_table = loottable.LootGenerator(level, self)
@@ -110,15 +129,18 @@ class Enemy(Character):
             self.character_attributes[att] += 1
 
     def attack(self, receiver):
-        weapon_damage = self.weapon.getCalculatedDamage(self)
-        if random.random() <= self.getCritRate():
-            print("CRITICAL STRIKE!!!")
-            weapon_damage *= self.getCritMult()
-        round(weapon_damage)
+        if random.random() <= receiver.getEvasionRate():
+            print("{} missed their attack!")
+        else:
+            weapon_damage = self.weapon.getCalculatedDamage(self)
+            if random.random() <= self.getCritRate():
+                print("CRITICAL STRIKE!!!")
+                weapon_damage *= self.getCritMult()
+            round(weapon_damage)
 
-        print(self.name + " attacked for " + repr(weapon_damage) +
-              " (-{})".format(round(weapon_damage * ((1 + receiver.getPhysResist())/100))))
-        receiver.takeDamage(weapon_damage)
+            print(self.name + " attacked for " + repr(weapon_damage) +
+                " (-{})".format(round(weapon_damage * receiver.getPhysResist())))
+            receiver.takeDamage(weapon_damage)
 
 
 class Player(Character):
@@ -203,15 +225,19 @@ class Player(Character):
                 self.inventory.remove(accessed_item)
 
     def attack(self, receiver):
-        weapon_damage = self.equipped_gear.get("Main Hand").getCalculatedDamage(self)
-        if random.random() <= self.getCritRate():
-            print("CRITICAL STRIKE!!!")
-            weapon_damage *= self.getCritMult()
-        round(weapon_damage)
+        if random.random() <= receiver.getEvasionRate():
+            print("{} missed their attack!")
+        else:
+            weapon_damage = self.equipped_gear.get("Main Hand").getCalculatedDamage(self)
 
-        print(self.name + " attacked for " + repr(weapon_damage) +
-              " (-{})".format(round(weapon_damage * ((1 + receiver.getPhysResist())/100))))
-        receiver.takeDamage(weapon_damage)
+            if random.random() <= self.getCritRate():
+                print("CRITICAL STRIKE!!!")
+                weapon_damage *= self.getCritMult()
+            round(weapon_damage)
+            
+            print(self.name + " attacked for " + repr(weapon_damage) +
+                " (-{})".format(round(weapon_damage * receiver.getPhysResist())))
+            receiver.takeDamage(weapon_damage)
 
     def checkLevelUp(self):
         # Checks to see if enough experience has been gained to level up
@@ -263,7 +289,9 @@ class Player(Character):
         print("Intelligence: {}".format(self.total_attributes["Intelligence"]))
         print("\nAttack: {}".format(self.showStringWeaponDamage()))
         print("Crit Chance: {:.2%}".format(self.getCritRate()))
-        print("Physical Resist: {:.2%}".format(self.getPhysResist()))
+        print("\nPhysical Resist: {:.2%}".format(self.getPhysResist()))
+        print("Magical Resist: {:.2%}".format(self.getMagResist()))
+        print("Evasion Chance: {:.2%}".format(self.getEvasionRate()))
 
         print("\n[------Equipment-----]")
         for x in self.equipped_gear.slots_dict:

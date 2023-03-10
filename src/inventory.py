@@ -1,5 +1,6 @@
 import items
 import os
+import collections
 
 class Storage:
     # Defines base members and methods for storing and accessing generic items
@@ -113,9 +114,29 @@ class Equipment():
                            "Off Hand": None}
         self.owner = owner
         self.total_attributes = self.updateAttributes()
+        self.total_modifiers = self.updateModifiers()
     
     def getAttributes(self):
+        self.total_attributes = self.updateAttributes()
         return self.total_attributes
+    
+    def getModifiers(self):
+        self.total_modifiers = self.updateModifiers()
+        return self.total_modifiers
+
+    def updateModifiers(self):
+        new_modifiers = {}
+        for slot in self.slots_dict.values():
+            if slot is None:
+                continue
+            else:
+                for modifier_name in slot.modifiers:
+                    if modifier_name in new_modifiers:
+                        new_modifiers[modifier_name] += slot.modifiers[modifier_name]
+                    else:
+                        new_modifiers.update({modifier_name : slot.modifiers[modifier_name]})
+        return new_modifiers
+
 
     def updateAttributes(self):
         self.total_attributes = {"Strength" : 0,

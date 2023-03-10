@@ -11,42 +11,66 @@ class LootGenerator:
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
         self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]
 
-        self.item_types = {"Consumable": {"Subtypes" : ("SmallXP",
-                                                        "SmallHP"),
-                                          "Subtype Weights" : [1,2],
-                                          "Type Weight" : 10},
+        self.item_types = {"Consumable": {"Subtypes": ("SmallXP",
+                                                       "SmallHP"),
+                                          "Subtype Weights": [1, 2],
+                                          "Type Weight": 25},
 
-                           "Equipment": {"Subtypes" : ("Weapon",
-                                                       "Armor"),
-                                         "Subtype Weights" : [2,8],
-                                         "Type Weight" : 10},
-                           "None" : {"Subtypes" : None,
-                                     "Subtype Weights" : None,
-                                     "Type Weight" : 10}
+                           "Equipment": {"Subtypes": ("Weapon",
+                                                      "Armor"),
+                                         "Subtype Weights": [2, 8],
+                                         "Type Weight": 35},
+                           "Unique": {"Type Weight": 1},
+                           "None": {"Type Weight": 39}
                           }
         
-        self.weapon_dict = {"Sword": {"Base Damage" : 5,
-                                      "Random Damage" : 5},
-                            "Mace": {"Base Damage" : 6,
-                                     "Random Damage" : 4},
-                            "Dagger": {"Base Damage" : 4,
-                                       "Random Damage" : 6}}
-        self.armor_dict = {"Head": {"Helmet" : {"Strength" : 1,
-                                                "Dexterity" : 0},
-                                    "Tricorn" : {"Strength" : 0,
-                                                 "Dexterity" : 1}},
-                           "Body": {"Breastplate" : {"Strength" : 1,
-                                                     "Dexterity" : 0},
-                                    "Leather Wrappings" : {"Strength" : 0,
-                                                           "Dexterity" : 1}},
-                           "Hand": {"Gauntlets" : {"Strength" : 1,
-                                                   "Dexterity" : 0},
-                                    "Leather Gloves" : {"Strength" : 0,
-                                                        "Dexterity" : 1}},
-                           "Feet": {"Greaves" : {"Strength" : 1,
-                                                 "Dexterity" : 0},
-                                    "Leather Boots" : {"Strength" : 0,
-                                                       "Dexterity" : 1}}}
+        self.weapon_dict = {"Sword": {"Base Damage": 5,
+                                      "Random Damage": 5},
+                            "Mace": {"Base Damage": 6,
+                                     "Random Damage": 4},
+                            "Dagger": {"Base Damage": 4,
+                                       "Random Damage": 6}}
+        self.armor_dict = {"Head": {"Helmet": {"Strength": 1,
+                                               "Dexterity": 0},
+                                    "Tricorn": {"Strength": 0,
+                                                "Dexterity": 1}},
+                           "Body": {"Breastplate": {"Strength": 1,
+                                                    "Dexterity": 0},
+                                    "Leather Wrappings": {"Strength": 0,
+                                                          "Dexterity": 1}},
+                           "Hands": {"Gauntlets": {"Strength": 1,
+                                                   "Dexterity": 0},
+                                     "Leather Gloves": {"Strength": 0,
+                                                        "Dexterity": 1}},
+                           "Feet": {"Greaves": {"Strength": 1,
+                                                "Dexterity": 0},
+                                    "Leather Boots": {"Strength": 0,
+                                                      "Dexterity": 1}}}
+        self.unique_dict = {"Main Hand": {"Demonforged Blade": {"Base Damage": 5,
+                                                                "Random Damage": 5},
+                                          "Bane of Darkness": {"Base Damage": 6,
+                                                               "Random Damage": 4},
+                                          "Throatsplitter": {"Base Damage": 2,
+                                                             "Random Damage": 4,
+                                                             "Random Multiplier": 2,
+                                                             "Crit Rate": 0.10,
+                                                             "Crit Multiplier": 3}},
+                            "Head": {"Sanctuary": {"Strength": 1,
+                                                   "Dexterity": 0},
+                                     "Thorned Crown": {"Strength": 0,
+                                                       "Dexterity": 1}},
+                            "Body": {"Judgement's Chestguard": {"Strength": 1,
+                                                                "Dexterity": 0},
+                                     "Warrior's Wrappings": {"Strength": 0,
+                                                             "Dexterity": 1}},
+                            "Hands": {"Fierce Grip": {"Strength": 1,
+                                                      "Dexterity": 0},
+                                      "Leather Gloves": {"Strength": 0,
+                                                         "Dexterity": 1}},
+                            "Feet": {"Gravestompers": {"Strength": 1,
+                                                       "Dexterity": 0},
+                                     "Leather Boots": {"Strength": 0,
+                                                       "Dexterity": 1}}}
 
         self.loot_list = []
     def generateLoot(self):
@@ -67,6 +91,8 @@ class LootGenerator:
                 generated_item = self.createWeapon(item_rarity)
             elif type_of_equipment == "Armor":
                 generated_item = self.createArmor(item_rarity)
+        elif item_type == "Unique":
+            generated_item = self.createUnique(item_rarity)
         return generated_item
             
 
@@ -86,6 +112,18 @@ class LootGenerator:
                 self.rarity_weights[i] = self.rarity_weights[i] * ((1 + self.ilvl) * self.rarity_scales[i])
         return random.choices(self.rarity, weights=self.rarity_weights)[0]
         
+    def createUnique(self, rarity):
+        modifiers_dict = {"Rarity" : rarity}
+        created_item_slot = random.choices(self.unique_dict.keys())[0]
+        base_name, stats = random.choices(list(self.unique_dict[created_item_slot].items()))
+
+        modifiers_dict.update(stats)
+
+        if created_item_slot == "Main Hand":
+            return items.Weapon(base_name, modifiers_dict)
+        else:
+            return items.Armor(base_name, created_item_slot, modifiers_dict)
+
     def createConsumable(self):
         created_item_type = random.choices(self.item_types["Consumable"]["Subtypes"], weights=self.item_types["Consumable"]["Subtype Weights"])[0]
         if created_item_type == "SmallXP":

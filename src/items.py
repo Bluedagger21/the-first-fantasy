@@ -25,6 +25,12 @@ class Equipment():
         print("DEX: " + repr(self.attributes["Dexterity"]))
         print("INT: " + repr(self.attributes["Intelligence"]))
 
+        for modifier in self.modifiers:
+            if modifier == "Strength" or modifier == "Dexterity" or modifier == "Intelligence":
+                continue
+            else:
+                print("{}: {}".format(modifier, self.modifiers[modifier]))
+
     def getOptions(self, accessed_from="zone"):
         # Displays and prompts equipment options
         while True:
@@ -51,51 +57,46 @@ class Weapon(Equipment):
     def __init__(self, name, modifiers, slot="Main Hand", stack_limit=1):
         super().__init__(name, modifiers, stack_limit)
         self.slot = slot
-        self.base_damage_total = self.modifiers.setdefault("Base Damage Total", 5)
-        self.base_damage = self.modifiers.setdefault("Base Damage", 5)
-        self.base_increase = self.modifiers.setdefault("Base Increase", 0)
-        self.random_damage_total = self.modifiers.setdefault("Random Damage Total", 5)
-        self.random_damage = self.modifiers.setdefault("Random Damage", 5)
-        self.random_increase = self.modifiers.setdefault("Random Damage Increase", 0)
-        self.random_mult = self.modifiers.setdefault("Random Multiplier", 1)
-        self.base_crit_rate = self.modifiers.setdefault("Base Crit Rate", .05)
-        self.crit_mult = self.modifiers.setdefault("Crit Multiplier", 2)
+        self.modifiers.setdefault("Base Damage", 5)
+        self.modifiers.setdefault("Random Damage", 5)
+        self.modifiers.setdefault("Random Multiplier", 1)
+        self.modifiers.setdefault("Crit Rate", .05)
+        self.modifiers.setdefault("Crit Multiplier", 2)
 
         if self.rarity == "+1":
-            self.base_increase += 1
+            self.modifiers["Base Damage"] += 1
         elif self.rarity == "+2":
-            self.base_increase += 2
+            self.modifiers["Base Damage"] += 2
         elif self.rarity == "+3":
-            self.base_increase += 3
+            self.modifiers["Base Damage"] += 3
         elif self.rarity == "+4":
-            self.base_increase += 4
+            self.modifiers["Base Damage"] += 4
         elif self.rarity == "+5":
-            self.base_increase += 5
-
-        self.base_damage_total = self.base_damage + self.base_increase
-        self.modifiers.update({"Base Damage Total": self.base_damage_total})
-        self.random_damage_total = self.random_damage + self.random_increase
-        self.modifiers.update({"Random Damage Total": self.random_damage_total})
+            self.modifiers["Base Damage"] += 5
 
     def getCalculatedDamage(self, dealer):
-        dealer_dmg_inc = dealer.attribute_bonuses["str_base_dmg"][2]
-        dealer_rnd_dmg_inc = dealer.attribute_bonuses["dex_rnd_dmg"][2]
+        dealer_dmg_inc = dealer.modifiers["Base Damage"]
+        dealer_rnd_dmg_inc = dealer.modifiers["Random Damage"]
 
-        calc_base_dmg = self.base_damage_total + dealer_dmg_inc
+        calc_base_dmg = self.modifiers["Base Damage"] + dealer_dmg_inc
         rnd_dmg = 0
     
-        for i in range(self.random_mult):
-            rnd_dmg += random.randrange(self.random_damage_total + dealer_rnd_dmg_inc + 1)
+        for i in range(self.modifiers["Random Multiplier"]):
+            rnd_dmg += random.randrange(self.modifiers["Random Damage"] + dealer_rnd_dmg_inc + 1)
         
         return calc_base_dmg + rnd_dmg
 
     def showEverything(self):
         # Print everything from the equipment
         print(self.name)
-        print("STR: " + repr(self.attributes["Strength"]))
-        print("DEX: " + repr(self.attributes["Dexterity"]))
-        print("INT: " + repr(self.attributes["Intelligence"]))
-        print("Attack: {} + {}d({})".format(self.base_damage_total, self.random_mult, self.random_damage_total))
+        print("Attack: {} + {}d({})".format(self.modifiers["Base Damage"], 
+                                            self.modifiers["Random Multiplier"], 
+                                            self.modifiers["Random Damage"]))
+        for modifier in self.modifiers:
+            if modifier == "Base Damage" or modifier == "Random Multiplier" or modifier == "Random Damage":
+                continue
+            else:
+                print("{}: {}".format(modifier, self.modifiers[modifier]))
 
 class Consumable():
     # Defines base members and methods for consumables
