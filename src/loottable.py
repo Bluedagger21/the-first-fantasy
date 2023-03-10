@@ -114,8 +114,8 @@ class LootGenerator:
         
     def createUnique(self, rarity):
         modifiers_dict = {"Rarity" : rarity}
-        created_item_slot = random.choices(self.unique_dict.keys())[0]
-        base_name, stats = random.choices(list(self.unique_dict[created_item_slot].items()))
+        created_item_slot = random.choices(list(self.unique_dict.keys()))[0]
+        base_name, stats = random.choices(list(self.unique_dict[created_item_slot].items()))[0]
 
         modifiers_dict.update(stats)
 

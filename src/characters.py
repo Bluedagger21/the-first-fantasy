@@ -115,12 +115,12 @@ class Enemy(Character):
                  weapon_modifiers,
                  attributes = None):
         if attributes == None:
-            attributes = {"Strength" : attribute_weights[0],
-                          "Dexterity" : attribute_weights[1],
-                          "Intelligence" : attribute_weights[2]}
+            attributes = {"Strength" : round(attribute_weights[0] / 2),
+                          "Dexterity" : round(attribute_weights[1] / 2),
+                          "Intelligence" : round(attribute_weights[2] / 2)}
         super().__init__(name, attributes, level)
         self.att_weights = attribute_weights
-        self.initLevel(self.level * 8)
+        self.initLevel(self.level * 10)
         self.update()
         self.health = self.getMaxHealth()
         self.loot_table = loottable.LootGenerator(level, self)
