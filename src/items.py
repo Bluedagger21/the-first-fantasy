@@ -1,5 +1,6 @@
 import os
 import random
+import math
 class Equipment():
     # Base equippable item class
     def __init__(self, name, modifiers, stack_limit=1):
@@ -75,16 +76,15 @@ class Weapon(Equipment):
             self.modifiers["Base Damage"] += 5
 
     def getCalculatedDamage(self, dealer):
-        dealer_dmg_inc = dealer.modifiers["Base Damage"]
-        dealer_rnd_dmg_inc = dealer.modifiers["Random Damage"]
+        base_dmg = math.floor(dealer.total_modifiers["Base Damage"])
+        rnd_dmg = math.floor(dealer.total_modifiers["Random Damage"])
 
-        calc_base_dmg = self.modifiers["Base Damage"] + dealer_dmg_inc
-        rnd_dmg = 0
+        rnd_dmg_total = 0
     
         for i in range(self.modifiers["Random Multiplier"]):
-            rnd_dmg += random.randrange(self.modifiers["Random Damage"] + dealer_rnd_dmg_inc + 1)
+            rnd_dmg_total += random.randrange(rnd_dmg) + 1
         
-        return calc_base_dmg + rnd_dmg
+        return base_dmg + rnd_dmg_total
 
     def showEverything(self):
         # Print everything from the equipment
