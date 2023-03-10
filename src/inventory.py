@@ -200,21 +200,21 @@ class Equipment():
                            str(new_equipment.attributes["Intelligence"] - cur_equipment.attributes["Intelligence"]).ljust(DIF_WIDTH))))
             if isinstance(new_equipment, items.Weapon):
                 print("".join(("Base Damage".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Base Damage Total"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Base Damage Total"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Base Damage Total"] - cur_equipment.modifiers["Base Damage Total"]).ljust(DIF_WIDTH))))
+                            str(new_equipment.modifiers["Base Damage"]).ljust(NEW_NAME_WIDTH),
+                            str(cur_equipment.modifiers["Base Damage"]).ljust(CUR_NAME_WIDTH),
+                            str(new_equipment.modifiers["Base Damage"] - cur_equipment.modifiers["Base Damage"]).ljust(DIF_WIDTH))))
                 print("".join(("Random Damage".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Random Damage Total"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Random Damage Total"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Random Damage Total"] - cur_equipment.modifiers["Random Damage Total"]).ljust(DIF_WIDTH))))
+                            str(new_equipment.modifiers["Random Damage"]).ljust(NEW_NAME_WIDTH),
+                            str(cur_equipment.modifiers["Random Damage"]).ljust(CUR_NAME_WIDTH),
+                            str(new_equipment.modifiers["Random Damage"] - cur_equipment.modifiers["Random Damage"]).ljust(DIF_WIDTH))))
                 print("".join(("Random Multiplier".ljust(STAT_WIDTH),
                             str(new_equipment.modifiers["Random Multiplier"]).ljust(NEW_NAME_WIDTH),
                             str(cur_equipment.modifiers["Random Multiplier"]).ljust(CUR_NAME_WIDTH),
                             str(new_equipment.modifiers["Random Multiplier"] - cur_equipment.modifiers["Random Multiplier"]).ljust(DIF_WIDTH))))
-                print("".join(("Base Crit Rate".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Base Crit Rate"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Base Crit Rate"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Base Crit Rate"] - cur_equipment.modifiers["Base Crit Rate"]).ljust(DIF_WIDTH))))
+                print("".join(("Crit Rate".ljust(STAT_WIDTH),
+                            str(new_equipment.modifiers["Crit Rate"]).ljust(NEW_NAME_WIDTH),
+                            str(cur_equipment.modifiers["Crit Rate"]).ljust(CUR_NAME_WIDTH),
+                            str(new_equipment.modifiers["Crit Rate"] - cur_equipment.modifiers["Crit Rate"]).ljust(DIF_WIDTH))))
                 print("".join(("Crit Multiplier".ljust(STAT_WIDTH),
                             str(new_equipment.modifiers["Crit Multiplier"]).ljust(NEW_NAME_WIDTH),
                             str(cur_equipment.modifiers["Crit Multiplier"]).ljust(CUR_NAME_WIDTH),

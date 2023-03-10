@@ -35,13 +35,15 @@ class Character:
         self.updateTotalModifiers()
 
     def updateTotalModifiers(self):
-        self.total_modifiers.update(self.equipped_gear.getModifiers())
+        new_total_modifiers = {}
+        new_total_modifiers.update(self.equipped_gear.getModifiers())
 
         for modifier in self.attribute_bonuses:
-            if modifier in self.total_modifiers:
-                self.total_modifiers[modifier] += self.attribute_bonuses[modifier][2]
+            if modifier in new_total_modifiers:
+                new_total_modifiers[modifier] += self.attribute_bonuses[modifier][2]
             else:
-                self.total_modifiers.update({modifier:self.attribute_bonuses[modifier][2]})
+                new_total_modifiers.update({modifier:self.attribute_bonuses[modifier][2]})
+        self.total_modifiers = new_total_modifiers
 
     def updateBonuses(self):
         for bonus in self.attribute_bonuses.values():
@@ -49,13 +51,15 @@ class Character:
         
 
     def updateTotalAttributes(self):
-        self.total_attributes.update(self.character_attributes)
+        new_total_attributes = {}
+        new_total_attributes.update(self.character_attributes)
         gear_attributes = self.equipped_gear.getAttributes()
         
-        self.total_attributes["Strength"] += gear_attributes["Strength"]
-        self.total_attributes["Dexterity"] += gear_attributes["Dexterity"]
-        self.total_attributes["Intelligence"] += gear_attributes["Intelligence"]
+        new_total_attributes["Strength"] += gear_attributes["Strength"]
+        new_total_attributes["Dexterity"] += gear_attributes["Dexterity"]
+        new_total_attributes["Intelligence"] += gear_attributes["Intelligence"]
 
+        self.total_attributes = new_total_attributes
 
     def getMaxHealth(self):
         return self.total_modifiers["HP"]
@@ -70,11 +74,9 @@ class Character:
         return self.total_modifiers["Evasion"]
 
     def showStringWeaponDamage(self):
-        base_dmg = self.equipped_gear.slots_dict["Main Hand"].modifiers["Base Damage"] + \
-            self.total_modifiers["Base Damage"]
-        random_dmg = self.equipped_gear.slots_dict["Main Hand"].modifiers["Random Damage"] + \
-            self.total_modifiers["Random Damage"]
-        random_mult = self.equipped_gear.slots_dict["Main Hand"].modifiers["Random Multiplier"]
+        base_dmg = self.total_modifiers["Base Damage"]
+        random_dmg = self.total_modifiers["Random Damage"]
+        random_mult = self.total_modifiers["Random Multiplier"]
         return "{} + ({} to {})".format(base_dmg, random_mult, random_dmg * random_mult)
     
     def getCritRate(self):
@@ -92,6 +94,7 @@ class Character:
         print("Intelligence: {}".format(self.character_attributes["Intelligence"]))
         print("\nAttack: {}".format(self.showStringWeaponDamage()))
         print("Crit Chance: {:.2%}".format(self.getCritRate()))
+
         print("\nPhysical Resist: {:.2%}".format(self.getPhysResist()))
         print("Magical Resist: {:.2%}".format(self.getMagResist()))
         print("Evasion Chance: {:.2%}".format(self.getEvasionRate()))
@@ -226,7 +229,7 @@ class Player(Character):
 
     def attack(self, receiver):
         if random.random() <= receiver.getEvasionRate():
-            print("{} missed their attack!")
+            print("{} missed their attack!".format(self.name))
         else:
             weapon_damage = self.equipped_gear.get("Main Hand").getCalculatedDamage(self)
 

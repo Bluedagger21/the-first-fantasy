@@ -27,10 +27,13 @@ class Equipment():
         print("INT: " + repr(self.attributes["Intelligence"]))
 
         for modifier in self.modifiers:
-            if modifier == "Strength" or modifier == "Dexterity" or modifier == "Intelligence":
+            if modifier == "Strength" or modifier == "Dexterity" or modifier == "Intelligence" or modifier == "Rarity":
                 continue
             else:
-                print("{}: {}".format(modifier, self.modifiers[modifier]))
+                if isinstance(self.modifiers[modifier], float):
+                    print("{}: {:.2%}".format(modifier, self.modifiers[modifier]))
+                else:
+                    print("{}: {}".format(modifier, self.modifiers[modifier]))
 
     def getOptions(self, accessed_from="zone"):
         # Displays and prompts equipment options
