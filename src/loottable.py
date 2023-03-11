@@ -22,8 +22,8 @@ class LootGenerator:
                                          "Type Weight": 45},
                            "Unique": {"Type Weight": 1},
                            "None": {"Type Weight": 29}
-                          }
-        
+                           }
+
         self.weapon_dict = {"Sword": {"Base Damage": 5,
                                       "Random Damage": 5},
                             "Mace": {"Base Damage": 6,
@@ -105,7 +105,7 @@ class LootGenerator:
         return random.choices(list_of_items, weights=weight_of_items)[0][0]
 
     def determineRarity(self):
-        for i,x in enumerate(self.rarity):
+        for i, x in enumerate(self.rarity):
             if i > self.ilvl:
                 self.rarity_weights[i] = 0
             else:
@@ -113,7 +113,7 @@ class LootGenerator:
         return random.choices(self.rarity, weights=self.rarity_weights)[0]
         
     def createUnique(self, rarity):
-        modifiers_dict = {"Rarity" : rarity}
+        modifiers_dict = {"Rarity": rarity}
         created_item_slot = random.choices(list(self.unique_dict.keys()))[0]
         base_name, stats = random.choices(list(self.unique_dict[created_item_slot].items()))[0]
 
