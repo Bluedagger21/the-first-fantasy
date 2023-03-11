@@ -115,12 +115,20 @@ def homescreen():
                 input("Press \"Enter\" to continue...")
             else:
                 cost = player.level * 10 + 15
-                print("Cost: {}g".format(cost))
-                if input("Accept? (Y/N): ").lower() == 'y':
-                    if player.takeGold(cost) is True:
-                        player.giveHealth(player.getMaxHealth())
-                        print(player.name + " has returned to full health!")
-                    input("Press \"Enter\" to continue...")
+                while True:
+                    print("Cost: {}g".format(cost))
+                    choice = input("Accept? (Y/N): ").lower()
+                    if choice == 'y':
+                        # probably need validation for this input, if anything other than y is entered it exits instead of just n
+                        if player.takeGold(cost) is True:
+                            player.giveHealth(player.getMaxHealth())
+                            print(player.name + " has returned to full health!")
+                        input("Press \"Enter\" to continue...")
+                        break
+                    elif choice == 'n':
+                        break
+                    else:
+                        continue  #this looks like it works now, unless any screen clearing need to be done
         elif choice == 'i':
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()
