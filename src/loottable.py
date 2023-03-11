@@ -30,22 +30,22 @@ class LootGenerator:
                                      "Random Damage": 4},
                             "Dagger": {"Base Damage": 4,
                                        "Random Damage": 6}}
-        self.armor_dict = {"Head": {"Helmet": {"Physical Resist": .01,
-                                               "HP": 5},
-                                    "Tricorn": {"Evasion": .01,
-                                                "HP": 3}},
-                           "Body": {"Breastplate": {"Physical Resist": .02,
-                                                    "HP": 5},
-                                    "Leather Wrappings": {"Evasion": .02,
-                                                          "HP": 3}},
-                           "Hands": {"Gauntlets": {"Physical Resist": .01,
-                                                   "HP": 5},
-                                     "Leather Gloves": {"Evasion": .01,
-                                                        "HP": 3}},
-                           "Feet": {"Greaves": {"Physical Resist": .01,
-                                                "HP": 5},
-                                    "Leather Boots": {"Evasion": .01,
-                                                      "HP": 3}}}
+        self.armor_dict = {"Head": {"Helmet": {"HP": 5,
+                                               "Physical Resist": .01},
+                                    "Tricorn": {"HP": 3,
+                                                "Evasion": .01}},
+                           "Body": {"Breastplate": {"HP": 5,
+                                                    "Physical Resist": .02},
+                                    "Leather Wrappings": {"HP": 3,
+                                                          "Evasion": .02}},
+                           "Hands": {"Gauntlets": {"HP": 5,
+                                                   "Physical Resist": .01},
+                                     "Leather Gloves": {"HP": 3,
+                                                        "Evasion": .01}},
+                           "Feet": {"Greaves": {"HP": 5,
+                                                "Physical Resist": .01},
+                                    "Leather Boots": {"HP": 3,
+                                                      "Evasion": .01}}}
         self.unique_dict = {"Main Hand": {"Demonforged Blade": {"Base Damage": 5,
                                                                 "Random Damage": 5},
                                           "Bane of Darkness": {"Base Damage": 6,
@@ -55,22 +55,22 @@ class LootGenerator:
                                                              "Random Multiplier": 2,
                                                              "Crit Rate": 0.10,
                                                              "Crit Multiplier": 3}},
-                            "Head": {"Sanctuary": {"Physical Resist": .01,
-                                                   "HP": 5},
-                                     "Thorned Crown": {"Evasion": .01,
-                                                       "HP": 3}},
-                            "Body": {"Judgement's Chestguard": {"Physical Resist": .01,
-                                                                "HP": 5},
-                                     "Warrior's Wrappings": {"Evasion": .01,
-                                                             "HP": 3}},
-                            "Hands": {"Fierce Grip": {"Physical Resist": .01,
-                                                      "HP": 5},
-                                      "Leather Gloves": {"Evasion": .01,
-                                                         "HP": 3}},
-                            "Feet": {"Gravestompers": {"Physical Resist": .01,
-                                                       "HP": 5},
-                                     "Leather Boots": {"Evasion": .01,
-                                                       "HP": 3}}}
+                            "Head": {"Sanctuary": {"HP": 5,
+                                                   "Physical Resist": .01},
+                                     "Thorned Crown": {"HP": 3,
+                                                       "Evasion": .01}},
+                            "Body": {"Judgement's Chestguard": {"HP": 5,
+                                                                "Physical Resist": .01},
+                                     "Warrior's Wrappings": {"HP": 3,
+                                                             "Evasion": .01}},
+                            "Hands": {"Fierce Grip": {"HP": 5,
+                                                      "Physical Resist": .01},
+                                      "Leather Gloves": {"HP": 3,
+                                                         "Evasion": .01}},
+                            "Feet": {"Gravestompers": {"HP": 5,
+                                                       "Physical Resist": .01},
+                                     "Leather Boots": {"HP": 3,
+                                                       "Evasion": .01}}}
 
         self.loot_list = []
     def generateLoot(self):
@@ -133,10 +133,7 @@ class LootGenerator:
         return created_item_type()
     
     def createWeapon(self, item_rarity):
-        modifiers_dict = {"Rarity": item_rarity,
-                          "Strength": 0,
-                          "Dexterity": 0,
-                          "Intelligence": 0}
+        modifiers_dict = {"Rarity": item_rarity}
         base_name, stats = random.choice(list(self.weapon_dict.items()))
         
         modifiers_dict.update(stats)
@@ -144,10 +141,7 @@ class LootGenerator:
         return items.Weapon(base_name, modifiers_dict)
         
     def createArmor(self, item_rarity):
-        modifiers_dict = {"Rarity": item_rarity,
-                          "Strength": 0,
-                          "Dexterity": 0,
-                          "Intelligence": 0}
+        modifiers_dict = {"Rarity": item_rarity}
 
         slot, base_dict = random.choice(list(self.armor_dict.items()))
         base_name, stats = random.choice(list(base_dict.items()))

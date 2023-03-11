@@ -8,9 +8,6 @@ class Equipment():
         self.stack_limit = stack_limit
         self.stack_size = 1
         self.modifiers = modifiers
-        self.attributes = {"Strength": self.modifiers.setdefault("Strength", 0),
-                           "Dexterity": self.modifiers.setdefault("Dexterity", 0),
-                           "Intelligence": self.modifiers.setdefault("Intelligence", 0)}
         self.rarity = self.modifiers.setdefault("Rarity", "+0")
 
         if self.rarity != "+0":
@@ -22,12 +19,10 @@ class Equipment():
     def showEverything(self):
         # Print attributes of the equipment
         print(self.name)
-        print("STR: " + repr(self.attributes["Strength"]))
-        print("DEX: " + repr(self.attributes["Dexterity"]))
-        print("INT: " + repr(self.attributes["Intelligence"]))
+        print("-"*len(self.name))
 
         for modifier in self.modifiers:
-            if modifier == "Strength" or modifier == "Dexterity" or modifier == "Intelligence" or modifier == "Rarity":
+            if modifier == "Rarity":
                 continue
             else:
                 if isinstance(self.modifiers[modifier], float):
