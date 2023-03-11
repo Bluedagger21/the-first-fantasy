@@ -105,12 +105,12 @@ class Equipment():
                            "Hands": None,
                            "Feet": None,
                            "Main Hand": items.Weapon("Rusty Sword",
-                                                      {"Base Damage" : 5, 
-                                                       "Random Damage" : 5,
-                                                       "Rarity" : "+0",
-                                                       "Strength" : 0,
-                                                       "Dexterity" : 0,
-                                                       "Intelligence" : 0}),
+                                                      {"Base Damage": 5,
+                                                       "Random Damage": 5,
+                                                       "Rarity": "+0",
+                                                       "Strength": 0,
+                                                       "Dexterity": 0,
+                                                       "Intelligence": 0}),
                            "Off Hand": None}
         self.owner = owner
         self.total_attributes = self.updateAttributes()
@@ -139,9 +139,9 @@ class Equipment():
 
 
     def updateAttributes(self):
-        self.total_attributes = {"Strength" : 0,
-                                 "Dexterity" : 0,
-                                 "Intelligence" : 0}
+        self.total_attributes = {"Strength": 0,
+                                 "Dexterity": 0,
+                                 "Intelligence": 0}
         for slot in self.slots_dict.values():
             if slot is None:
                 continue

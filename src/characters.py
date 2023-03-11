@@ -15,16 +15,16 @@ class Character:
         self.equipped_gear = inventory.Equipment(self)
         self.character_attributes = base_attributes
         self.total_attributes = {}
-        self.attribute_bonuses = {"Base Damage" : ["Strength", 1/10, 0],
-                                    "HP" : ["Strength", 3, 0],
-                                    "Physical Resist": ["Strength", 1/1000, 0],
-                                    "Random Damage" : ["Dexterity", 1/5, 0],
-                                    "Crit Rate" : ["Dexterity", 1/1000, 0],
-                                    "Evasion" : ["Dexterity", 1/1000, 0],
-                                    "Magic Damage" : ["Intelligence", 1/5, 0],
-                                    "Mana Regen" : ["Intelligence", 1/3, 0],
-                                    "Magical Resist" : ["Intelligence", 1/1000, 0]
-                                    }
+        self.attribute_bonuses = {"Base Damage": ["Strength", 1/10, 0],
+                                  "HP": ["Strength", 3, 0],
+                                  "Physical Resist": ["Strength", 1/1000, 0],
+                                  "Random Damage": ["Dexterity", 1/5, 0],
+                                  "Crit Rate": ["Dexterity", 1/1000, 0],
+                                  "Evasion": ["Dexterity", 1/1000, 0],
+                                  "Magic Damage": ["Intelligence", 1/5, 0],
+                                  "Mana Regen": ["Intelligence", 1/3, 0],
+                                  "Magical Resist": ["Intelligence", 1/1000, 0]
+                                  }
         self.total_modifiers = {}
         self.health = 0
         self.level = level
@@ -115,9 +115,9 @@ class Enemy(Character):
                  weapon_modifiers,
                  attributes = None):
         if attributes == None:
-            attributes = {"Strength" : round(attribute_weights[0] / 2),
-                          "Dexterity" : round(attribute_weights[1] / 2),
-                          "Intelligence" : round(attribute_weights[2] / 2)}
+            attributes = {"Strength": round(attribute_weights[0] / 2),
+                          "Dexterity": round(attribute_weights[1] / 2),
+                          "Intelligence": round(attribute_weights[2] / 2)}
         super().__init__(name, attributes, level)
         self.att_weights = attribute_weights
         self.initLevel(self.level * 10)
@@ -149,10 +149,10 @@ class Enemy(Character):
 class Player(Character):
     # Player object
     def __init__(self, name, 
-                 level = 1,
-                 attributes = {"Strength" : 10,
-                               "Dexterity" : 10, 
-                               "Intelligence" : 10}):
+                 level=1,
+                 attributes={"Strength": 10,
+                             "Dexterity": 10,
+                             "Intelligence": 10}):
         super().__init__(name, attributes, level)
         self.gold = 0
         self.exp = 0

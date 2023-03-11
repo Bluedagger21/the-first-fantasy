@@ -8,9 +8,9 @@ class Equipment():
         self.stack_limit = stack_limit
         self.stack_size = 1
         self.modifiers = modifiers
-        self.attributes = {"Strength" : self.modifiers.setdefault("Strength", 0),
-                           "Dexterity" : self.modifiers.setdefault("Dexterity", 0),
-                           "Intelligence" : self.modifiers.setdefault("Intelligence", 0)}
+        self.attributes = {"Strength": self.modifiers.setdefault("Strength", 0),
+                           "Dexterity": self.modifiers.setdefault("Dexterity", 0),
+                           "Intelligence": self.modifiers.setdefault("Intelligence", 0)}
         self.rarity = self.modifiers.setdefault("Rarity", "+0")
 
         if self.rarity != "+0":
