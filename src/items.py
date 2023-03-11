@@ -56,6 +56,11 @@ class Armor(Equipment):
         super().__init__(name, modifiers, stack_limit)
         self.slot = slot
 
+        if int(self.rarity) > 0:
+            for modifier in self.modifiers:
+                if modifier == "Physical Resist" or modifier == "Magical Resist" or modifier == "Evasion":
+                    self.modifiers[modifier] *= (int(self.rarity) + 1)
+
 class Weapon(Equipment):
     # Derived class from Equipment
     def __init__(self, name, modifiers, slot="Main Hand", stack_limit=1):
@@ -67,16 +72,7 @@ class Weapon(Equipment):
         self.modifiers.setdefault("Crit Rate", .05)
         self.modifiers.setdefault("Crit Multiplier", 2)
 
-        if self.rarity == "+1":
-            self.modifiers["Base Damage"] += 1
-        elif self.rarity == "+2":
-            self.modifiers["Base Damage"] += 2
-        elif self.rarity == "+3":
-            self.modifiers["Base Damage"] += 3
-        elif self.rarity == "+4":
-            self.modifiers["Base Damage"] += 4
-        elif self.rarity == "+5":
-            self.modifiers["Base Damage"] += 5
+        self.modifiers["Base Damage"] += int(self.rarity)
 
     def getCalculatedDamage(self, dealer):
         base_dmg = math.floor(dealer.total_modifiers["Base Damage"])

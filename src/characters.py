@@ -15,7 +15,7 @@ class Character:
         self.equipped_gear = inventory.Equipment(self)
         self.character_attributes = base_attributes
         self.total_attributes = {}
-        self.attribute_bonuses = {"Base Damage" : ["Strength", 1/5, 0],
+        self.attribute_bonuses = {"Base Damage" : ["Strength", 1/10, 0],
                                     "HP" : ["Strength", 3, 0],
                                     "Physical Resist": ["Strength", 1/1000, 0],
                                     "Random Damage" : ["Dexterity", 1/5, 0],
