@@ -96,7 +96,7 @@ def combat(a, b):
         elif c_state == "win":
             loot = b.loot_table.generateLoot()
             a.giveGold(loot[0])
-            a.giveExp((a.exp_needed / (9 + a.level)) * (b.level / a.level))
+            a.giveExp(round((a.exp_needed / (9 + a.level)) * (b.level / a.level)))
             if loot[1] is not None:
                 a.giveItem(loot[1])
             input("Press \"Enter\" to continue...")
