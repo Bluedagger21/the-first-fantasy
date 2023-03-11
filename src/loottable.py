@@ -13,15 +13,15 @@ class LootGenerator:
 
         self.item_types = {"Consumable": {"Subtypes": ("SmallXP",
                                                        "SmallHP"),
-                                          "Subtype Weights": [1, 2],
+                                          "Subtype Weights": [1, 3],
                                           "Type Weight": 25},
 
                            "Equipment": {"Subtypes": ("Weapon",
                                                       "Armor"),
                                          "Subtype Weights": [2, 8],
-                                         "Type Weight": 35},
+                                         "Type Weight": 45},
                            "Unique": {"Type Weight": 1},
-                           "None": {"Type Weight": 39}
+                           "None": {"Type Weight": 29}
                           }
         
         self.weapon_dict = {"Sword": {"Base Damage": 5,
