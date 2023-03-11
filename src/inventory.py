@@ -107,13 +107,9 @@ class Equipment():
                            "Main Hand": items.Weapon("Rusty Sword",
                                                       {"Base Damage" : 5, 
                                                        "Random Damage" : 5,
-                                                       "Rarity" : "+0",
-                                                       "Strength" : 0,
-                                                       "Dexterity" : 0,
-                                                       "Intelligence" : 0}),
+                                                       "Rarity" : "+0"}),
                            "Off Hand": None}
         self.owner = owner
-        self.total_attributes = self.updateAttributes()
         self.total_modifiers = self.updateModifiers()
     
     def getAttributes(self):
@@ -136,20 +132,6 @@ class Equipment():
                     else:
                         new_modifiers.update({modifier_name : slot.modifiers[modifier_name]})
         return new_modifiers
-
-
-    def updateAttributes(self):
-        self.total_attributes = {"Strength" : 0,
-                                 "Dexterity" : 0,
-                                 "Intelligence" : 0}
-        for slot in self.slots_dict.values():
-            if slot is None:
-                continue
-            else:
-                self.total_attributes["Strength"] += slot.attributes.get("Strength", 0)
-                self.total_attributes["Dexterity"] += slot.attributes.get("Dexterity", 0)
-                self.total_attributes["Intelligence"] += slot.attributes.get("Intelligence", 0)
-        return self.total_attributes
     
     def equip(self, new_equipment, inventory, accessed_from="zone"):
         slot = new_equipment.slot
@@ -167,9 +149,11 @@ class Equipment():
     
     def actuallyEquip(self, new_equipment, slot):
         self.slots_dict[slot] = new_equipment
-        self.updateAttributes()
+        self.updateModifiers()
     
     def compareEquip(self, new_equipment, cur_equipment, slot):
+        keys_to_compare = list((new_equipment.modifiers | cur_equipment.modifiers).keys())
+
         while True:
             os.system("cls" if os.name == "nt" else "clear")
             STAT_WIDTH = 20
@@ -186,39 +170,55 @@ class Equipment():
             print("".join(("Name".ljust(STAT_WIDTH),
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
                            cur_equipment.name.ljust(CUR_NAME_WIDTH))))
-            print("".join(("Strength".ljust(STAT_WIDTH),
-                           str(new_equipment.attributes["Strength"]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.attributes["Strength"]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.attributes["Strength"] - cur_equipment.attributes["Strength"]).ljust(DIF_WIDTH))))
-            print("".join(("Dexterity".ljust(STAT_WIDTH),
-                           str(new_equipment.attributes["Dexterity"]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.attributes["Dexterity"]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.attributes["Dexterity"] - cur_equipment.attributes["Dexterity"]).ljust(DIF_WIDTH))))
-            print("".join(("Intelligence".ljust(STAT_WIDTH),
-                           str(new_equipment.attributes["Intelligence"]).ljust(NEW_NAME_WIDTH),
-                           str(cur_equipment.attributes["Intelligence"]).ljust(CUR_NAME_WIDTH),
-                           str(new_equipment.attributes["Intelligence"] - cur_equipment.attributes["Intelligence"]).ljust(DIF_WIDTH))))
-            if isinstance(new_equipment, items.Weapon):
-                print("".join(("Base Damage".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Base Damage"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Base Damage"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Base Damage"] - cur_equipment.modifiers["Base Damage"]).ljust(DIF_WIDTH))))
-                print("".join(("Random Damage".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Random Damage"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Random Damage"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Random Damage"] - cur_equipment.modifiers["Random Damage"]).ljust(DIF_WIDTH))))
-                print("".join(("Random Multiplier".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Random Multiplier"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Random Multiplier"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Random Multiplier"] - cur_equipment.modifiers["Random Multiplier"]).ljust(DIF_WIDTH))))
-                print("".join(("Crit Rate".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Crit Rate"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Crit Rate"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Crit Rate"] - cur_equipment.modifiers["Crit Rate"]).ljust(DIF_WIDTH))))
-                print("".join(("Crit Multiplier".ljust(STAT_WIDTH),
-                            str(new_equipment.modifiers["Crit Multiplier"]).ljust(NEW_NAME_WIDTH),
-                            str(cur_equipment.modifiers["Crit Multiplier"]).ljust(CUR_NAME_WIDTH),
-                            str(new_equipment.modifiers["Crit Multiplier"] - cur_equipment.modifiers["Crit Multiplier"]).ljust(DIF_WIDTH))))
+            
+            for key in keys_to_compare:
+                if key != "Rarity":
+                    if key not in new_equipment.modifiers:
+                        new_modifier = 0
+                    else:
+                        new_modifier = new_equipment.modifiers[key]
+                    if key not in cur_equipment.modifiers:
+                        cur_modifier = 0
+                    else:
+                        cur_modifier = cur_equipment.modifiers[key]
+
+                    print("".join((key.ljust(STAT_WIDTH),
+                            str(new_modifier).ljust(NEW_NAME_WIDTH),
+                            str(cur_modifier).ljust(CUR_NAME_WIDTH),
+                            str(new_modifier - cur_modifier).ljust(DIF_WIDTH))))
+            # print("".join(("Strength".ljust(STAT_WIDTH),
+            #                str(new_equipment.attributes["Strength"]).ljust(NEW_NAME_WIDTH),
+            #                str(cur_equipment.attributes["Strength"]).ljust(CUR_NAME_WIDTH),
+            #                str(new_equipment.attributes["Strength"] - cur_equipment.attributes["Strength"]).ljust(DIF_WIDTH))))
+            # print("".join(("Dexterity".ljust(STAT_WIDTH),
+            #                str(new_equipment.attributes["Dexterity"]).ljust(NEW_NAME_WIDTH),
+            #                str(cur_equipment.attributes["Dexterity"]).ljust(CUR_NAME_WIDTH),
+            #                str(new_equipment.attributes["Dexterity"] - cur_equipment.attributes["Dexterity"]).ljust(DIF_WIDTH))))
+            # print("".join(("Intelligence".ljust(STAT_WIDTH),
+            #                str(new_equipment.attributes["Intelligence"]).ljust(NEW_NAME_WIDTH),
+            #                str(cur_equipment.attributes["Intelligence"]).ljust(CUR_NAME_WIDTH),
+            #                str(new_equipment.attributes["Intelligence"] - cur_equipment.attributes["Intelligence"]).ljust(DIF_WIDTH))))
+            # if isinstance(new_equipment, items.Weapon):
+            #     print("".join(("Base Damage".ljust(STAT_WIDTH),
+            #                 str(new_equipment.modifiers["Base Damage"]).ljust(NEW_NAME_WIDTH),
+            #                 str(cur_equipment.modifiers["Base Damage"]).ljust(CUR_NAME_WIDTH),
+            #                 str(new_equipment.modifiers["Base Damage"] - cur_equipment.modifiers["Base Damage"]).ljust(DIF_WIDTH))))
+            #     print("".join(("Random Damage".ljust(STAT_WIDTH),
+            #                 str(new_equipment.modifiers["Random Damage"]).ljust(NEW_NAME_WIDTH),
+            #                 str(cur_equipment.modifiers["Random Damage"]).ljust(CUR_NAME_WIDTH),
+            #                 str(new_equipment.modifiers["Random Damage"] - cur_equipment.modifiers["Random Damage"]).ljust(DIF_WIDTH))))
+            #     print("".join(("Random Multiplier".ljust(STAT_WIDTH),
+            #                 str(new_equipment.modifiers["Random Multiplier"]).ljust(NEW_NAME_WIDTH),
+            #                 str(cur_equipment.modifiers["Random Multiplier"]).ljust(CUR_NAME_WIDTH),
+            #                 str(new_equipment.modifiers["Random Multiplier"] - cur_equipment.modifiers["Random Multiplier"]).ljust(DIF_WIDTH))))
+            #     print("".join(("Crit Rate".ljust(STAT_WIDTH),
+            #                 str(new_equipment.modifiers["Crit Rate"]).ljust(NEW_NAME_WIDTH),
+            #                 str(cur_equipment.modifiers["Crit Rate"]).ljust(CUR_NAME_WIDTH),
+            #                 str(new_equipment.modifiers["Crit Rate"] - cur_equipment.modifiers["Crit Rate"]).ljust(DIF_WIDTH))))
+            #     print("".join(("Crit Multiplier".ljust(STAT_WIDTH),
+            #                 str(new_equipment.modifiers["Crit Multiplier"]).ljust(NEW_NAME_WIDTH),
+            #                 str(cur_equipment.modifiers["Crit Multiplier"]).ljust(CUR_NAME_WIDTH),
+            #                 str(new_equipment.modifiers["Crit Multiplier"] - cur_equipment.modifiers["Crit Multiplier"]).ljust(DIF_WIDTH))))
             
             print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 

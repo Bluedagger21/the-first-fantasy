@@ -14,7 +14,7 @@ class Character:
         self.name = name
         self.equipped_gear = inventory.Equipment(self)
         self.character_attributes = base_attributes
-        self.total_attributes = {}
+        self.total_attributes = self.character_attributes
         self.attribute_bonuses = {"Base Damage" : ["Strength", 1/10, 0],
                                     "HP" : ["Strength", 3, 0],
                                     "Physical Resist": ["Strength", 1/1000, 0],
@@ -30,7 +30,6 @@ class Character:
         self.level = level
 
     def update(self):
-        self.updateTotalAttributes()
         self.updateBonuses()
         self.updateTotalModifiers()
 
@@ -48,18 +47,6 @@ class Character:
     def updateBonuses(self):
         for bonus in self.attribute_bonuses.values():
             bonus[2] = self.total_attributes[bonus[0]] * bonus[1]
-        
-
-    def updateTotalAttributes(self):
-        new_total_attributes = {}
-        new_total_attributes.update(self.character_attributes)
-        gear_attributes = self.equipped_gear.getAttributes()
-        
-        new_total_attributes["Strength"] += gear_attributes["Strength"]
-        new_total_attributes["Dexterity"] += gear_attributes["Dexterity"]
-        new_total_attributes["Intelligence"] += gear_attributes["Intelligence"]
-
-        self.total_attributes = new_total_attributes
 
     def getMaxHealth(self):
         return self.total_modifiers["HP"]
@@ -121,10 +108,10 @@ class Enemy(Character):
         super().__init__(name, attributes, level)
         self.att_weights = attribute_weights
         self.initLevel(self.level * 10)
+        self.equipped_gear.actuallyEquip(items.Weapon("", weapon_modifiers), "Main Hand")
         self.update()
         self.health = self.getMaxHealth()
         self.loot_table = loottable.LootGenerator(level, self)
-        self.weapon = items.Weapon("", weapon_modifiers)
     
     def initLevel(self, amount):
         key_list = random.choices(list(self.character_attributes.keys()), self.att_weights, k=amount)
@@ -135,16 +122,16 @@ class Enemy(Character):
         if random.random() <= receiver.getEvasionRate():
             print("{} missed their attack!".format(self.name))
         else:
-            weapon_damage = self.weapon.getCalculatedDamage(self)
+            weapon_damage = self.equipped_gear.get("Main Hand").getCalculatedDamage(self)
+
             if random.random() <= self.getCritRate():
                 print("CRITICAL STRIKE!!!")
                 weapon_damage *= self.getCritMult()
             round(weapon_damage)
-
+            
             print(self.name + " attacked for " + repr(weapon_damage) +
                 " (-{})".format(round(weapon_damage * receiver.getPhysResist())))
             receiver.takeDamage(weapon_damage)
-
 
 class Player(Character):
     # Player object
