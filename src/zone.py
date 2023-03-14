@@ -63,7 +63,6 @@ class Wild(Zone):
         print("What would you like to do?\n", self.z_options)
         return input().lower()
 
-
 class Town(Zone):
     # Town zones pose no threat and offer shops and rest
     def __init__(self, name, dr, first_neighbor=None):

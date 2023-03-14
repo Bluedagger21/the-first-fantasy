@@ -119,8 +119,6 @@ class Consumable():
             elif choice == 'q':
                 return "quit"
 
-
-
 class SmallHealthPotion(Consumable):
     def __init__(self, stack_limit=5, stack_size=1):
         super().__init__(stack_limit, stack_size)

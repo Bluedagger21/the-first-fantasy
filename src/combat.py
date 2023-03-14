@@ -3,7 +3,6 @@ import loottable
 import time
 import random
 
-
 def getAction(a, b):
     # Display combat information and prompt for action
     os.system("cls" if os.name == "nt" else "clear")
@@ -27,7 +26,6 @@ def getAction(a, b):
         return choice
     else:
         return
-
 
 def combat(a, b):
     # State machine that controls combat flow between a (typically the player)

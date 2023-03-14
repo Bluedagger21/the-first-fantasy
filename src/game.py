@@ -34,7 +34,6 @@ def titlescreen():
             sys.exit()
             break
 
-
 def newgame():
     # Get player name and create new world
     global worldmap
@@ -87,7 +86,6 @@ def continuegame():
             return False
         else:
             continue
-
 
 def homescreen():
     # Displays current location information and prompts for actions

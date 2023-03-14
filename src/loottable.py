@@ -15,14 +15,12 @@ class LootGenerator:
                                                        "SmallHP"),
                                           "Subtype Weights": [1, 3],
                                           "Type Weight": 25},
-
                            "Equipment": {"Subtypes": ("Weapon",
                                                       "Armor"),
                                          "Subtype Weights": [2, 8],
                                          "Type Weight": 45},
                            "Unique": {"Type Weight": 0},
-                           "None": {"Type Weight": 29}
-                           }
+                           "None": {"Type Weight": 29}}
 
         self.weapon_dict = {"Sword": {"Base Damage": 5,
                                       "Random Damage": 5},
@@ -71,8 +69,8 @@ class LootGenerator:
                                                        "Physical Resist": .01},
                                      "Leather Boots": {"HP": 3,
                                                        "Evasion": .01}}}
-
         self.loot_list = []
+
     def generateLoot(self):
         self.loot_list.append(self.ilvl * random.randrange(8, 20))
         self.loot_list.append(self.generateItem())
@@ -95,7 +93,6 @@ class LootGenerator:
             generated_item = self.createUnique(item_rarity)
         return generated_item
             
-
     def determineItemType(self):
         list_of_items = list(self.item_types.items())
         weight_of_items = []
