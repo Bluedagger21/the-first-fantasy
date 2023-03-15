@@ -6,6 +6,6 @@ if __name__ == '__main__':
     done = False
     game.titlescreen()
 
-    while done == False:
-        ## Run loop
+    while done is False:
+        # Run loop
         done = game.homescreen()
