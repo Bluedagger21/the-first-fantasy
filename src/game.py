@@ -46,7 +46,7 @@ def newgame():
         else:
             player = characters.Player(playername)
             break
-    worldmap = world.Map()
+    worldmap = world.World()
     print("Prepare to begin your journey...")
     input("Press \"Enter\" to continue...")
 
@@ -93,13 +93,13 @@ def homescreen():
     # NOTE -- Need to reduce this function into something more manageable
 
     while True:
-        current_zone = worldmap.loadZone()
+        current_node = worldmap.loadZone()
         os.system("cls" if os.name == "nt" else "clear")
-        choice = current_zone.getOptions()
+        choice = current_node.getOptions()
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
-            if worldmap.current_zone.z_type != "town":
-                explore(current_zone)
+            if not isinstance(worldmap.current_node, world.Town):
+                explore(current_node)
         elif choice == 'c':
             os.system("cls" if os.name == "nt" else "clear")
             player.getCharacterSheet()
@@ -131,14 +131,15 @@ def homescreen():
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()
         elif choice == 'm':
-            worldmap.current_zone.market.getInventory(player)
+            worldmap.current_node.market.getInventory(player)
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
-            worldmap.printMap()
-            if worldmap.current_zone.z_type == "wild":
-                explore(worldmap.current_zone)
+            worldmap.travel()
+            current_node = worldmap.loadZone()
+            if isinstance(worldmap.current_node, world.Wild):
+                explore(worldmap.current_node)
             else:
-                print("You make your way to " + worldmap.current_zone.z_name)
+                print("You make your way to " + worldmap.current_node.name)
                 input("Press \"Enter\" to continue...")
         elif choice == 'q':
             os.system("cls" if os.name == "nt" else "clear")
@@ -188,7 +189,7 @@ def explore(current_zone):
         print("You're too injured to fight. Rest at a town!")
         input("Press \"Enter\" to continue...")
         return
-    action = current_zone.getAction()
+    action = current_zone.getEncounter()
     if action == "encounter":
         opponent = current_zone.getEnemy()
         combat.combat(player, opponent)
