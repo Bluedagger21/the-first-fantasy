@@ -66,9 +66,9 @@ class Region:
                                                   "Base Crit Rate": .05,
                                                   "Crit Multiplier": 3}},
                             "Kobold": {"weight": 5,
-                                       "attribute_weights": [5, 3, 2],
-                                       "weapon": {"Base Damage": 8,
-                                                  "Random Damage": 2,
+                                       "attribute_weights": [4, 3, 3],
+                                       "weapon": {"Base Damage": 7,
+                                                  "Random Damage": 3,
                                                   "Random Multiplier": 1,
                                                   "Base Crit Rate": .05,
                                                   "Crit Multiplier": 2}}}
