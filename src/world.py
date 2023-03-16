@@ -79,13 +79,13 @@ class Region:
         distance_left = distance
         
         while distance_left > 0:
-            os.system("cls" if os.name == "nt" else "clear")
-            if "dead" in game.player.status:
-                print("You're too injured to fight and had to abandon your travels.")
-                input("Press \"Enter\" to continue...")
-                return False
+            os.system("cls" if os.name == "nt" else "clear")  
             type_of_encounter = self.getEncounter()
             if type_of_encounter == "combat":
+                if "dead" in game.player.status:
+                    print("You're too injured to fight and had to abandon your travels.")
+                    input("Press \"Enter\" to continue...")
+                    return False
                 self.startCombat(destination_node.level)
             distance_left -= 1
             if distance_left > 0:
@@ -202,6 +202,10 @@ class Wild(Node):
         return random.choices(options, weights=option_weights)[0]
     
     def explore(self):
+        if "dead" in game.player.status:
+                print("You're too injured to fight and had to abandon your exploration.")
+                input("Press \"Enter\" to continue...")
+                return False
         type_of_encounter = self.getEncounter()
         if type_of_encounter == "combat":
                 self.region.startCombat(self.level)
