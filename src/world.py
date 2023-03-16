@@ -16,15 +16,22 @@ class World:
 
     def travel(self):
         while True:
+            os.system("cls" if os.name == "nt" else "clear")
             self.current_region.showMap()
             print("Current Location: {}".format(self.current_node.name))
             print("Destinations:")
 
             for i, node in enumerate(self.current_node.connections):
                 print("{}) {}u {} - {}".format(i+1, node[1], node[2], node[0].name))
-            choice = int(input("Selection: "))
-            if 0 > choice <= i+1:
+            print("{}) Cancel".format(i+2))
+            try:
+                choice = int(input("Selection: "))
+            except ValueError:
                 continue
+            if not 0 < choice <= i+2:
+                continue
+            if choice == i+2:
+                return self.current_node
 
             success = self.current_region.travelEncounter(self.current_node,
                                                           self.current_node.connections[choice-1][0],
