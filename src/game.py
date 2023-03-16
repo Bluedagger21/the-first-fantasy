@@ -99,7 +99,7 @@ def homescreen():
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
             if not isinstance(worldmap.current_node, world.Town):
-                explore(current_node)
+                worldmap.current_node.explore()
         elif choice == 'c':
             os.system("cls" if os.name == "nt" else "clear")
             player.getCharacterSheet()
@@ -134,13 +134,8 @@ def homescreen():
             worldmap.current_node.market.getInventory(player)
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
-            worldmap.travel()
-            current_node = worldmap.loadZone()
-            if isinstance(worldmap.current_node, world.Wild):
-                explore(worldmap.current_node)
-            else:
-                print("You make your way to " + worldmap.current_node.name)
-                input("Press \"Enter\" to continue...")
+            current_node = worldmap.travel()
+            os.system("cls" if os.name == "nt" else "clear")
         elif choice == 'q':
             os.system("cls" if os.name == "nt" else "clear")
             sys.exit()
@@ -182,17 +177,4 @@ def saveGame():
     print("...Done!")
     input("Press \"Enter\" to continue...")
 
-def explore(current_zone):
-    # Decides if an encounter occurs or not
-    os.system("cls" if os.name == "nt" else "clear")
-    if "dead" in player.status:
-        print("You're too injured to fight. Rest at a town!")
-        input("Press \"Enter\" to continue...")
-        return
-    action = current_zone.getEncounter()
-    if action == "encounter":
-        opponent = current_zone.getEnemy()
-        combat.combat(player, opponent)
-    elif action == "nothing":
-        print("Nothing of interest was found...")
-        input("Press \"Enter\" to continue...")
+
