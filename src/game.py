@@ -3,6 +3,7 @@ import world
 import market
 import combat
 import pickle
+import time
 import sys
 import os
 
@@ -93,9 +94,19 @@ def homescreen():
     # NOTE -- Need to reduce this function into something more manageable
 
     while True:
-        current_node = worldmap.getCurrentNode()
         os.system("cls" if os.name == "nt" else "clear")
-        choice = current_node.getOptions()
+        if "dead" in player.status:
+            print("You've become unconcious", end="")
+            time.sleep(1)
+            print(".", end="")
+            time.sleep(1)
+            print(".", end="")
+            time.sleep(1)
+            print(".\n")
+            print("After some time, you notice that you're somehow waking up in the last safe haven you visited.")
+            input("Press \"Enter\" to continue...")
+            worldmap.current_node = worldmap.last_rest_node
+        choice = worldmap.current_node.getOptions()
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
             if not isinstance(worldmap.current_node, world.Town):
@@ -113,7 +124,7 @@ def homescreen():
             worldmap.current_node.market.getInventory(player)
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
-            current_node = worldmap.travel()
+            worldmap.current_node = worldmap.travel()
             os.system("cls" if os.name == "nt" else "clear")
         elif choice == 'q':
             os.system("cls" if os.name == "nt" else "clear")

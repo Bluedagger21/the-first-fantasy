@@ -9,6 +9,7 @@ class World:
     def __init__(self) -> None:
         self.current_region = StartingRegion("Nuvrora", self)
         self.current_node = self.current_region.start
+        self.last_rest_node = self.current_node
 
     def getCurrentNode(self):
         return self.current_node
@@ -37,6 +38,8 @@ class World:
                                                           self.current_node.connections[choice-1][1])
             if success is True:
                 self.current_node = self.current_node.connections[choice-1][0]
+                if isinstance(self.current_node, (Home, Village, Town)):
+                    self.last_rest_node = self.current_node
             return self.current_node
 
 class Region:
@@ -84,6 +87,7 @@ class Region:
                 if "dead" in game.player.status:
                     print("You're too injured to fight and had to abandon your travels.")
                     input("Press \"Enter\" to continue...")
+                    self.world.current_node = self.world.last_rest_node
                     return False
                 self.startCombat(destination_node.level)
             distance_left -= 1
@@ -126,12 +130,12 @@ class StartingRegion(Region):
 
         self.node_list = []
         self.start = Home("Your House", self, 1)
-        self.village1 = Village("Waekefield", self, 1)
+        self.village1 = Village("Village of Waekefield", self, 1)
         self.wild1 = Wild("Old Stone Fields", self, 1)
         self.wild2 = Wild("Sminet Hillside", self, 2)
-        self.village2 = Village("Laenteglos", self, 2)
+        self.village2 = Village("Village Laenteglos", self, 2)
         self.wild3 = Wild("Dardwell Cave", self, 3)
-        self.town = Town("Oar's Rest", self, 4)
+        self.town = Town("Town of Oar's Rest", self, 4)
 
         self.start.addConnection([(self.village1, 1, "East")])
         self.village1.addConnection([(self.start, 1, "West"), (self.wild1, 1, "South")])
