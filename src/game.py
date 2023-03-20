@@ -105,28 +105,7 @@ def homescreen():
             player.getCharacterSheet()
             input("Press \"Enter\" to continue...")
         elif choice == 'r':
-            if "dead" in player.status:
-                print("You may rest up for free! Get back out there, adventurer.")
-                player.takeGold(0)
-                player.giveHealth(player.getMaxHealth())
-                print(player.name + " has returned to full health!")
-                input("Press \"Enter\" to continue...")
-            else:
-                cost = player.level * 10 + 15
-                while True:
-                    print("Cost: {}g".format(cost))
-                    choice = input("Accept? (Y/N): ").lower()
-                    if choice == 'y':
-                        # probably need validation for this input, if anything other than y is entered it exits instead of just n
-                        if player.takeGold(cost) is True:
-                            player.giveHealth(player.getMaxHealth())
-                            print(player.name + " has returned to full health!")
-                        input("Press \"Enter\" to continue...")
-                        break
-                    elif choice == 'n':
-                        break
-                    else:
-                        continue  #this looks like it works now, unless any screen clearing need to be done
+            worldmap.current_node.rest(player)
         elif choice == 'i':
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()

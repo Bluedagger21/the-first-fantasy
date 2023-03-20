@@ -218,15 +218,68 @@ class Village(Node):
                           "(C)haracter Sheet\n(Q)uit    (S)ave")
         self.market = market.BasicMarket()
 
+    def rest(self, player):
+        if "dead" in player.status:
+                print("You may rest up for free! Get back out there, adventurer.")
+                player.takeGold(0)
+                player.giveHealth(player.getMaxHealth())
+                print(player.name + " has returned to full health!")
+                input("Press \"Enter\" to continue...")
+        else:
+            cost = player.level * 10 + 15
+            while True:
+                print("Cost: {}g".format(cost))
+                choice = input("Accept? (Y/N): ").lower()
+                if choice == 'y':
+                    if player.takeGold(cost) is True:
+                        player.giveHealth(player.getMaxHealth())
+                        print(player.name + " has returned to full health!")
+                    input("Press \"Enter\" to continue...")
+                    break
+                elif choice == 'n':
+                    break
+                else:
+                    continue
+
 class Town(Node):
     def __init__(self, name, region, level=1) -> None:
         super().__init__(name, region, level)
         self.options = ("(M)arket    (T)ravel    (R)est    (I)nventory    " +
                           "(C)haracter Sheet\n(Q)uit    (S)ave")
         self.market = market.BasicMarket()
+    
+    def rest(self, player):
+        if "dead" in player.status:
+                print("You may rest up for free! Get back out there, adventurer.")
+                player.takeGold(0)
+                player.giveHealth(player.getMaxHealth())
+                print(player.name + " has returned to full health!")
+                input("Press \"Enter\" to continue...")
+        else:
+            cost = player.level * 10 + 15
+            while True:
+                print("Cost: {}g".format(cost))
+                choice = input("Accept? (Y/N): ").lower()
+                if choice == 'y':
+                    if player.takeGold(cost) is True:
+                        player.giveHealth(player.getMaxHealth())
+                        print(player.name + " has returned to full health!")
+                    input("Press \"Enter\" to continue...")
+                    break
+                elif choice == 'n':
+                    break
+                else:
+                    continue
 
 class Home(Node):
     def __init__(self, name, region, level=1) -> None:
         super().__init__(name, region, level)
         self.options = ("(T)ravel    (R)est    (I)nventory    " +
                           "(C)haracter Sheet\n(Q)uit    (S)ave")
+        
+    def rest(self, player):
+        print("You may rest up for free! Get back out there, adventurer.")
+        player.takeGold(0)
+        player.giveHealth(player.getMaxHealth())
+        print(player.name + " has returned to full health!")
+        input("Press \"Enter\" to continue...")
