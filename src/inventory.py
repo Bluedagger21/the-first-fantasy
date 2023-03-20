@@ -185,7 +185,7 @@ class Equipment():
                     print("".join((key.ljust(STAT_WIDTH),
                             str(new_modifier).ljust(NEW_NAME_WIDTH),
                             str(cur_modifier).ljust(CUR_NAME_WIDTH),
-                            str(new_modifier - cur_modifier).ljust(DIF_WIDTH))))
+                            str("{0:+}".format(new_modifier - cur_modifier).ljust(DIF_WIDTH)))))
             
             print("-"*(STAT_WIDTH+CUR_NAME_WIDTH+NEW_NAME_WIDTH+DIF_WIDTH))
 
