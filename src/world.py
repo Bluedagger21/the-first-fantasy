@@ -10,7 +10,7 @@ class World:
         self.current_region = StartingRegion("Nuvrora", self)
         self.current_node = self.current_region.start
 
-    def loadZone(self):
+    def getCurrentNode(self):
         return self.current_node
 
     def travel(self):

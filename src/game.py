@@ -93,7 +93,7 @@ def homescreen():
     # NOTE -- Need to reduce this function into something more manageable
 
     while True:
-        current_node = worldmap.loadZone()
+        current_node = worldmap.getCurrentNode()
         os.system("cls" if os.name == "nt" else "clear")
         choice = current_node.getOptions()
         if choice == 'e':
@@ -123,7 +123,6 @@ def homescreen():
             saveGame()
         else:
             continue
-
 
 def saveGame():
     home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -155,5 +154,3 @@ def saveGame():
     f.close()
     print("...Done!")
     input("Press \"Enter\" to continue...")
-
-
