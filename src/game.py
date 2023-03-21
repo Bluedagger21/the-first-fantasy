@@ -3,6 +3,7 @@ import world
 import market
 import combat
 import pickle
+import time
 import sys
 import os
 
@@ -46,7 +47,7 @@ def newgame():
         else:
             player = characters.Player(playername)
             break
-    worldmap = world.Map()
+    worldmap = world.World()
     print("Prepare to begin your journey...")
     input("Press \"Enter\" to continue...")
 
@@ -93,53 +94,38 @@ def homescreen():
     # NOTE -- Need to reduce this function into something more manageable
 
     while True:
-        current_zone = worldmap.loadZone()
         os.system("cls" if os.name == "nt" else "clear")
-        choice = current_zone.getOptions()
+        if "dead" in player.status:
+            print("You've become unconcious", end="")
+            time.sleep(1)
+            print(".", end="")
+            time.sleep(1)
+            print(".", end="")
+            time.sleep(1)
+            print(".\n")
+            print("After some time, you notice that you're somehow waking up in the last safe haven you visited.")
+            input("Press \"Enter\" to continue...")
+            worldmap.current_node = worldmap.last_rest_node
+        choice = worldmap.current_node.getOptions()
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
-            if worldmap.current_zone.z_type != "town":
-                explore(current_zone)
+            if not isinstance(worldmap.current_node, world.Town):
+                worldmap.current_node.explore()
         elif choice == 'c':
             os.system("cls" if os.name == "nt" else "clear")
             player.getCharacterSheet()
             input("Press \"Enter\" to continue...")
         elif choice == 'r':
-            if "dead" in player.status:
-                print("You may rest up for free! Get back out there, adventurer.")
-                player.takeGold(0)
-                player.giveHealth(player.getMaxHealth())
-                print(player.name + " has returned to full health!")
-                input("Press \"Enter\" to continue...")
-            else:
-                cost = player.level * 10 + 15
-                while True:
-                    print("Cost: {}g".format(cost))
-                    choice = input("Accept? (Y/N): ").lower()
-                    if choice == 'y':
-                        # probably need validation for this input, if anything other than y is entered it exits instead of just n
-                        if player.takeGold(cost) is True:
-                            player.giveHealth(player.getMaxHealth())
-                            print(player.name + " has returned to full health!")
-                        input("Press \"Enter\" to continue...")
-                        break
-                    elif choice == 'n':
-                        break
-                    else:
-                        continue  #this looks like it works now, unless any screen clearing need to be done
+            worldmap.current_node.rest(player)
         elif choice == 'i':
             os.system("cls" if os.name == "nt" else "clear")
             player.getInventory()
         elif choice == 'm':
-            worldmap.current_zone.market.getInventory(player)
+            worldmap.current_node.market.getInventory(player)
         elif choice == 't':
             os.system("cls" if os.name == "nt" else "clear")
-            worldmap.printMap()
-            if worldmap.current_zone.z_type == "wild":
-                explore(worldmap.current_zone)
-            else:
-                print("You make your way to " + worldmap.current_zone.z_name)
-                input("Press \"Enter\" to continue...")
+            worldmap.current_node = worldmap.travel()
+            os.system("cls" if os.name == "nt" else "clear")
         elif choice == 'q':
             os.system("cls" if os.name == "nt" else "clear")
             sys.exit()
@@ -148,7 +134,6 @@ def homescreen():
             saveGame()
         else:
             continue
-
 
 def saveGame():
     home_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -180,18 +165,3 @@ def saveGame():
     f.close()
     print("...Done!")
     input("Press \"Enter\" to continue...")
-
-def explore(current_zone):
-    # Decides if an encounter occurs or not
-    os.system("cls" if os.name == "nt" else "clear")
-    if "dead" in player.status:
-        print("You're too injured to fight. Rest at a town!")
-        input("Press \"Enter\" to continue...")
-        return
-    action = current_zone.getAction()
-    if action == "encounter":
-        opponent = current_zone.getEnemy()
-        combat.combat(player, opponent)
-    elif action == "nothing":
-        print("Nothing of interest was found...")
-        input("Press \"Enter\" to continue...")
