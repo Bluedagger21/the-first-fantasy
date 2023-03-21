@@ -113,7 +113,7 @@ class Equipment():
         self.total_attributes = self.updateAttributes()
         return self.total_attributes
     
-    def getModifiers(self):
+    def getStats(self):
         self.total_stats = self.updateStats()
         return self.total_stats
 

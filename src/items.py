@@ -111,10 +111,11 @@ class Sword(Weapon):
 
         self.actions = ["Slash", "Parry"]
 
-        if game.player.mastery.sword.level >= 2:
-            self.actions = ["Slash (Combo)", "Parry"]
 
     def use(self, origin, target):
+        if game.player.sword_mastery.level >= 2:
+            self.actions = ["Slash (Combo)", "Parry"]
+
         print("\nAvailable Actions: ")
         for i, action in enumerate(self.actions):
             print("{}) {}".format(i, action))

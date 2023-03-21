@@ -14,7 +14,8 @@ class Character:
         self.status = ["normal"]
         self.name = name
         self.equipped_gear = inventory.Equipment(self)
-        self.stats = stats
+        self.base_stats = stats
+        self.stats = self.base_stats
         self.level = level
         self.health = self.stats["Vitality"] * 2
 
@@ -45,17 +46,30 @@ class Player(Character):
     # Player object
     def __init__(self, name, 
                  level=1,
-                 attributes={"Strength": 10,
-                             "Dexterity": 10,
-                             "Intelligence": 10}):
-        super().__init__(name, attributes, level)
+                 stats={"Vitality": 10,
+                        "Physical Resist": 0,
+                        "Magical Resist": 0,
+                        "Power": 0}):
+        super().__init__(name, stats, level)
         self.gold = 0
         self.exp = 0
         self.exp_needed = 1000
         self.inventory = inventory.Storage(10, self)
-        self.update()
+        self.updateStats()
         self.health = self.getMaxHealth()
-        self.sword_mastery = mastery(items.Sword)
+        self.sword_mastery = mastery.Mastery(items.Sword)
+
+    def updateStats(self):
+        gear_stats = self.equipped_gear.getStats()
+        new_stats = self.base_stats
+
+        for stat in gear_stats:
+            if stat not in new_stats:
+                new_stats.update({stat: gear_stats[stat]})
+            else:
+                new_stats[stat] += gear_stats[stat]
+
+        return new_stats
 
     def giveXP(self, exp_earned):
         # Gives the player exp_earned experience and checks for level up
@@ -178,7 +192,7 @@ class Player(Character):
         print("\nVitality: {}".format(self.stats["Vitality"]))
         print("Physical Resist: {:.2%}".format(self.stats["Physical Resist"]))
         print("Magical Resist: {:.2%}".format(self.stats["Magical Resist"]))
-        print("\nWeapon Damage: {}".format(self.showStringWeaponDamage()))
+        print("\nBase Weapon Damage: {}".format(self.stats["Base Damage"]))
         print("Power: {}".format(self.stats["Power"]))
 
         print("\n[------Equipment-----]")

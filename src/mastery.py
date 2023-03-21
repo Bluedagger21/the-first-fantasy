@@ -1,4 +1,4 @@
-class Mastery():
+class Mastery:
     def __init__(self, type) -> None:
         self.type = type
         self.level = 1
