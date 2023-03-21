@@ -75,16 +75,19 @@ class Weapon(Equipment):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
 
-    def getCalculatedDamage(self, dealer):
-        base_dmg = math.floor(dealer.total_modifiers["Base Damage"])
-        rnd_dmg = math.floor(dealer.total_modifiers["Random Damage"])
+    def getCalculatedDamage(self, origin, target, potency=1, crit=True):
+        base_dmg = math.floor(origin.stats["Base Damage"])
+        power = math.floor(origin.stats["Power"])
+        total_damage = (base_dmg + power) * potency
 
-        rnd_dmg_total = 0
-    
-        for i in range(self.stats["Random Multiplier"]):
-            rnd_dmg_total += random.randrange(rnd_dmg) + 1
-        
-        return base_dmg + rnd_dmg_total
+        if random.random() <= origin.stats["Crit"] / (100 + (5 * (target.level - 1))):
+            print("CRITICAL STRIKE!!!")
+            damage *= self.stats["Crit Multiplier"]
+
+        calc_resist = .1 * ((20 * target.ilvl) / target.stats["Physical Resist"])
+        round(damage - (damage * calc_resist))
+
+        return total_damage
 
     def showEverything(self):
         # Print everything from the equipment
@@ -123,19 +126,34 @@ class Sword(Weapon):
 
     def actionSlash(self, origin, target):
         potency = 1.0
-        damage = (origin.stats["Power"] + self.stats["Base Damage"]) * potency
-
-        if random.random() <= origin.stats["Crit"] / (100 + (5 * (target.level - 1))):
-            print("CRITICAL STRIKE!!!")
-            damage *= self.stats["Crit Multiplier"]
-
-        calc_resist = .1 * ((20 * target.ilvl) / target.stats["Physical Resist"])
-        round(damage - (damage * calc_resist))
-
+        damage = self.getCalculatedDamage(origin, target, potency, crit=True)
+        print("You slash with your sword for {} damage!".format(damage))
         target.takeDamage(damage)
     
     def actionParry(self, origin, target):
-        pass
+        origin.status.append("parry")
+        print("You prepare to counter an incoming attack.")
+
+    def triggerParry(self, origin, target, incoming_dmg):
+        origin.status.remove("parry")
+        if random.random() <= 0.9:
+            potency = 1.5
+            reduced_incoming_dmg = 0.1 * incoming_dmg
+            print("You successfully parry the {}'s attack!".format(target.name))
+            print("The attack is parried, you will take significantly reduced damage!".format(reduced_incoming_dmg))
+            origin.takeDamage(reduced_incoming_dmg)
+            damage = self.getCalculatedDamage(origin, target, potency, crit=True)
+            print("You counter dealing {} damage!")
+            target.takeDamage(damage)
+        else:
+            print("Your parry fails!")
+            origin.takeDamage(incoming_dmg)
+
+            
+    
+
+            
+
 class Consumable():
     # Defines base members and methods for consumables
     def __init__(self, stack_limit=5, stack_size=1):

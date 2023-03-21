@@ -31,11 +31,15 @@ class Character:
         print("\nBase Weapon Damage: {}".format(self.stats["Base Weapon Damage"]))
         print("Power: {}".format(self.stats["Power"]))
 
-    def takeDamage(self, damage):
-        self.health -= damage
-        if self.health <= 0:
-            self.status.append("dead")
-            self.health = 0
+    def takeDamage(self, damage, dealer):
+        if "parry" in self.status:
+            self.equipped_gear["Main Hand"].triggerParry(self, dealer, damage)
+        else:
+            print("{} takes {} damage.".format(self.name, damage))
+            self.health -= damage
+            if self.health <= 0:
+                self.status.append("dead")
+                self.health = 0
 
 class Player(Character):
     # Player object
