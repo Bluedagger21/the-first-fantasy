@@ -104,34 +104,31 @@ class Equipment():
                            "Body": None, 
                            "Hands": None,
                            "Feet": None,
-                           "Main Hand": items.Weapon("Rusty Sword",
-                                                     {"Base Damage": 5,
-                                                      "Random Damage": 5,
-                                                      "Rarity": "+0"}),
+                           "Main Hand": items.Sword({}, 1, quality=0),
                            "Off Hand": None}
         self.owner = owner
-        self.total_modifiers = self.updateModifiers()
+        self.total_stats = self.updateStats()
     
     def getAttributes(self):
         self.total_attributes = self.updateAttributes()
         return self.total_attributes
     
     def getModifiers(self):
-        self.total_modifiers = self.updateModifiers()
-        return self.total_modifiers
+        self.total_stats = self.updateStats()
+        return self.total_stats
 
-    def updateModifiers(self):
-        new_modifiers = {}
+    def updateStats(self):
+        new_stats = {}
         for slot in self.slots_dict.values():
             if slot is None:
                 continue
             else:
-                for modifier_name in slot.modifiers:
-                    if modifier_name in new_modifiers:
-                        new_modifiers[modifier_name] += slot.modifiers[modifier_name]
+                for stat_name in slot.stats:
+                    if stat_name in new_stats:
+                        new_stats[stat_name] += slot.stats[stat_name]
                     else:
-                        new_modifiers.update({modifier_name : slot.modifiers[modifier_name]})
-        return new_modifiers
+                        new_stats.update({stat_name : slot.stats[stat_name]})
+        return new_stats
     
     def equip(self, new_equipment, inventory, accessed_from="zone"):
         slot = new_equipment.slot
@@ -149,7 +146,7 @@ class Equipment():
     
     def actuallyEquip(self, new_equipment, slot):
         self.slots_dict[slot] = new_equipment
-        self.updateModifiers()
+        self.updateStats()
     
     def compareEquip(self, new_equipment, cur_equipment, slot):
         keys_to_compare = list((new_equipment.modifiers | cur_equipment.modifiers).keys())

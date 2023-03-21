@@ -1,17 +1,30 @@
 import os
 import random
 import math
+import game
+
 class Equipment():
     # Base equippable item class
-    def __init__(self, name, modifiers, stack_limit=1):
+    def __init__(self, name, stats, ilvl = None, rarity = None, quality = None, stack_limit = 1):
         self.name = name
         self.stack_limit = stack_limit
         self.stack_size = 1
-        self.modifiers = modifiers
-        self.rarity = self.modifiers.setdefault("Rarity", "+0")
+        self.stats = stats
+        
+        if ilvl is None:
+            self.ilvl = 1
+        else:
+            self.ilvl = ilvl
 
-        if self.rarity != "+0":
-            self.name += " {}".format(self.rarity)
+        if quality is None:
+            self.quality = random.randint(0,100)
+        else:
+            self.quality = quality
+
+        if rarity is None:
+            self.rarity = 0
+        else:  
+            self.rarity = rarity
 
     def getName(self):
         return self.name
@@ -21,14 +34,14 @@ class Equipment():
         print(self.name)
         print("-"*len(self.name))
 
-        for modifier in self.modifiers:
-            if modifier == "Rarity":
+        for stat in self.stats:
+            if stat == "Rarity":
                 continue
             else:
-                if isinstance(self.modifiers[modifier], float):
-                    print("{}: {:.2%}".format(modifier, self.modifiers[modifier]))
+                if isinstance(self.stats[stat], float):
+                    print("{}: {:.2%}".format(stat, self.stats[stat]))
                 else:
-                    print("{}: {}".format(modifier, self.modifiers[modifier]))
+                    print("{}: {}".format(stat, self.stats[stat]))
 
     def getOptions(self, accessed_from="zone"):
         # Displays and prompts equipment options
@@ -47,27 +60,20 @@ class Equipment():
             # might need else continue here as well for input validation?
 class Armor(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, slot, modifiers, stack_limit=1):
-        super().__init__(name, modifiers, stack_limit)
+    def __init__(self, name, slot, stats, ilvl = None, rarity = None, quality = None, stack_limit = 1):
+        super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
 
         if int(self.rarity) > 0:
-            for modifier in self.modifiers:
-                if modifier == "Physical Resist" or modifier == "Magical Resist" or modifier == "Evasion":
-                    self.modifiers[modifier] *= (int(self.rarity) + 1)
+            for stat in self.stats:
+                if stat == "Physical Resist" or stat == "Magical Resist" or stat == "Evasion":
+                    self.stats[stat] *= (int(self.rarity) + 1)
 
 class Weapon(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, modifiers, slot="Main Hand", stack_limit=1):
-        super().__init__(name, modifiers, stack_limit)
+    def __init__(self, name, stats, ilvl = None, slot="Main Hand", rarity = None, quality = None, stack_limit = 1):
+        super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
-        self.modifiers.setdefault("Base Damage", 5)
-        self.modifiers.setdefault("Random Damage", 5)
-        self.modifiers.setdefault("Random Multiplier", 1)
-        self.modifiers.setdefault("Crit Rate", .05)
-        self.modifiers.setdefault("Crit Multiplier", 2)
-
-        self.modifiers["Base Damage"] += int(self.rarity)
 
     def getCalculatedDamage(self, dealer):
         base_dmg = math.floor(dealer.total_modifiers["Base Damage"])
@@ -75,7 +81,7 @@ class Weapon(Equipment):
 
         rnd_dmg_total = 0
     
-        for i in range(self.modifiers["Random Multiplier"]):
+        for i in range(self.stats["Random Multiplier"]):
             rnd_dmg_total += random.randrange(rnd_dmg) + 1
         
         return base_dmg + rnd_dmg_total
@@ -83,15 +89,53 @@ class Weapon(Equipment):
     def showEverything(self):
         # Print everything from the equipment
         print(self.name)
-        print("Attack: {} + {}d({})".format(self.modifiers["Base Damage"], 
-                                            self.modifiers["Random Multiplier"], 
-                                            self.modifiers["Random Damage"]))
-        for modifier in self.modifiers:
-            if modifier == "Base Damage" or modifier == "Random Multiplier" or modifier == "Random Damage":
+        print("Attack: {} + {}d({})".format(self.stats["Base Damage"], 
+                                            self.stats["Random Multiplier"], 
+                                            self.stats["Random Damage"]))
+        for stats in self.stats:
+            if stats == "Base Damage" or stats == "Random Multiplier" or stats == "Random Damage":
                 continue
             else:
-                print("{}: {}".format(modifier, self.modifiers[modifier]))
+                print("{}: {}".format(stats, self.stats[stats]))
 
+class Sword(Weapon):
+    def __init__(self, stats, ilvl = 1, rarity=None, quality=None, stack_limit=1, name="Sword", slot="Main Hand"):
+        super().__init__(name, stats, slot, ilvl, rarity, quality, stack_limit)
+        self.stats.update({"Base Damage": 10})
+        self.stats.update({"Power": 10})
+        self.stats.update({"Crit": 5})
+        self.stats.update({"Crit Multiplier": 1.5})
+
+        self.actions = ["Slash", "Parry"]
+
+        if game.player.mastery.sword.level >= 2:
+            self.actions = ["Slash (Combo)", "Parry"]
+
+    def use(self, origin, target):
+        print("\nAvailable Actions: ")
+        for i, action in enumerate(self.actions):
+            print("{}) {}".format(i, action))
+        choice = input("Selection: ")
+        if choice == "Slash":
+            self.actionSlash(origin, target)
+        if choice == "Parry":
+            self.actionParry(origin, target)
+
+    def actionSlash(self, origin, target):
+        potency = 1.0
+        damage = (origin.stats["Power"] + self.stats["Base Damage"]) * potency
+
+        if random.random() <= origin.stats["Crit"] / (100 + (5 * (target.level - 1))):
+            print("CRITICAL STRIKE!!!")
+            damage *= self.stats["Crit Multiplier"]
+
+        calc_resist = .1 * ((20 * target.ilvl) / target.stats["Physical Resist"])
+        round(damage - (damage * calc_resist))
+
+        target.takeDamage(damage)
+    
+    def actionParry(self, origin, target):
+        pass
 class Consumable():
     # Defines base members and methods for consumables
     def __init__(self, stack_limit=5, stack_size=1):

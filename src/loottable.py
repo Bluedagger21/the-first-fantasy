@@ -9,7 +9,7 @@ class LootGenerator:
 
         self.rarity_weights = [200, 40, 20, 10, 5, 1]
         self.rarity_scales = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
-        self.rarity = ["+0", "+1", "+2", "+3", "+4", "+5"]
+        self.rarity = [0, 1, 2, 3, 4, 5]
 
         self.item_types = {"Consumable": {"Subtypes": ("SmallXP",
                                                        "SmallHP"),
@@ -22,28 +22,19 @@ class LootGenerator:
                            "Unique": {"Type Weight": 0},
                            "None": {"Type Weight": 29}}
 
-        self.weapon_dict = {"Sword": {"Base Damage": 5,
-                                      "Random Damage": 5},
-                            "Mace": {"Base Damage": 6,
-                                     "Random Damage": 4},
-                            "Dagger": {"Base Damage": 4,
-                                       "Random Damage": 6}}
-        self.armor_dict = {"Head": {"Helmet": {"HP": 5,
-                                               "Physical Resist": .01},
-                                    "Tricorn": {"HP": 3,
-                                                "Evasion": .01}},
-                           "Body": {"Breastplate": {"HP": 5,
-                                                    "Physical Resist": .02},
-                                    "Leather Wrappings": {"HP": 3,
-                                                          "Evasion": .02}},
-                           "Hands": {"Gauntlets": {"HP": 5,
-                                                   "Physical Resist": .01},
-                                     "Leather Gloves": {"HP": 3,
-                                                        "Evasion": .01}},
-                           "Feet": {"Greaves": {"HP": 5,
-                                                "Physical Resist": .01},
-                                    "Leather Boots": {"HP": 3,
-                                                      "Evasion": .01}}}
+        self.weapon_list = [items.Sword]
+        self.armor_dict = {"Head": {"Helmet": {"Vitality": 10,
+                                               "Physical Resist": 5,
+                                               "Magical Resist": 5}},
+                           "Body": {"Breastplate": {"Vitality": 10,
+                                                    "Physical Resist": 5,
+                                                    "Magical Resist": 5}},
+                           "Hands": {"Gauntlets": {"Vitality": 10,
+                                                   "Physical Resist": 5,
+                                                   "Magical Resist": 5}},
+                           "Feet": {"Greaves": {"Vitality": 10,
+                                                "Physical Resist": 5,
+                                                "Magical Resist": 5}}}
         self.unique_dict = {"Main Hand": {"Demonforged Blade": {"Base Damage": 5,
                                                                 "Random Damage": 5},
                                           "Bane of Darkness": {"Base Damage": 6,
@@ -72,6 +63,7 @@ class LootGenerator:
         self.loot_list = []
 
     def generateLoot(self):
+        
         self.loot_list.append(self.ilvl * random.randrange(8, 20))
         self.loot_list.append(self.generateItem())
         return self.loot_list
@@ -80,17 +72,18 @@ class LootGenerator:
         generated_item = None
         item_type = self.determineItemType()
         item_rarity = self.determineRarity()
+        item_quality = self.determineQuality()
 
         if item_type == "Consumable":
             generated_item = self.createConsumable()
         elif item_type == "Equipment":
             type_of_equipment = random.choices(self.item_types["Equipment"]["Subtypes"], weights=self.item_types["Equipment"]["Subtype Weights"])[0]
             if type_of_equipment == "Weapon":
-                generated_item = self.createWeapon(item_rarity)
+                generated_item = self.createWeapon(self.ilvl, item_rarity, item_quality)
             elif type_of_equipment == "Armor":
-                generated_item = self.createArmor(item_rarity)
+                generated_item = self.createArmor(self.ilvl, item_rarity, item_quality)
         elif item_type == "Unique":
-            generated_item = self.createUnique(item_rarity)
+            generated_item = self.createUnique(self.ilvl, item_rarity, item_quality)
         return generated_item
             
     def determineItemType(self):
@@ -108,8 +101,11 @@ class LootGenerator:
             else:
                 self.rarity_weights[i] = self.rarity_weights[i] * ((1 + self.ilvl) * self.rarity_scales[i])
         return random.choices(self.rarity, weights=self.rarity_weights)[0]
+    
+    def determineQuality(self):
+        return round(100 * random.random())
         
-    def createUnique(self, rarity):
+    def createUnique(self, rarity, quality):
         modifiers_dict = {"Rarity": rarity}
         created_item_slot = random.choices(list(self.unique_dict.keys()))[0]
         base_name, stats = random.choices(list(self.unique_dict[created_item_slot].items()))[0]
@@ -129,15 +125,12 @@ class LootGenerator:
             return items.SmallHealthPotion()
         return created_item_type()
     
-    def createWeapon(self, item_rarity):
-        modifiers_dict = {"Rarity": item_rarity}
-        base_name, stats = random.choice(list(self.weapon_dict.items()))
-        
-        modifiers_dict.update(stats)
+    def createWeapon(self, ilvl, item_rarity, quality):
+        weapon_type = random.choice(self.weapon_list)
 
-        return items.Weapon(base_name, modifiers_dict)
+        return weapon_type(ilvl, item_rarity, quality)
         
-    def createArmor(self, item_rarity):
+    def createArmor(self, item_rarity, quality):
         modifiers_dict = {"Rarity": item_rarity}
 
         slot, base_dict = random.choice(list(self.armor_dict.items()))
@@ -145,4 +138,4 @@ class LootGenerator:
 
         modifiers_dict.update(stats)
         
-        return items.Armor(base_name, slot, modifiers_dict)
+        return items.Armor(base_name, slot, modifiers_dict, quality)
