@@ -31,7 +31,7 @@ class Thief(Enemy):
         if choice == "Stab":
             potency = 1.0
             damage = self.getCalculatedDamage(target, potency)
-            target.takeDamage(damage, self)
+            target.takeDamage(damage["Total Damage"], self)
 
         elif choice == "Pickpocket":
             if len(target.inventory.item_list) == 0:
@@ -47,9 +47,9 @@ class Thief(Enemy):
             if random.random() >= .5:
                 potency = .5
                 damage = self.getCalculatedDamage(target, potency, crit=False)
-                print("The Thief also deals {} damage to you!".format(damage))
+                print("The Thief also deals {} damage to you!".format(damage["Total Damage"]))
 
-                target.takeDamage(damage, self)
+                target.takeDamage(damage["Total Damage"], self)
             
 
 

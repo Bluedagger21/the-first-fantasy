@@ -31,7 +31,7 @@ class Character:
         print("\nBase Weapon Damage: {}".format(self.stats["Base Damage"]))
         print("Power: {}".format(self.stats["Power"]))
 
-    def getCalculatedDamage(self, target, potency=1, crit=True):
+    def getCalculatedDamage(self, target, potency=1, damage_type="physical", crit=True):
         base_dmg = math.floor(self.stats["Base Damage"])
         power = math.floor(self.stats["Power"])
         total_damage = (base_dmg + power) * potency
@@ -41,10 +41,16 @@ class Character:
                 print("CRITICAL STRIKE!!!")
                 total_damage *= self.stats["Crit Multiplier"]
 
-        calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
+        if damage_type == "physical":
+            calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
+        elif damage_type == "magical":
+            calc_resist = .1 * ((20 * target.level) / target.stats["Magical Resist"])
+        damage_resisted = round(total_damage * calc_resist)
+        total_damage = round(total_damage - damage_resisted)
+
         round(total_damage - (total_damage * calc_resist))
 
-        return total_damage
+        return {"Total Damage": total_damage, "Resisted Damage": damage_resisted}
     
     def takeDamage(self, damage, dealer):
         print("{} takes {} damage.".format(self.name, damage))

@@ -75,19 +75,24 @@ class Weapon(Equipment):
         self.stats["Power"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Crit"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
 
-    def getCalculatedDamage(self, origin, target, potency=1, crit=True):
+    def getCalculatedDamage(self, origin, target, potency=1, damage_type="physical", crit=True):
         base_dmg = math.floor(origin.stats["Base Damage"])
         power = math.floor(origin.stats["Power"])
         total_damage = (base_dmg + power) * potency
 
-        if random.random() <= origin.stats["Crit"] / (100 + (5 * (target.level - 1))):
-            print("CRITICAL STRIKE!!!")
-            total_damage *= self.stats["Crit Multiplier"]
+        if crit is True:
+            if random.random() <= origin.stats["Crit"] / (100 + (5 * (target.level - 1))):
+                print("CRITICAL STRIKE!!!")
+                total_damage *= self.stats["Crit Multiplier"]
 
-        calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
-        total_damage = round(total_damage - round(total_damage * calc_resist))
+        if damage_type == "physical":
+            calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
+        elif damage_type == "magical":
+            calc_resist = .1 * ((20 * target.level) / target.stats["Magical Resist"])
+        damage_resisted = round(total_damage * calc_resist)
+        total_damage = round(total_damage - damage_resisted)
 
-        return total_damage
+        return {"Total Damage": total_damage, "Resisted Damage": damage_resisted}
 
     def showEverything(self):
         # Print everything from the equipment
@@ -135,9 +140,10 @@ class Sword(Weapon):
 
     def actionSlash(self, origin, target):
         potency = 1.0
-        damage = self.getCalculatedDamage(origin, target, potency, crit=True)
-        print("You slash with your sword for {} damage!".format(damage))
-        target.takeDamage(damage, origin)
+        damage_type = "physical"
+        damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
+        print("You slash with your sword for {} damage!".format(damage["Total Damage"]))
+        target.takeDamage(damage["Total Damage"], origin)
     
     def actionParry(self, origin, target):
         origin.status.append("parry")
@@ -147,16 +153,17 @@ class Sword(Weapon):
         origin.status.remove("parry")
         if random.random() <= 0.9:
             potency = 1.5
+            damage_type = "physical"
             reduced_incoming_dmg = 0.1 * incoming_dmg
             print("You successfully parry the {}'s attack!".format(target.name))
             print("The attack is parried, you will take significantly reduced damage!".format(reduced_incoming_dmg))
             origin.takeDamage(reduced_incoming_dmg, target)
-            damage = self.getCalculatedDamage(origin, target, potency, crit=True)
-            print("You counter dealing {} damage!".format(damage))
-            target.takeDamage(damage, origin)
+            damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
+            print("You counter dealing {} damage!".format(damage["Total Damage"]))
+            target.takeDamage(damage["Total Damage"], origin)
         else:
             print("Your parry fails!")
-            origin.takeDamage(incoming_dmg, target)
+            origin.takeDamage(incoming_dmg["Total Damage"], target)
 
 class Consumable():
     # Defines base members and methods for consumables
