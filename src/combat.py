@@ -97,8 +97,8 @@ def combat(a, b):
             
             a.giveXP(round((a.exp_needed / (9 + a.level)) * (b.level / a.level)))
 
-            for i, x in enumerate(loot):
-                if i == 0:
+            for x in loot:
+                if isinstance(x, int):
                     a.giveGold(x)
                 else:
                     if x is not None:

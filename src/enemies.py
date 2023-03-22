@@ -34,17 +34,20 @@ class Thief(Enemy):
             target.takeDamage(damage, self)
 
         elif choice == "Pickpocket":
-            self.item_stolen = random.choice(target.inventory.item_list)
-            target.inventory.remove(self.item_stolen)
-            self.loot_table.loot_list.append(self.item_stolen)
+            if len(target.inventory.item_list) == 0:
+                print("The Thief fails to pickpocket from you as you have no items to steal!")
+                self.item_stolen = None
+            else:
+                self.item_stolen = random.choice(target.inventory.item_list)
+                target.inventory.remove(self.item_stolen)
+                self.loot_table.loot_list.append(self.item_stolen)
 
-            print("The Thief stole a {} from you!".format(self.item_stolen.name))
+                print("The Thief stole a {} from you!".format(self.item_stolen.name))
 
             if random.random() >= .5:
-                damage = self.stats["Power"] / 2
-                calc_resist = .1 * ((20 * target.ilvl) / target.stats["Physical Resist"])
-                round(damage - (damage * calc_resist))
-                print("The Thief also deals {} damage to you!")
+                potency = .5
+                damage = self.getCalculatedDamage(target, potency, crit=False)
+                print("The Thief also deals {} damage to you!".format(damage))
 
                 target.takeDamage(damage, self)
             
