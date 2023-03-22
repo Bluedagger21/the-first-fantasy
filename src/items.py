@@ -154,7 +154,7 @@ class Sword(Weapon):
         if random.random() <= 0.9:
             potency = 1.5
             damage_type = "physical"
-            reduced_incoming_dmg = 0.1 * incoming_dmg
+            reduced_incoming_dmg = round(0.1 * incoming_dmg)
             print("You successfully parry the {}'s attack!".format(target.name))
             print("The attack is parried, you will take significantly reduced damage!".format(reduced_incoming_dmg))
             origin.takeDamage(reduced_incoming_dmg, target)
