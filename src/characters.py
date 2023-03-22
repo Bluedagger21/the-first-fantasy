@@ -27,14 +27,29 @@ class Character:
         print("Name: %s (Level: %d)" % (self.name, self.level))
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
         print("\nVitality: {}".format(self.stats["Vitality"]))
-        print("Physical Resist: {:.2%}".format(self.stats["Physical Resist"]))
-        print("Magical Resist: {:.2%}".format(self.stats["Magical Resist"]))
-        print("\nBase Weapon Damage: {}".format(self.stats["Base Weapon Damage"]))
+        print("Physical Resist: {}".format(self.stats["Physical Resist"]))
+        print("Magical Resist: {}".format(self.stats["Magical Resist"]))
+        print("\nBase Weapon Damage: {}".format(self.stats["Base Damage"]))
         print("Power: {}".format(self.stats["Power"]))
 
+    def getCalculatedDamage(self, target, potency=1, crit=True):
+        base_dmg = math.floor(self.stats["Base Damage"])
+        power = math.floor(self.stats["Power"])
+        total_damage = (base_dmg + power) * potency
+
+        if crit is True:
+            if random.random() <= self.stats["Crit"] / (100 + (5 * (target.level - 1))):
+                print("CRITICAL STRIKE!!!")
+                total_damage *= self.stats["Crit Multiplier"]
+
+        calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
+        round(total_damage - (total_damage * calc_resist))
+
+        return total_damage
+    
     def takeDamage(self, damage, dealer):
         if "parry" in self.status:
-            self.equipped_gear["Main Hand"].triggerParry(self, dealer, damage)
+            self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage)
         else:
             print("{} takes {} damage.".format(self.name, damage))
             self.health -= damage
@@ -47,8 +62,8 @@ class Player(Character):
     def __init__(self, name, 
                  level=1,
                  stats={"Vitality": 10,
-                        "Physical Resist": 0,
-                        "Magical Resist": 0,
+                        "Physical Resist": 5,
+                        "Magical Resist": 5,
                         "Power": 0}):
         super().__init__(name, stats, level)
         self.gold = 0
@@ -60,23 +75,14 @@ class Player(Character):
         self.sword_mastery = mastery.Mastery(items.Sword)
 
     def updateStats(self):
-        gear_stats = self.equipped_gear.getStats()
-        new_stats = self.base_stats
-
-        for stat in gear_stats:
-            if stat not in new_stats:
-                new_stats.update({stat: gear_stats[stat]})
-            else:
-                new_stats[stat] += gear_stats[stat]
-
-        return new_stats
+        self.stats.update(self.equipped_gear.total_stats)
 
     def giveXP(self, exp_earned):
         # Gives the player exp_earned experience and checks for level up
         print(self.name + " gained " + repr(exp_earned) + " experience!")
         self.exp += exp_earned
 
-        if isinstance(items.Sword, self.equipped_gear.get("Main Hand")):
+        if isinstance(items.Sword, type(self.equipped_gear.get("Main Hand"))):
             self.sword_mastery.giveXP(exp_earned)
 
         self.checkLevelUp()
@@ -132,7 +138,7 @@ class Player(Character):
                                                     from_where)
                 if unequipped_item is not False:
                     self.inventory.remove(accessed_item)
-                    self.update()
+                    self.updateStats()
                 break
             elif item_choice == "consume":
                 self.inventory.use(accessed_item, self)             
@@ -142,7 +148,7 @@ class Player(Character):
                 self.inventory.remove(accessed_item)
 
     def attack(self, receiver):
-        self.equipped_gear["Main Hand"].use(self, receiver)
+        return self.equipped_gear.slots_dict["Main Hand"].use(self, receiver)
 
     def checkLevelUp(self):
         # Checks to see if enough experience has been gained to level up
@@ -187,11 +193,11 @@ class Player(Character):
         print("[---Character Sheet---]")
         print("Name: %s (Level: %d)" % (self.name, self.level))
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
-        print("Gold: %d" % (self.gold))
-        print("Exp: %d/%d" % (self.exp, self.exp_needed))
+        print("Gold: {}".format(self.gold))
+        print("Sword Mastery: {}".format(self.sword_mastery.level))
         print("\nVitality: {}".format(self.stats["Vitality"]))
-        print("Physical Resist: {:.2%}".format(self.stats["Physical Resist"]))
-        print("Magical Resist: {:.2%}".format(self.stats["Magical Resist"]))
+        print("Physical Resist: {}".format(self.stats["Physical Resist"]))
+        print("Magical Resist: {}".format(self.stats["Magical Resist"]))
         print("\nBase Weapon Damage: {}".format(self.stats["Base Damage"]))
         print("Power: {}".format(self.stats["Power"]))
 

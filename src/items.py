@@ -33,15 +33,14 @@ class Equipment():
         # Print attributes of the equipment
         print(self.name)
         print("-"*len(self.name))
-
+        print("Item Level: {}".format(self.ilvl))
+        print("Quality: {}%".format(self.quality))
+        print("-"*len(self.name))
         for stat in self.stats:
-            if stat == "Rarity":
-                continue
+            if isinstance(self.stats[stat], float):
+                print("{}: {:.2%}".format(stat, self.stats[stat]))
             else:
-                if isinstance(self.stats[stat], float):
-                    print("{}: {:.2%}".format(stat, self.stats[stat]))
-                else:
-                    print("{}: {}".format(stat, self.stats[stat]))
+                print("{}: {}".format(stat, self.stats[stat]))
 
     def getOptions(self, accessed_from="zone"):
         # Displays and prompts equipment options
@@ -60,20 +59,21 @@ class Equipment():
             # might need else continue here as well for input validation?
 class Armor(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, slot, stats, ilvl = None, rarity = None, quality = None, stack_limit = 1):
+    def __init__(self, name, slot, stats, ilvl=1, rarity=0, quality=0, stack_limit=1):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
 
-        if int(self.rarity) > 0:
-            for stat in self.stats:
-                if stat == "Physical Resist" or stat == "Magical Resist" or stat == "Evasion":
-                    self.stats[stat] *= (int(self.rarity) + 1)
-
+        self.stats["Vitality"] = round(self.stats["Vitality"] * (1 + ((self.quality / 5) / 100)))
+        self.stats["Physical Resist"] = round(self.stats["Physical Resist"] * (1 + ((self.quality / 5) / 100)))
+        self.stats["Magical Resist"] = round(self.stats["Magical Resist"] * (1 + ((self.quality / 5) / 100)))
 class Weapon(Equipment):
     # Derived class from Equipment
     def __init__(self, name, stats, ilvl = None, slot="Main Hand", rarity = None, quality = None, stack_limit = 1):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
+
+        self.stats["Power"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
+        self.stats["Crit"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
 
     def getCalculatedDamage(self, origin, target, potency=1, crit=True):
         base_dmg = math.floor(origin.stats["Base Damage"])
@@ -82,10 +82,10 @@ class Weapon(Equipment):
 
         if random.random() <= origin.stats["Crit"] / (100 + (5 * (target.level - 1))):
             print("CRITICAL STRIKE!!!")
-            damage *= self.stats["Crit Multiplier"]
+            total_damage *= self.stats["Crit Multiplier"]
 
-        calc_resist = .1 * ((20 * target.ilvl) / target.stats["Physical Resist"])
-        round(damage - (damage * calc_resist))
+        calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
+        round(total_damage - round(total_damage * calc_resist))
 
         return total_damage
 
@@ -102,15 +102,15 @@ class Weapon(Equipment):
                 print("{}: {}".format(stats, self.stats[stats]))
 
 class Sword(Weapon):
-    def __init__(self, stats, ilvl = 1, rarity=None, quality=None, stack_limit=1, name="Sword", slot="Main Hand"):
+    def __init__(self, 
+                 stats = {"Base Damage": 5,
+                                "Power": 10,
+                                "Crit": 5,
+                                "Crit Multiplier": 1.5},
+                 ilvl=1, rarity=0, quality=0, stack_limit=1, name="Sword", slot="Main Hand"):
         super().__init__(name, stats, slot, ilvl, rarity, quality, stack_limit)
-        self.stats.update({"Base Damage": 10})
-        self.stats.update({"Power": 10})
-        self.stats.update({"Crit": 5})
-        self.stats.update({"Crit Multiplier": 1.5})
 
         self.actions = ["Slash", "Parry"]
-
 
     def use(self, origin, target):
         if game.player.sword_mastery.level >= 2:
@@ -118,18 +118,25 @@ class Sword(Weapon):
 
         print("\nAvailable Actions: ")
         for i, action in enumerate(self.actions):
-            print("{}) {}".format(i, action))
-        choice = input("Selection: ")
-        if choice == "Slash":
+            print("{}) {}".format(i+1, action))
+        print("{}) Exit".format(i + 2))
+        try:
+            choice = int(input("\nSelection: ")) 
+        except ValueError:
+            print("Invalid choice, cancelling...")
+            return False
+        if choice == 1:
             self.actionSlash(origin, target)
-        if choice == "Parry":
+        elif choice == 2:
             self.actionParry(origin, target)
+        else:
+            return False
 
     def actionSlash(self, origin, target):
         potency = 1.0
         damage = self.getCalculatedDamage(origin, target, potency, crit=True)
         print("You slash with your sword for {} damage!".format(damage))
-        target.takeDamage(damage)
+        target.takeDamage(damage, origin)
     
     def actionParry(self, origin, target):
         origin.status.append("parry")
@@ -142,18 +149,13 @@ class Sword(Weapon):
             reduced_incoming_dmg = 0.1 * incoming_dmg
             print("You successfully parry the {}'s attack!".format(target.name))
             print("The attack is parried, you will take significantly reduced damage!".format(reduced_incoming_dmg))
-            origin.takeDamage(reduced_incoming_dmg)
+            origin.takeDamage(reduced_incoming_dmg, target)
             damage = self.getCalculatedDamage(origin, target, potency, crit=True)
-            print("You counter dealing {} damage!")
-            target.takeDamage(damage)
+            print("You counter dealing {} damage!".format(damage))
+            target.takeDamage(damage, origin)
         else:
             print("Your parry fails!")
-            origin.takeDamage(incoming_dmg)
-
-            
-    
-
-            
+            origin.takeDamage(incoming_dmg, target)
 
 class Consumable():
     # Defines base members and methods for consumables

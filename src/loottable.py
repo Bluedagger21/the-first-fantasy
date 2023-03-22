@@ -63,7 +63,7 @@ class LootGenerator:
         self.loot_list = []
 
     def generateLoot(self):
-        
+
         self.loot_list.append(self.ilvl * random.randrange(8, 20))
         self.loot_list.append(self.generateItem())
         return self.loot_list
@@ -105,7 +105,7 @@ class LootGenerator:
     def determineQuality(self):
         return round(100 * random.random())
         
-    def createUnique(self, rarity, quality):
+    def createUnique(self, ilvl, rarity, quality):
         modifiers_dict = {"Rarity": rarity}
         created_item_slot = random.choices(list(self.unique_dict.keys()))[0]
         base_name, stats = random.choices(list(self.unique_dict[created_item_slot].items()))[0]
@@ -128,14 +128,14 @@ class LootGenerator:
     def createWeapon(self, ilvl, item_rarity, quality):
         weapon_type = random.choice(self.weapon_list)
 
-        return weapon_type(ilvl, item_rarity, quality)
+        return weapon_type(rarity=item_rarity, quality=quality, ilvl=ilvl)
         
-    def createArmor(self, item_rarity, quality):
-        modifiers_dict = {"Rarity": item_rarity}
-
+    def createArmor(self, ilvl, item_rarity, quality):
+        modifiers_dict = {}
+        
         slot, base_dict = random.choice(list(self.armor_dict.items()))
         base_name, stats = random.choice(list(base_dict.items()))
 
         modifiers_dict.update(stats)
         
-        return items.Armor(base_name, slot, modifiers_dict, quality)
+        return items.Armor(base_name, slot, modifiers_dict, ilvl, item_rarity, quality)

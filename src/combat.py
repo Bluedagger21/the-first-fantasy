@@ -8,17 +8,15 @@ def getAction(a, b):
     os.system("cls" if os.name == "nt" else "clear")
     print(b.name)
     print("Health: " + repr(b.health) + "/" + repr(b.getMaxHealth()))
-    print("STR: {:2} DEX: {:2} INT: {:2}".format(
-           b.total_attributes["Strength"],
-           b.total_attributes["Dexterity"], 
-           b.total_attributes["Intelligence"]))
+    print("PWR: {:2} VIT: {:2}".format(
+           b.stats["Power"],
+           b.stats["Vitality"]))
     print("----------------------VERSUS")
     print(a.name)
     print("Health: " + repr(a.health) + "/" + repr(a.getMaxHealth()))
-    print("STR: {:2} DEX: {:2} INT: {:2}".format(
-           a.total_attributes["Strength"],
-           a.total_attributes["Dexterity"], 
-           a.total_attributes["Intelligence"]))
+    print("PWR: {:2} VIT: {:2}".format(
+           a.stats["Power"],
+           a.stats["Vitality"]))
     print("\n[ACTIONS]-------------------")
     choice = input("(A)ttack    (I)nventory\n(E)nemy Info    " \
                        "(R)un Away: ").lower()
@@ -58,7 +56,10 @@ def combat(a, b):
                 print(a.name + " skipped their turn.")
                 a.status.remove("skip")
             elif "normal" in a.status:
-                a.attack(b)
+                proceed = a.attack(b)
+                if proceed is False:
+                    n_state = "standby"
+                    continue
             time.sleep(1)
             if "dead" in b.status:
                 n_state = "endturn"
@@ -100,7 +101,8 @@ def combat(a, b):
                 if i == 0:
                     a.giveGold(x)
                 else:
-                    a.giveItem(x)
+                    if x is not None:
+                        a.giveItem(x)
         
             input("Press \"Enter\" to continue...")
             break

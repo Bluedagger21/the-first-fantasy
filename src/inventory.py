@@ -101,10 +101,14 @@ class Equipment():
     # Defines base members and methods for managing equipped items
     def __init__(self, owner):
         self.slots_dict = {"Head": None, 
-                           "Body": None, 
+                           "Body": items.Armor("Tattered Rags", "Body", {"Vitality": 5,
+                                                                         "Physical Resist": 1,
+                                                                         "Magical Resist": 1}), 
                            "Hands": None,
-                           "Feet": None,
-                           "Main Hand": items.Sword({}, 1, quality=0),
+                           "Feet": items.Armor("Worn-out Sandals", "Feet", {"Vitality": 5,
+                                                                            "Physical Resist": 1,
+                                                                            "Magical Resist": 1}),
+                           "Main Hand": items.Sword(quality=0),
                            "Off Hand": None}
         self.owner = owner
         self.total_stats = self.updateStats()
@@ -149,7 +153,7 @@ class Equipment():
         self.updateStats()
     
     def compareEquip(self, new_equipment, cur_equipment, slot):
-        keys_to_compare = list((new_equipment.modifiers | cur_equipment.modifiers).keys())
+        keys_to_compare = list((new_equipment.stats | cur_equipment.stats).keys())
 
         while True:
             os.system("cls" if os.name == "nt" else "clear")
@@ -167,17 +171,27 @@ class Equipment():
             print("".join(("Name".ljust(STAT_WIDTH),
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
                            cur_equipment.name.ljust(CUR_NAME_WIDTH))))
+            
+            print("".join(("Item Level".ljust(STAT_WIDTH),
+                            str(new_equipment.ilvl).ljust(NEW_NAME_WIDTH),
+                            str(cur_equipment.ilvl).ljust(CUR_NAME_WIDTH),
+                            str("{0:+}".format(new_equipment.ilvl - cur_equipment.ilvl).ljust(DIF_WIDTH)))))
+            
+            print("".join(("Quality".ljust(STAT_WIDTH),
+                            (str(new_equipment.quality) + "%").ljust(NEW_NAME_WIDTH),
+                            (str(cur_equipment.quality) + "%").ljust(CUR_NAME_WIDTH),
+                            str("{0:+}%".format(new_equipment.quality - cur_equipment.quality).ljust(DIF_WIDTH)))))
 
             for key in keys_to_compare:
                 if key != "Rarity":
-                    if key not in new_equipment.modifiers:
+                    if key not in new_equipment.stats:
                         new_modifier = 0
                     else:
-                        new_modifier = new_equipment.modifiers[key]
-                    if key not in cur_equipment.modifiers:
+                        new_modifier = new_equipment.stats[key]
+                    if key not in cur_equipment.stats:
                         cur_modifier = 0
                     else:
-                        cur_modifier = cur_equipment.modifiers[key]
+                        cur_modifier = cur_equipment.stats[key]
 
                     print("".join((key.ljust(STAT_WIDTH),
                             str(new_modifier).ljust(NEW_NAME_WIDTH),
