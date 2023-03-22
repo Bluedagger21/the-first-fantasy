@@ -68,10 +68,10 @@ class Armor(Equipment):
         self.stats["Magical Resist"] = round(self.stats["Magical Resist"] * (1 + ((self.quality / 5) / 100)))
 class Weapon(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, stats, ilvl = None, slot="Main Hand", rarity = None, quality = None, stack_limit = 1):
+    def __init__(self, name, stats, ilvl=1, slot="Main Hand", rarity=0, quality=0, stack_limit = 1, actions=None):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
-
+        self.actions = actions
         self.stats["Power"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Crit"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
 
@@ -92,14 +92,16 @@ class Weapon(Equipment):
     def showEverything(self):
         # Print everything from the equipment
         print(self.name)
-        print("Attack: {} + {}d({})".format(self.stats["Base Damage"], 
-                                            self.stats["Random Multiplier"], 
-                                            self.stats["Random Damage"]))
+        print("-"*len(self.name))
+        print("Item Level: {}".format(self.ilvl))
+        print("Quality: {}%".format(self.quality))
+        print("-"*len(self.name))
+        print("Actions: ")
+        for action in self.actions:
+            print("{}".format(action))
+        print("-"*len(self.name))
         for stats in self.stats:
-            if stats == "Base Damage" or stats == "Random Multiplier" or stats == "Random Damage":
-                continue
-            else:
-                print("{}: {}".format(stats, self.stats[stats]))
+            print("{}: {}".format(stats, self.stats[stats]))
 
 class Sword(Weapon):
     def __init__(self, 
@@ -108,7 +110,7 @@ class Sword(Weapon):
                                 "Crit": 5,
                                 "Crit Multiplier": 1.5},
                  ilvl=1, rarity=0, quality=0, stack_limit=1, name="Sword", slot="Main Hand"):
-        super().__init__(name, stats, slot, ilvl, rarity, quality, stack_limit)
+        super().__init__(name, stats, ilvl, slot, rarity, quality, stack_limit)
 
         self.actions = ["Slash", "Parry"]
 
