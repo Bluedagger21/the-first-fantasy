@@ -40,7 +40,7 @@ class Thief(Enemy):
 
             print("The Thief stole a {} from you!".format(self.item_stolen.name))
 
-            if random.random >= .5:
+            if random.random() >= .5:
                 damage = self.stats["Power"] / 2
                 calc_resist = .1 * ((20 * target.ilvl) / target.stats["Physical Resist"])
                 round(damage - (damage * calc_resist))
