@@ -150,7 +150,7 @@ class Equipment():
     
     def actuallyEquip(self, new_equipment, slot):
         self.slots_dict[slot] = new_equipment
-        self.updateStats()
+        self.total_stats = self.updateStats()
     
     def compareEquip(self, new_equipment, cur_equipment, slot):
         keys_to_compare = list((new_equipment.stats | cur_equipment.stats).keys())

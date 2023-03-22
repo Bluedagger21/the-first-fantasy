@@ -17,7 +17,7 @@ class LootGenerator:
                                           "Type Weight": 25},
                            "Equipment": {"Subtypes": ("Weapon",
                                                       "Armor"),
-                                         "Subtype Weights": [2, 8],
+                                         "Subtype Weights": [8, 6],
                                          "Type Weight": 45},
                            "Unique": {"Type Weight": 0},
                            "None": {"Type Weight": 29}}
@@ -127,8 +127,8 @@ class LootGenerator:
     
     def createWeapon(self, ilvl, item_rarity, quality):
         weapon_type = random.choice(self.weapon_list)
-
-        return weapon_type(rarity=item_rarity, quality=quality, ilvl=ilvl)
+        new_weapon = weapon_type(rarity=item_rarity, quality=quality, ilvl=ilvl)
+        return new_weapon
         
     def createArmor(self, ilvl, item_rarity, quality):
         modifiers_dict = {}

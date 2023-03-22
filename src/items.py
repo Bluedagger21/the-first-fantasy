@@ -68,7 +68,7 @@ class Armor(Equipment):
         self.stats["Magical Resist"] = round(self.stats["Magical Resist"] * (1 + ((self.quality / 5) / 100)))
 class Weapon(Equipment):
     # Derived class from Equipment
-    def __init__(self, name, stats, ilvl=1, slot="Main Hand", rarity=0, quality=0, stack_limit = 1, actions=None):
+    def __init__(self, name, stats, ilvl=1, slot="Main Hand", rarity=None, quality=None, stack_limit = 1, actions=None):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
         self.actions = actions
@@ -85,7 +85,7 @@ class Weapon(Equipment):
             total_damage *= self.stats["Crit Multiplier"]
 
         calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
-        round(total_damage - round(total_damage * calc_resist))
+        total_damage = round(total_damage - round(total_damage * calc_resist))
 
         return total_damage
 
@@ -104,13 +104,12 @@ class Weapon(Equipment):
             print("{}: {}".format(stats, self.stats[stats]))
 
 class Sword(Weapon):
-    def __init__(self, 
-                 stats = {"Base Damage": 5,
-                                "Power": 10,
-                                "Crit": 5,
-                                "Crit Multiplier": 1.5},
-                 ilvl=1, rarity=0, quality=0, stack_limit=1, name="Sword", slot="Main Hand"):
-        super().__init__(name, stats, ilvl, slot, rarity, quality, stack_limit)
+    def __init__(self, ilvl=1, rarity=None, quality=None, stack_limit=1, name="Sword", slot="Main Hand"):
+        self.stats = {"Base Damage": 5,
+                      "Power": 10,
+                      "Crit": 5,
+                      "Crit Multiplier": 1.5}
+        super().__init__(name, self.stats, ilvl, slot, rarity, quality, stack_limit)
 
         self.actions = ["Slash", "Parry"]
 

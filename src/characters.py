@@ -13,7 +13,6 @@ class Character:
     def __init__(self, name, stats, level = 0, ):
         self.status = ["normal"]
         self.name = name
-        self.equipped_gear = inventory.Equipment(self)
         self.base_stats = stats
         self.stats = self.base_stats
         self.level = level
@@ -48,14 +47,11 @@ class Character:
         return total_damage
     
     def takeDamage(self, damage, dealer):
-        if "parry" in self.status:
-            self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage)
-        else:
-            print("{} takes {} damage.".format(self.name, damage))
-            self.health -= damage
-            if self.health <= 0:
-                self.status.append("dead")
-                self.health = 0
+        print("{} takes {} damage.".format(self.name, damage))
+        self.health -= damage
+        if self.health <= 0:
+            self.status.append("dead")
+            self.health = 0
 
 class Player(Character):
     # Player object
@@ -70,6 +66,7 @@ class Player(Character):
         self.exp = 0
         self.exp_needed = 1000
         self.inventory = inventory.Storage(10, self)
+        self.equipped_gear = inventory.Equipment(self)
         self.updateStats()
         self.health = self.getMaxHealth()
         self.sword_mastery = mastery.Mastery(items.Sword)
@@ -150,6 +147,16 @@ class Player(Character):
     def attack(self, receiver):
         return self.equipped_gear.slots_dict["Main Hand"].use(self, receiver)
 
+    def takeDamage(self, damage, dealer):
+        if "parry" in self.status:
+            self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage)
+        else:
+            print("{} takes {} damage.".format(self.name, damage))
+            self.health -= damage
+            if self.health <= 0:
+                self.status.append("dead")
+                self.health = 0
+        
     def checkLevelUp(self):
         # Checks to see if enough experience has been gained to level up
         level_gain = 0
@@ -165,27 +172,7 @@ class Player(Character):
             self.levelUp(level_gain)
 
     def levelUp(self, level_gain):
-        # Allocate points to attributes
-        points_gain = level_gain * 5
-        while points_gain != 0:
-
-            print("Points available: ", points_gain)
-            print("[------------------]")
-            print("(1) Strength: ", self.character_attributes["Strength"])
-            print("(2) Dexterity: ", self.character_attributes["Dexterity"])
-            print("(3) Intelligence: ", self.character_attributes["Intelligence"])
-            choice = input("Place point into: ")
-            if choice == '1':
-                self.character_attributes["Strength"] += 1
-            elif choice == '2':
-                self.character_attributes["Dexterity"] += 1
-            elif choice == '3':
-                self.character_attributes["Intelligence"] += 1
-            else:
-                continue
-            points_gain -= 1
             self.health = self.getMaxHealth()
-            self.update()
             os.system("cls" if os.name == "nt" else "clear")
 
     def getCharacterSheet(self):
