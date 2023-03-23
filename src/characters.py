@@ -74,7 +74,9 @@ class Player(Character):
         self.updateStats()
         self.health = self.getMaxHealth()
         self.sword_mastery = mastery.Mastery(items.Sword)
+        self.sword_mastery.levelUp()
         self.staff_mastery = mastery.Mastery(items.Staff)
+        self.sword_mastery.levelUp()
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)

@@ -106,6 +106,7 @@ def homescreen():
             print("After some time, you notice that you're somehow waking up in the last safe haven you visited.")
             input("Press \"Enter\" to continue...")
             worldmap.current_node = worldmap.last_rest_node
+        clearStatus()
         choice = worldmap.current_node.getOptions()
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
@@ -165,3 +166,10 @@ def saveGame():
     f.close()
     print("...Done!")
     input("Press \"Enter\" to continue...")
+
+def clearStatus():
+    for status in player.status:
+        if status == "normal" or status == "dead":
+            continue
+        player.status.remove(status)
+

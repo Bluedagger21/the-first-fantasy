@@ -133,6 +133,7 @@ class Sword(Weapon):
                 return False
             if choice == 1:
                 self.actionSlice(origin, target)
+                return True
             if choice == 2:
                 origin.status.remove("slash_combo")
                 return False
