@@ -42,13 +42,11 @@ class Character:
                 total_damage *= self.stats["Crit Multiplier"]
 
         if damage_type == "physical":
-            calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
+            calc_resist = .1 * (target.stats["Physical Resist"] / (20 * target.level))
         elif damage_type == "magical":
-            calc_resist = .1 * ((20 * target.level) / target.stats["Magical Resist"])
+            calc_resist = .1 * (target.stats["Magical Resist"] / (20 * target.level))
         damage_resisted = round(total_damage * calc_resist)
         total_damage = round(total_damage - damage_resisted)
-
-        round(total_damage - (total_damage * calc_resist))
 
         return {"Total Damage": total_damage, "Resisted Damage": damage_resisted}
     
@@ -76,6 +74,7 @@ class Player(Character):
         self.updateStats()
         self.health = self.getMaxHealth()
         self.sword_mastery = mastery.Mastery(items.Sword)
+        self.staff_mastery = mastery.Mastery(items.Staff)
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)

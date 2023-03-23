@@ -17,7 +17,7 @@ class LootGenerator:
                                           "Type Weight": 25},
                            "Equipment": {"Subtypes": ("Weapon",
                                                       "Armor"),
-                                         "Subtype Weights": [8, 6],
+                                         "Subtype Weights": [2, 6],
                                          "Type Weight": 45},
                            "Unique": {"Type Weight": 0},
                            "None": {"Type Weight": 29}}

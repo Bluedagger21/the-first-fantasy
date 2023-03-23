@@ -86,9 +86,9 @@ class Weapon(Equipment):
                 total_damage *= self.stats["Crit Multiplier"]
 
         if damage_type == "physical":
-            calc_resist = .1 * ((20 * target.level) / target.stats["Physical Resist"])
+            calc_resist = .1 * (target.stats["Physical Resist"] / (20 * target.level))
         elif damage_type == "magical":
-            calc_resist = .1 * ((20 * target.level) / target.stats["Magical Resist"])
+            calc_resist = .1 * (target.stats["Magical Resist"] / (20 * target.level))
         damage_resisted = round(total_damage * calc_resist)
         total_damage = round(total_damage - damage_resisted)
 
@@ -123,6 +123,19 @@ class Sword(Weapon):
             self.actions = ["Slash (Combo)", "Parry"]
 
         print("\nAvailable Actions: ")
+        if "slash_combo" in origin.status:
+            print("1) {}".format("Follow-up Attack: Slice"))
+            print("2) {}".format("Cancel Combo"))
+            try:
+                choice = int(input("\nSelection: ")) 
+            except ValueError:
+                print("Invalid choice, cancelling...")
+                return False
+            if choice == 1:
+                self.actionSlice(origin, target)
+            if choice == 2:
+                origin.status.remove("slash_combo")
+                return False
         for i, action in enumerate(self.actions):
             print("{}) {}".format(i+1, action))
         print("{}) Exit".format(i + 2))
@@ -144,6 +157,16 @@ class Sword(Weapon):
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You slash with your sword for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
+        if origin.sword_mastery.level >= 2:
+            origin.status.append("slash_combo")
+    
+    def actionSlice(self, origin, target):
+        potency = 1.2
+        damage_type = "physical"
+        damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
+        print("You slice with your sword for {} damage!".format(damage["Total Damage"]))
+        target.takeDamage(damage["Total Damage"], origin)
+        origin.status.remove("slash_combo")
     
     def actionParry(self, origin, target):
         origin.status.append("parry")
@@ -164,6 +187,62 @@ class Sword(Weapon):
         else:
             print("Your parry fails!")
             origin.takeDamage(incoming_dmg["Total Damage"], target)
+
+class Staff(Weapon):
+    def __init__(self, ilvl=1, rarity=None, quality=None, stack_limit=1, name="Staff", slot="Main Hand"):
+        self.stats = {"Base Damage": 5,
+                      "Power": 10,
+                      "Crit": 5,
+                      "Crit Multiplier": 1.5,
+                      "Physical Resist": 5,
+                      "Magical Resist": 10}
+        super().__init__(name, self.stats, ilvl, slot, rarity, quality, stack_limit)
+
+        self.actions = ["Fire I", "Fire III (Charge)"]
+
+    def use(self, origin, target):
+        if game.player.staff_mastery.level >= 2:
+            self.actions = ["Fire I", "Fire III (Charge)+"]
+
+        if "fire_iii" in origin.status:
+            self.actionFireIII(origin, target)
+
+        print("\nAvailable Actions: ")
+        
+        for i, action in enumerate(self.actions):
+            print("{}) {}".format(i+1, action))
+        print("{}) Exit".format(i + 2))
+        try:
+            choice = int(input("\nSelection: ")) 
+        except ValueError:
+            print("Invalid choice, cancelling...")
+            return False
+        if choice == 1:
+            self.actionFire(origin, target)
+        elif choice == 2:
+            self.actionFireIII(origin, target)
+        else:
+            return False
+        
+    def actionFire(self, origin, target):
+        potency = 1.2
+        damage_type = "magical"
+        damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
+        print("Flames engulf your foe for {} damage!".format(damage["Total Damage"]))
+        target.takeDamage(damage["Total Damage"], origin)
+        
+    def actionFireIII(self, origin, target):
+        if "fireIII" not in origin.status:
+            origin.status.append("fireIII")
+            print("You begin to channel energy into your staff...")
+        else:
+            origin.status.remove("fireIII")
+            potency = 2.5
+            damage_type = "magical"
+            damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
+            print("The air around your foe ignites, blasting them for {} damage!".format(damage["Total Damage"]))
+            target.takeDamage(damage["Total Damage"], origin)
+        
 
 class Consumable():
     # Defines base members and methods for consumables
