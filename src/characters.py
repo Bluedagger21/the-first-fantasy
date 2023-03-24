@@ -76,7 +76,8 @@ class Player(Character):
         self.sword_mastery = mastery.Mastery(items.Sword)
         self.sword_mastery.levelUp()
         self.staff_mastery = mastery.Mastery(items.Staff)
-        self.sword_mastery.levelUp()
+        self.staff_mastery.levelUp()
+        self.inventory.add(items.Staff())
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)
@@ -157,6 +158,8 @@ class Player(Character):
     def takeDamage(self, damage, dealer):
         if "parry" in self.status:
             self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage)
+        elif "mana_shield" in self.status:
+            self.equipped_gear.slots_dict["Main Hand"].triggerManaShield(self, dealer, damage)
         else:
             print("{} takes {} damage.".format(self.name, damage))
             self.health -= damage

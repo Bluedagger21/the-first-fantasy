@@ -237,6 +237,9 @@ class Staff(Weapon):
         if "fire_iii" not in origin.status:
             origin.status.append("fire_iii")
             print("You begin to channel energy into your staff...")
+            if "Fire III (Charge)+" in self.actions:
+                print("A faint shield of mana envelopes you...")
+                origin.status.append("mana_shield")
         else:
             origin.status.remove("fire_iii")
             potency = 2.5
@@ -244,6 +247,20 @@ class Staff(Weapon):
             damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
             print("The air around your foe ignites, blasting them for {} damage!".format(damage["Total Damage"]))
             target.takeDamage(damage["Total Damage"], origin)
+            input("Press \"Enter\" to continue...")
+    
+    def triggerManaShield(self, origin, target, incoming_damage):
+        origin.status.remove("mana_shield")
+        shield_amount = self.stats["Power"] / 2
+        
+        amount_shielded = incoming_damage - shield_amount
+        incoming_damage_leftover = incoming_damage - amount_shielded
+        if incoming_damage_leftover < 0:
+            incoming_damage_leftover = 0
+
+        print("Your mana shield absorbed {} of the incoming damage!".format(amount_shielded))
+        origin.takeDamage(incoming_damage_leftover, target)
+
         
 class Consumable():
     # Defines base members and methods for consumables
