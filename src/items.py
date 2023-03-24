@@ -73,7 +73,7 @@ class Weapon(Equipment):
         self.slot = slot
         self.actions = actions
         self.stats["Power"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
-        self.stats["Crit"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
+        self.stats["Crit"] = round(self.stats["Crit"] * (1 + ((self.quality / 5) / 100)))
 
     def getCalculatedDamage(self, origin, target, potency=1, damage_type="physical", crit=True):
         base_dmg = math.floor(origin.stats["Base Damage"])
@@ -207,6 +207,7 @@ class Staff(Weapon):
 
         if "fire_iii" in origin.status:
             self.actionFireIII(origin, target)
+            return True
 
         print("\nAvailable Actions: ")
         
@@ -233,18 +234,17 @@ class Staff(Weapon):
         target.takeDamage(damage["Total Damage"], origin)
         
     def actionFireIII(self, origin, target):
-        if "fireIII" not in origin.status:
-            origin.status.append("fireIII")
+        if "fire_iii" not in origin.status:
+            origin.status.append("fire_iii")
             print("You begin to channel energy into your staff...")
         else:
-            origin.status.remove("fireIII")
+            origin.status.remove("fire_iii")
             potency = 2.5
             damage_type = "magical"
             damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
             print("The air around your foe ignites, blasting them for {} damage!".format(damage["Total Damage"]))
             target.takeDamage(damage["Total Damage"], origin)
         
-
 class Consumable():
     # Defines base members and methods for consumables
     def __init__(self, stack_limit=5, stack_size=1):
