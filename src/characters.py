@@ -192,11 +192,13 @@ class Player(Character):
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
         print("Gold: {}".format(self.gold))
         print("Sword Mastery: {}".format(self.sword_mastery.level))
+        print("Staff Mastery: {}".format(self.staff_mastery.level))
         print("\nVitality: {}".format(self.stats["Vitality"]))
         print("Physical Resist: {}".format(self.stats["Physical Resist"]))
         print("Magical Resist: {}".format(self.stats["Magical Resist"]))
         print("\nBase Weapon Damage: {}".format(self.stats["Base Damage"]))
         print("Power: {}".format(self.stats["Power"]))
+        print ("Crit Rate: {0:.0%}".format(self.stats["Crit"] / (100 + (5 * (self.level - 1)))))
 
         print("\n[------Equipment-----]")
         for x in self.equipped_gear.slots_dict:

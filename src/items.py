@@ -63,7 +63,10 @@ class Armor(Equipment):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
 
-        self.stats["Vitality"] = round(self.stats["Vitality"] * (1 + ((self.quality / 5) / 100)))
+        self.stats["Vitality"] = round(5*(1+0.08)**self.ilvl)
+        self.stats["Power"] = round(5*(1+0.08)**self.ilvl)
+        self.stats["Physical Resist"] = round(5*(1+0.08)**self.ilvl)
+        self.stats["Magical Resist"] = round(self.stats["Vitality"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Physical Resist"] = round(self.stats["Physical Resist"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Magical Resist"] = round(self.stats["Magical Resist"] * (1 + ((self.quality / 5) / 100)))
 class Weapon(Equipment):
@@ -72,6 +75,10 @@ class Weapon(Equipment):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
         self.actions = actions
+
+        self.stats["Base Damage"] = round(5*(1+0.08)**self.ilvl)
+        self.stats["Power"] = round(5*(1+0.08)**self.ilvl)
+        self.stats["Crit"] = round(5*(1+0.08)**self.ilvl)
         self.stats["Power"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Crit"] = round(self.stats["Crit"] * (1 + ((self.quality / 5) / 100)))
 
@@ -111,16 +118,20 @@ class Weapon(Equipment):
 class Sword(Weapon):
     def __init__(self, ilvl=1, rarity=None, quality=None, stack_limit=1, name="Sword", slot="Main Hand"):
         self.stats = {"Base Damage": 5,
-                      "Power": 10,
+                      "Power": 5,
                       "Crit": 5,
                       "Crit Multiplier": 1.5}
         super().__init__(name, self.stats, ilvl, slot, rarity, quality, stack_limit)
-
         self.actions = ["Slash", "Parry"]
+
+
 
     def use(self, origin, target):
         if game.player.sword_mastery.level >= 2:
             self.actions = ["Slash (Combo)", "Parry"]
+
+        if "parry" in game.player.status:
+            game.player.status.remove("parry")
 
         print("\nAvailable Actions: ")
         if "slash_combo" in origin.status:
@@ -187,12 +198,12 @@ class Sword(Weapon):
             target.takeDamage(damage["Total Damage"], origin)
         else:
             print("Your parry fails!")
-            origin.takeDamage(incoming_dmg["Total Damage"], target)
+            origin.takeDamage(incoming_dmg, target)
 
 class Staff(Weapon):
     def __init__(self, ilvl=1, rarity=None, quality=None, stack_limit=1, name="Staff", slot="Main Hand"):
         self.stats = {"Base Damage": 5,
-                      "Power": 10,
+                      "Power": 5,
                       "Crit": 5,
                       "Crit Multiplier": 1.5,
                       "Physical Resist": 5,
