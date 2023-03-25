@@ -42,8 +42,8 @@ def newgame():
     print("\n")
     while True:
         playername = input("Enter your name: ")
-        if len(playername) < 2:
-            print("Name must be at least two characters long.")
+        if 12 < len(playername) < 2:
+            print("Name must be at least two characters long and no more than 12 long.")
         else:
             player = characters.Player(playername)
             break
