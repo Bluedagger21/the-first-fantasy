@@ -19,7 +19,7 @@ class Character:
         self.health = self.stats["Vitality"] * 2
 
     def getMaxHealth(self):
-        return (self.stats["Vitality"] * 2) + (10 * self.level)
+        return (self.stats["Vitality"] * 2)
     
     def getCharacterSheet(self):
         print("[---Character Sheet---]")
@@ -59,13 +59,12 @@ class Character:
 
 class Player(Character):
     # Player object
-    def __init__(self, name, 
-                 level=1,
-                 stats={"Vitality": 10,
-                        "Physical Resist": 5,
-                        "Magical Resist": 5,
-                        "Power": 0}):
-        super().__init__(name, stats, level)
+    def __init__(self, name, level=1):
+        self.stats={"Vitality": 10,
+                    "Physical Resist": 5,
+                    "Magical Resist": 5,
+                    "Power": 0}
+        super().__init__(name, self.stats, level)
         self.gold = 0
         self.exp = 0
         self.exp_needed = 1000
@@ -89,6 +88,8 @@ class Player(Character):
 
         if isinstance(items.Sword, type(self.equipped_gear.get("Main Hand"))):
             self.sword_mastery.giveXP(exp_earned)
+        if isinstance(items.Staff, type(self.equipped_gear.get("Main Hand"))):
+            self.staff_mastery.giveXP(exp_earned)
 
         self.checkLevelUp()
 

@@ -14,3 +14,4 @@ class Mastery:
     
     def levelUp(self):
         self.level += 1
+        print("Your mastery of the {} has leveled to {}!".format(self.type.__name__, self.level))

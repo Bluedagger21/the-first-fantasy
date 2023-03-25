@@ -14,17 +14,24 @@ class Enemy(characters.Character):
         self.loot_table = loottable.LootGenerator(level, self)
 
 class Thief(Enemy):
-    def __init__(self, level, stats={"Vitality": 0,
-                                     "Power": 5,
-                                     "Base Damage": 5,
-                                     "Crit": 5,
-                                     "Crit Multiplier": 1.5,
-                                     "Physical Resist": 20,
-                                     "Magical Resist" : 10},
-                                        name="Thief",):
-        super().__init__(name, level, stats)
+    def __init__(self, level, name="Thief"):
+        self.stats={"Vitality": 5,
+                    "Power": 5,
+                    "Base Damage": 5,
+                    "Crit": 5,
+                    "Crit Multiplier": 1.5,
+                    "Physical Resist": 20,
+                    "Magical Resist" : 10}
+        super().__init__(name, level, self.stats)
         self.actions = ["Stab", "Pickpocket"]
         self.action_weights = [10, 2]
+        self.stats["Vitality"] = round(5*(1+0.1)**self.level)
+        self.stats["Power"] = round(5*(1+0.1)**self.level)
+        self.stats["Base Damage"] = round(5*(1+0.1)**self.level)
+        self.stats["Crit"] = round(5*(1+0.1)**self.level)
+        self.stats["Physical Resist"] = round(20*(1+0.1)**self.level)
+        self.stats["Magical Resist"] = round(10*(1+0.1)**self.level)
+        self.health = self.getMaxHealth()
 
     def attack(self, target):
         choice = random.choices(self.actions, weights=self.action_weights)[0]

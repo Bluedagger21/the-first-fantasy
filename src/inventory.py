@@ -100,11 +100,15 @@ class Storage:
 class Equipment():
     # Defines base members and methods for managing equipped items
     def __init__(self, owner):
-        self.slots_dict = {"Head": None, 
+        self.slots_dict = {"Head": items.Armor("Riped Hood", "Head", {"Vitality": 5,
+                                                                      "Physical Resist": 1,
+                                                                      "Magical Resist": 1}), 
                            "Body": items.Armor("Tattered Rags", "Body", {"Vitality": 5,
                                                                          "Physical Resist": 1,
                                                                          "Magical Resist": 1}), 
-                           "Hands": None,
+                           "Hands": items.Armor("Scruffed Gloves", "Hands", {"Vitality": 5,
+                                                                            "Physical Resist": 1,
+                                                                            "Magical Resist": 1}),
                            "Feet": items.Armor("Worn-out Sandals", "Feet", {"Vitality": 5,
                                                                             "Physical Resist": 1,
                                                                             "Magical Resist": 1}),
@@ -112,10 +116,6 @@ class Equipment():
                            "Off Hand": None}
         self.owner = owner
         self.total_stats = self.updateStats()
-    
-    def getAttributes(self):
-        self.total_attributes = self.updateAttributes()
-        return self.total_attributes
     
     def getStats(self):
         self.total_stats = self.updateStats()

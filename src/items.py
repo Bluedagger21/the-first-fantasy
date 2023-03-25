@@ -64,9 +64,9 @@ class Armor(Equipment):
         self.slot = slot
 
         self.stats["Vitality"] = round(5*(1+0.08)**self.ilvl)
-        self.stats["Power"] = round(5*(1+0.08)**self.ilvl)
+        self.stats["Magical Resist"] = round(5*(1+0.08)**self.ilvl)
         self.stats["Physical Resist"] = round(5*(1+0.08)**self.ilvl)
-        self.stats["Magical Resist"] = round(self.stats["Vitality"] * (1 + ((self.quality / 5) / 100)))
+        self.stats["Vitality"] = round(self.stats["Vitality"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Physical Resist"] = round(self.stats["Physical Resist"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Magical Resist"] = round(self.stats["Magical Resist"] * (1 + ((self.quality / 5) / 100)))
 class Weapon(Equipment):
@@ -123,8 +123,6 @@ class Sword(Weapon):
                       "Crit Multiplier": 1.5}
         super().__init__(name, self.stats, ilvl, slot, rarity, quality, stack_limit)
         self.actions = ["Slash", "Parry"]
-
-
 
     def use(self, origin, target):
         if game.player.sword_mastery.level >= 2:
