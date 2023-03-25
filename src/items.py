@@ -325,7 +325,7 @@ class SmallExperienceBoost(Consumable):
 
     def use(self, target):
         print(target.name + " used a " + self.name + ".")
-        target.giveExp(100)
+        target.giveXP(100)
     
     def show(self):
         # Print name and effect
