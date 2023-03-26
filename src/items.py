@@ -127,11 +127,28 @@ class Sword(Weapon):
     def use(self, origin, target):
         if game.player.sword_mastery.level >= 2:
             self.actions = ["Slash (Combo)", "Parry"]
+        if game.player.sword_mastery.level >= 3:
+            self.actions = ["Slash (Combo)+", "Parry"]
 
         if "parry" in game.player.status:
             game.player.status.remove("parry")
 
         print("\nAvailable Actions: ")
+        if "slash_combo+" in origin.status:
+            print("1) {}".format("Follow-up Attack: Sever"))
+            print("2) {}".format("Cancel Combo"))
+            try:
+                choice = int(input("\nSelection: ")) 
+            except ValueError:
+                print("Invalid choice, cancelling...")
+                return False
+            if choice == 1:
+                self.actionSever(origin, target)
+                origin.status.remove("slash_combo+")
+                return True
+            if choice == 2:
+                origin.status.remove("slash_combo+")
+                return False
         if "slash_combo" in origin.status:
             print("1) {}".format("Follow-up Attack: Slice"))
             print("2) {}".format("Cancel Combo"))
@@ -142,6 +159,8 @@ class Sword(Weapon):
                 return False
             if choice == 1:
                 self.actionSlice(origin, target)
+                origin.status.remove("slash_combo")
+                origin.status.append("slash_combo+")
                 return True
             if choice == 2:
                 origin.status.remove("slash_combo")
@@ -165,7 +184,7 @@ class Sword(Weapon):
         potency = 1.0
         damage_type = "physical"
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
-        print("You slash with your sword for {} damage!".format(damage["Total Damage"]))
+        print("You slash for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
         if origin.sword_mastery.level >= 2:
             origin.status.append("slash_combo")
@@ -174,9 +193,18 @@ class Sword(Weapon):
         potency = 1.2
         damage_type = "physical"
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
-        print("You slice with your sword for {} damage!".format(damage["Total Damage"]))
+        print("You slice for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
         origin.status.remove("slash_combo")
+    
+    def actionSever(self, origin, target):
+        potency = 1.5
+        damage_type = "physical"
+        damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
+        print("You sever your foe for {} damage!".format(damage["Total Damage"]))
+        target.takeDamage(damage["Total Damage"], origin)
+        # Add bleed status here
+        origin.status.remove("slash_combo+")
     
     def actionParry(self, origin, target):
         origin.status.append("parry")
