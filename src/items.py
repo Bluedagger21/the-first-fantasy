@@ -191,10 +191,11 @@ class Sword(Weapon):
             origin.status_list.append(Status("slash_combo", origin, duration=1))
     
     def actionSlice(self, origin, target):
-        potency = 1.2
+        potency = 1.0
         damage_type = "physical"
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You slice for {} damage!".format(damage["Total Damage"]))
+        target.status_list.append(Bleeding("Bleed", target, round(damage["Total Damage"] * 0.1)))
         target.takeDamage(damage["Total Damage"], origin)
         origin.status_list.remove("slash_combo")
     
@@ -204,7 +205,6 @@ class Sword(Weapon):
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You sever your foe for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
-        # Add bleed status here
         origin.status_list.remove("slash_combo+")
     
     def actionParry(self, origin, target):

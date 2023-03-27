@@ -52,7 +52,7 @@ class Character:
         return {"Total Damage": total_damage, "Resisted Damage": damage_resisted}
     
     def takeDamage(self, damage, dealer):
-        print("{} takes {} damage.".format(self.name, damage))
+        #print("{} takes {} damage.".format(self.name, damage))
         self.health -= damage
         if self.health <= 0:
             self.status_list.append(Status("dead", self))

@@ -66,7 +66,11 @@ def combat(a, b):
             else:
                 n_state = "b_attack"
         elif c_state == "b_attack":
-            if b.status_list.exists("skip"):
+            b.status_list.tick("BoT")
+            if b.status_list.exists("dead"):
+                print(b.name + " has been defeated!")
+                n_state = "win"
+            elif b.status_list.exists("skip"):
                 print(b.name + " skipped their turn.")
                 b.status_list.remove("skip")
                 time.sleep(1)
@@ -74,10 +78,10 @@ def combat(a, b):
                 time.sleep(1)
                 b.attack(a)
                 b.status_list.remove("caught")
-                input("Press \"Enter\" to continue...")
             elif a.status_list.exists("normal"):
                 b.attack(a)
                 time.sleep(1)
+            input("Press \"Enter\" to continue...")
             n_state = "endturn"
 
         elif c_state == "endturn":
@@ -93,12 +97,12 @@ def combat(a, b):
             elif b.status_list.exists("dead"):
                 print(b.name + " has been defeated!")
                 n_state = "win"
-                a.status_list.tick("EoC")
-                a.status_list.clear()
             else:
                 n_state = "standby"
 
         elif c_state == "win":
+            a.status_list.tick("EoC")
+            a.status_list.clear()
             loot = b.loot_table.generateLoot()
             
             a.giveXP(round((a.exp_needed / (9 + a.level)) * (b.level / a.level)))
