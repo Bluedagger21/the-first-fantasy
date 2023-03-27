@@ -178,13 +178,14 @@ class Player(Character):
             self.exp_needed += self.level * 100
             level_gain += 1
         if level_gain > 0:
-            input("Press \"Enter\" to continue...")
-            os.system("cls" if os.name == "nt" else "clear")
+            ## removed this code from level-up so that a double Enter and screen refresh is skipped
+            ##input("Press \"Enter\" to continue...")
+            ##os.system("cls" if os.name == "nt" else "clear")
             self.levelUp(level_gain)
 
     def levelUp(self, level_gain):
             self.health = self.getMaxHealth()
-            os.system("cls" if os.name == "nt" else "clear")
+            ##os.system("cls" if os.name == "nt" else "clear")
 
     def getCharacterSheet(self):
         # Print Character stats and equipped gear

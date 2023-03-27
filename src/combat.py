@@ -104,8 +104,6 @@ def combat(a, b):
             a.status_list.tick("EoC")
             a.status_list.clear()
             loot = b.loot_table.generateLoot()
-            
-            a.giveXP(round((a.exp_needed / (9 + a.level)) * (b.level / a.level)))
 
             for x in loot:
                 if isinstance(x, int):
@@ -114,6 +112,7 @@ def combat(a, b):
                     if x is not None:
                         a.giveItem(x)
 
+            a.giveXP(round((a.exp_needed / (9 + a.level)) * (b.level / a.level)))
             input("Press \"Enter\" to continue...")
             break
 
