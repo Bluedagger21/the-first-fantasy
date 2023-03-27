@@ -58,7 +58,7 @@ class Region:
             os.system("cls" if os.name == "nt" else "clear")  
             type_of_encounter = self.getEncounter()
             if type_of_encounter == "combat":
-                if "dead" in game.player.status:
+                if game.player.status_list.exists("dead"):
                     print("You're too injured to fight and had to abandon your travels.")
                     input("Press \"Enter\" to continue...")
                     self.world.current_node = self.world.last_rest_node
@@ -173,7 +173,7 @@ class Wild(Node):
         return random.choices(options, weights=option_weights)[0]
     
     def explore(self):
-        if "dead" in game.player.status:
+        if game.player.status_list.exists("dead"):
                 print("You're too injured to fight and had to abandon your exploration.")
                 input("Press \"Enter\" to continue...")
                 return False
@@ -192,7 +192,7 @@ class Village(Node):
         self.market = market.BasicMarket()
 
     def rest(self, player):
-        if "dead" in player.status:
+        if player.status_list.exists("dead"):
                 print("You may rest up for free! Get back out there, adventurer.")
                 player.takeGold(0)
                 player.giveHealth(player.getMaxHealth())
@@ -222,7 +222,7 @@ class Town(Node):
         self.market = market.BasicMarket()
     
     def rest(self, player):
-        if "dead" in player.status:
+        if player.status_list.exists("dead"):
                 print("You may rest up for free! Get back out there, adventurer.")
                 player.takeGold(0)
                 player.giveHealth(player.getMaxHealth())

@@ -4,6 +4,7 @@ import math
 import mastery
 import items
 import loottable
+from status import *
 import inventory
 import os
 
@@ -11,7 +12,7 @@ import os
 class Character:
     # Defines an interactive character within the game
     def __init__(self, name, stats, level = 0, ):
-        self.status = ["normal"]
+        self.status_list = StatusList([Status("normal", self)], self)
         self.name = name
         self.base_stats = stats
         self.stats = self.base_stats
@@ -54,7 +55,7 @@ class Character:
         print("{} takes {} damage.".format(self.name, damage))
         self.health -= damage
         if self.health <= 0:
-            self.status.append("dead")
+            self.status_list.append(Status("dead", self))
             self.health = 0
 
 class Player(Character):
@@ -97,16 +98,15 @@ class Player(Character):
         self.health += given_health
         if self.health > self.getMaxHealth():
             self.health = self.getMaxHealth()
-        if "dead" in self.status:
-            self.status.remove("dead")
-
+        self.status_list.remove("dead")
+            
     def giveGold(self, gold_earned):
         print(self.name + " gained " + repr(gold_earned) + " gold!")
         self.gold += gold_earned
 
     def takeGold(self, gold_taken=0):
         if self.gold < gold_taken:
-            if "dead" in self.status:
+            if self.status_list.exists("dead"):
                 self.gold = 0
                 print("You've lost all your gold!")
                 return False
@@ -157,15 +157,15 @@ class Player(Character):
         return self.equipped_gear.slots_dict["Main Hand"].use(self, receiver)
 
     def takeDamage(self, damage, dealer):
-        if "parry" in self.status:
+        if self.status_list.exists("parry"):
             self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage)
-        elif "mana_shield" in self.status:
+        elif self.status_list.exists("mana_shield"):
             self.equipped_gear.slots_dict["Main Hand"].triggerManaShield(self, dealer, damage)
         else:
             print("{} takes {} damage.".format(self.name, damage))
             self.health -= damage
             if self.health <= 0:
-                self.status.append("dead")
+                self.status_list.append(Status("dead", self))
                 self.health = 0
         
     def checkLevelUp(self):

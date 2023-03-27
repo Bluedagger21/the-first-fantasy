@@ -52,43 +52,49 @@ def combat(a, b):
             pass
 
         elif c_state == "a_attack":
-            if "skip" in a.status:
+            if a.status_list.exists("skip"):
                 print(a.name + " skipped their turn.")
-                a.status.remove("skip")
-            elif "normal" in a.status:
+                a.status_list.remove("skip")
+            elif a.status_list.exists("normal"):
                 proceed = a.attack(b)
                 if proceed is False:
                     n_state = "standby"
                     continue
             time.sleep(1)
-            if "dead" in b.status:
+            if b.status_list.exists("dead"):
                 n_state = "endturn"
             else:
                 n_state = "b_attack"
         elif c_state == "b_attack":
-            if "skip" in b.status:
+            if b.status_list.exists("skip"):
                 print(b.name + " skipped their turn.")
-                b.status.remove("skip")
+                b.status_list.remove("skip")
                 time.sleep(1)
-            elif "caught" in b.status:
+            elif b.status_list.exists("caught"):
                 time.sleep(1)
                 b.attack(a)
-                b.status.remove("caught")
+                b.status_list.remove("caught")
                 input("Press \"Enter\" to continue...")
-            elif "normal" in a.status:
+            elif a.status_list.exists("normal"):
                 b.attack(a)
                 time.sleep(1)
             n_state = "endturn"
 
         elif c_state == "endturn":
-            if "dead" in a.status:
+            a.status_list.tick("EoT")
+            b.status_list.tick("EoT")
+            if a.status_list.exists("dead"):
                 print(a.name + " has been defeated!")
+                a.status_list.tick("EoC")
+                a.status_list.clear()
                 a.takeGold(50 * a.level)
                 input("Press \"Enter\" to continue...")
                 break
-            elif "dead" in b.status:
+            elif b.status_list.exists("dead"):
                 print(b.name + " has been defeated!")
                 n_state = "win"
+                a.status_list.tick("EoC")
+                a.status_list.clear()
             else:
                 n_state = "standby"
 
@@ -103,7 +109,7 @@ def combat(a, b):
                 else:
                     if x is not None:
                         a.giveItem(x)
-        
+
             input("Press \"Enter\" to continue...")
             break
 
@@ -119,9 +125,10 @@ def combat(a, b):
         elif c_state == "run":
             if random.randrange(1, 4) == 1:
                 print("You were able to get away!")
+                a.status_list.tick("EoC")
                 input("Press \"Enter\" to continue...")
                 break
             else:
                 print("You couldn't get away and %s caught you!" % b.name)
                 n_state = "b_attack"
-                b.status.append("caught")
+                b.status_list.append("caught")

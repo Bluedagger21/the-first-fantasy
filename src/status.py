@@ -1,7 +1,7 @@
 import random
 
 class Status:
-    def __init__(self, name, owner, target=None, duration=1, phase="BoT") -> None:
+    def __init__(self, name, owner, target=None, duration=-1, phase=None) -> None:
         self.name = name
         self.duration = duration
         self.owner = owner
@@ -49,6 +49,55 @@ class Poison(Status):
                 return True
 
 class Shield(Status):
-    def __init__(self, name, owner, target=None, duration=1, phase="BoT", shield_amount=0) -> None:
-        super().__init__(name, owner, target, duration, phase)
+    def __init__(self, name, owner, target=None, duration=1, shield_amount=0) -> None:
+        super().__init__(name, owner, target, duration)
         self.shield_amount = shield_amount
+
+class StatusList():
+    def __init__(self, list=None, owner=None) -> None:
+        self.owner = owner
+        if list is None:
+            self.status_list = []
+        else:
+            self.status_list = list
+    
+    def append(self, status):
+        if isinstance(status, str):
+            self.status_list.append(Status(status, self.owner))
+        else:
+            self.status_list.append(status)
+            return True
+    
+    def remove(self, name):
+        if isinstance(name, str):
+            for status in self.status_list:
+                if status.name == name:
+                    self.status_list.remove(status)
+                    return True
+            return False
+        if isinstance(name, Status):
+            self.status_list.remove(status)
+            return True
+
+    def exists(self, name):
+        if isinstance(name, str):
+            for status in self.status_list:
+                if status.name == name:
+                    return True
+            return False
+        if isinstance(name, Status):
+            if name in self.status_list:
+                return True
+            else:
+                return False
+    
+    def tick(self, phase):
+        for status in self.status_list:
+            status.tick(phase)
+            if status.duration == 0:
+                self.remove(status)
+
+    def clear(self):
+        for status in self.status_list:
+            if (status.duration >= 0) and (status.phase == None):
+                self.status_list.remove(status)

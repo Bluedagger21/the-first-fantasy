@@ -1,6 +1,5 @@
-import characters
 import world
-import market
+from characters import *
 import combat
 import pickle
 import time
@@ -45,7 +44,7 @@ def newgame():
         if 12 < len(playername) < 2:
             print("Name must be at least two characters long and no more than 12 long.")
         else:
-            player = characters.Player(playername)
+            player = Player(playername)
             break
     worldmap = world.World()
     print("Prepare to begin your journey...")
@@ -95,7 +94,7 @@ def homescreen():
 
     while True:
         os.system("cls" if os.name == "nt" else "clear")
-        if "dead" in player.status:
+        if player.status_list.exists("dead"):
             print("You've become unconcious", end="")
             time.sleep(1)
             print(".", end="")
@@ -106,7 +105,6 @@ def homescreen():
             print("After some time, you notice that you're somehow waking up in the last safe haven you visited.")
             input("Press \"Enter\" to continue...")
             worldmap.current_node = worldmap.last_rest_node
-        clearStatus()
         choice = worldmap.current_node.getOptions()
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
@@ -166,10 +164,4 @@ def saveGame():
     f.close()
     print("...Done!")
     input("Press \"Enter\" to continue...")
-
-def clearStatus():
-    for status in player.status:
-        if status == "normal" or status == "dead":
-            continue
-        player.status.remove(status)
 

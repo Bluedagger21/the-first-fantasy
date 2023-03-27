@@ -2,6 +2,7 @@ import os
 import random
 import math
 import game
+from status import *
 
 class Equipment():
     # Base equippable item class
@@ -130,11 +131,11 @@ class Sword(Weapon):
         if game.player.sword_mastery.level >= 3:
             self.actions = ["Slash (Combo)+", "Parry"]
 
-        if "parry" in game.player.status:
-            game.player.status.remove("parry")
+        if game.player.status_list.exists("parry"):
+            game.player.status_list.remove("parry")
 
         print("\nAvailable Actions: ")
-        if "slash_combo+" in origin.status:
+        if origin.status_list.exists("slash_combo+"):
             print("1) {}".format("Follow-up Attack: Sever"))
             print("2) {}".format("Cancel Combo"))
             try:
@@ -144,12 +145,12 @@ class Sword(Weapon):
                 return False
             if choice == 1:
                 self.actionSever(origin, target)
-                origin.status.remove("slash_combo+")
+                origin.status_list.remove("slash_combo+")
                 return True
             if choice == 2:
-                origin.status.remove("slash_combo+")
+                origin.status_list.remove("slash_combo+")
                 return False
-        if "slash_combo" in origin.status:
+        if origin.status_list.exists("slash_combo"):
             print("1) {}".format("Follow-up Attack: Slice"))
             print("2) {}".format("Cancel Combo"))
             try:
@@ -159,11 +160,11 @@ class Sword(Weapon):
                 return False
             if choice == 1:
                 self.actionSlice(origin, target)
-                origin.status.remove("slash_combo")
-                origin.status.append("slash_combo+")
+                origin.status_list.remove("slash_combo")
+                origin.status_list.append(Status("slash_combo+", origin, duration=1))
                 return True
             if choice == 2:
-                origin.status.remove("slash_combo")
+                origin.status_list.remove("slash_combo")
                 return False
         for i, action in enumerate(self.actions):
             print("{}) {}".format(i+1, action))
@@ -187,7 +188,7 @@ class Sword(Weapon):
         print("You slash for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
         if origin.sword_mastery.level >= 2:
-            origin.status.append("slash_combo")
+            origin.status_list.append(Status("slash_combo", origin, duration=1))
     
     def actionSlice(self, origin, target):
         potency = 1.2
@@ -195,7 +196,7 @@ class Sword(Weapon):
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You slice for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
-        origin.status.remove("slash_combo")
+        origin.status_list.remove("slash_combo")
     
     def actionSever(self, origin, target):
         potency = 1.5
@@ -204,14 +205,14 @@ class Sword(Weapon):
         print("You sever your foe for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
         # Add bleed status here
-        origin.status.remove("slash_combo+")
+        origin.status_list.remove("slash_combo+")
     
     def actionParry(self, origin, target):
-        origin.status.append("parry")
+        origin.status_list.append(Status("parry", self, duration=1, phase="EoT"))
         print("You prepare to counter an incoming attack.")
 
     def triggerParry(self, origin, target, incoming_dmg):
-        origin.status.remove("parry")
+        origin.status_list.remove("parry")
         if random.random() <= 0.9:
             potency = 1.5
             damage_type = "physical"
@@ -242,7 +243,7 @@ class Staff(Weapon):
         if game.player.staff_mastery.level >= 2:
             self.actions = ["Fire I", "Fire III (Charge)+"]
 
-        if "fire_iii" in origin.status:
+        if origin.status_list.exists("fire_iii"):
             self.actionFireIII(origin, target)
             return True
 
@@ -271,14 +272,14 @@ class Staff(Weapon):
         target.takeDamage(damage["Total Damage"], origin)
         
     def actionFireIII(self, origin, target):
-        if "fire_iii" not in origin.status:
-            origin.status.append("fire_iii")
+        if not origin.status_list.exists("fire_iii"):
+            origin.status_list.append(Status("fire_iii", origin, duration=1))
             print("You begin to channel energy into your staff...")
             if "Fire III (Charge)+" in self.actions:
                 print("A faint shield of mana envelopes you...")
-                origin.status.append("mana_shield")
+                origin.status_list.append(Shield("mana_shield", origin, round(shield_amount=self.stats["Power"] / 2), duration=1))
         else:
-            origin.status.remove("fire_iii")
+            origin.status_list.remove("fire_iii")
             potency = 2.5
             damage_type = "magical"
             damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
@@ -287,7 +288,7 @@ class Staff(Weapon):
             input("Press \"Enter\" to continue...")
     
     def triggerManaShield(self, origin, target, incoming_damage):
-        origin.status.remove("mana_shield")
+        origin.status_list.remove("mana_shield")
         shield_amount = self.stats["Power"] / 2
         
         amount_shielded = incoming_damage - shield_amount

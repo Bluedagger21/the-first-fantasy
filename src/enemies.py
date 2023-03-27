@@ -38,6 +38,7 @@ class Thief(Enemy):
         if choice == "Stab":
             potency = 1.0
             damage = self.getCalculatedDamage(target, potency)
+            print("The Thief stabs you for {} damage!".format(damage["Total Damage"]))
             target.takeDamage(damage["Total Damage"], self)
 
         elif choice == "Pickpocket":
