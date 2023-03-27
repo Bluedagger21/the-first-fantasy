@@ -1,0 +1,54 @@
+import random
+
+class Status:
+    def __init__(self, name, owner, target=None, duration=1, phase="BoT") -> None:
+        self.name = name
+        self.duration = duration
+        self.owner = owner
+        self.target = target
+        self.duration = duration
+        self.phase = phase
+
+    def tick(self, phase):
+        if phase == self.phase:
+            self.trigger()
+            self.duration -= 1
+            if self.duration == 0:
+                print("The {} effect on {} expires.".format(self.name, self.owner))
+                return False
+            else:
+                return True
+        
+    def trigger(self):
+        pass
+
+class Bleeding(Status):
+    def __init__(self, name, owner, damage_per_turn) -> None:
+        super().__init__(name, owner, duration=3, phase="BoT")
+        self.damage_per_turn = damage_per_turn
+
+    def trigger(self):
+        self.owner.takeDamage(self.damage_per_turn)
+        print("{} takes {} from bleeding.".format(self.owner, self.damage_per_turn))
+
+class Poison(Status):
+    def __init__(self, name, owner) -> None:
+        super().__init__(name, owner, duration=-1, phase="BoT")
+    
+    def trigger(self):
+        self.owner.takeDamage(self.owner.health * .1)
+        print("{} takes {} damage from poison.".format(self.owner, self.damage_per_turn))
+    
+    def tick(self, phase):
+        if phase == self.phase:
+            if random.random() >= .5:
+                print("The {} effect on {} expires.".format(self.name, self.owner))
+                return False
+            else:
+                self.trigger()
+                return True
+
+class Shield(Status):
+    def __init__(self, name, owner, target=None, duration=1, phase="BoT", shield_amount=0) -> None:
+        super().__init__(name, owner, target, duration, phase)
+        self.shield_amount = shield_amount
