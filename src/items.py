@@ -126,9 +126,9 @@ class Sword(Weapon):
         self.actions = ["Slash", "Parry"]
 
     def use(self, origin, target):
-        if game.player.sword_mastery.level >= 2:
+        if game.player.masteries.getLevel(type(self)) >= 2:
             self.actions = ["Slash (Combo)", "Parry"]
-        if game.player.sword_mastery.level >= 3:
+        if game.player.masteries.getLevel(type(self)) >= 3:
             self.actions = ["Slash (Combo)+", "Parry"]
 
         if game.player.status_list.exists("parry"):
@@ -187,7 +187,7 @@ class Sword(Weapon):
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You slash for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
-        if origin.sword_mastery.level >= 2:
+        if origin.masteries.getLevel(type(self)) >= 2:
             origin.status_list.append(Status("slash_combo", origin, duration=1))
     
     def actionSlice(self, origin, target):
@@ -240,8 +240,10 @@ class Staff(Weapon):
         self.actions = ["Fire I", "Fire III (Charge)"]
 
     def use(self, origin, target):
-        if game.player.staff_mastery.level >= 2:
+        if game.player.masteries.getLevel(type(self)) >= 2:
             self.actions = ["Fire I", "Fire III (Charge)+"]
+        if game.player.masteries.getLevel(type(self)) >= 3:
+            self.actions = ["Fire I+", "Fire III (Charge)+"]
 
         if origin.status_list.exists("fire_iii"):
             self.actionFireIII(origin, target)
@@ -270,6 +272,10 @@ class Staff(Weapon):
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("Flames engulf your foe for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
+        if "Fire I+" in self.actions:
+            if random.random() >= .5:
+                print("{} catches fire!".format(target.name))
+                target.status_list.append(Bleeding("Burn", target, round(damage["Total Damage"] * 0.1)))
         
     def actionFireIII(self, origin, target):
         if not origin.status_list.exists("fire_iii"):

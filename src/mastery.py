@@ -6,6 +6,7 @@ class Mastery:
 
     def giveXP(self, xp):
         self.xp += xp
+        self.checkLevel()
     
     def checkLevel(self):
         next_level_threshold = 1000 + (1000 * self.level * (.5 * self.level))
@@ -36,4 +37,7 @@ class MasteryList:
     
     def append(self, item_type):
         self.list.append(Mastery(item_type))
+    
+    def getLevel(self, item_type):
+        return self.getMastery(item_type).level
             

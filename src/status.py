@@ -34,7 +34,7 @@ class Bleeding(Status):
 
     def trigger(self):
         self.owner.takeDamage(self.damage_per_turn, None)
-        print("{} takes {} from bleeding.".format(self.owner.name, self.damage_per_turn))
+        print("{} takes {} from the {}.".format(self.owner.name, self.damage_per_turn, self.name))
 
 class Poison(Status):
     def __init__(self, name, owner) -> None:

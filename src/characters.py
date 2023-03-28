@@ -77,6 +77,7 @@ class Player(Character):
         self.masteries = MasteryList()
         self.masteries.giveXP(items.Sword, 4500)
         self.masteries.giveXP(items.Staff, 4500)
+        self.inventory.add(items.Staff())
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)
@@ -192,8 +193,8 @@ class Player(Character):
         print("Name: %s (Level: %d)" % (self.name, self.level))
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
         print("Gold: {}".format(self.gold))
-        print("Sword Mastery: {}".format(self.sword_mastery.level))
-        print("Staff Mastery: {}".format(self.staff_mastery.level))
+        for mastery in self.masteries.list:
+            print("{} Mastery: {}".format(mastery.type.__name__, mastery.level))
         print("\nVitality: {}".format(self.stats["Vitality"]))
         print("Physical Resist: {}".format(self.stats["Physical Resist"]))
         print("Magical Resist: {}".format(self.stats["Magical Resist"]))
