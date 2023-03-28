@@ -28,7 +28,7 @@ class Equipment():
             self.rarity = rarity
 
     def getName(self):
-        return self.name
+        return self.name + " ({}%)".format(self.quality)
 
     def showEverything(self):
         # Print attributes of the equipment
@@ -277,7 +277,7 @@ class Staff(Weapon):
             print("You begin to channel energy into your staff...")
             if "Fire III (Charge)+" in self.actions:
                 print("A faint shield of mana envelopes you...")
-                origin.status_list.append(Shield("mana_shield", origin, round(shield_amount=self.stats["Power"] / 2), duration=1))
+                origin.status_list.append(Shield("mana_shield", origin, shield_amount=round(self.stats["Power"] / 2), duration=1))
         else:
             origin.status_list.remove("fire_iii")
             potency = 2.5
@@ -289,7 +289,7 @@ class Staff(Weapon):
     
     def triggerManaShield(self, origin, target, incoming_damage):
         origin.status_list.remove("mana_shield")
-        shield_amount = self.stats["Power"] / 2
+        shield_amount = round(self.stats["Power"] / 2)
         
         amount_shielded = incoming_damage - shield_amount
         incoming_damage_leftover = incoming_damage - amount_shielded

@@ -1,7 +1,7 @@
 from weightedchoice import weighted_choice_sub
 import random
 import math
-import mastery
+from mastery import *
 import items
 import loottable
 from status import *
@@ -73,11 +73,10 @@ class Player(Character):
         self.equipped_gear = inventory.Equipment(self)
         self.updateStats()
         self.health = self.getMaxHealth()
-        self.sword_mastery = mastery.Mastery(items.Sword)
-        self.sword_mastery.levelUp()
-        self.staff_mastery = mastery.Mastery(items.Staff)
-        self.staff_mastery.levelUp()
-        self.inventory.add(items.Staff())
+
+        self.masteries = MasteryList()
+        self.masteries.giveXP(items.Sword, 4500)
+        self.masteries.giveXP(items.Staff, 4500)
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)

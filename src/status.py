@@ -1,13 +1,14 @@
 import random
 
 class Status:
-    def __init__(self, name, owner, target=None, duration=-1, phase=None) -> None:
+    def __init__(self, name, owner, target=None, duration=-1, phase=None, callBack=None) -> None:
         self.name = name
         self.duration = duration
         self.owner = owner
         self.target = target
         self.duration = duration
         self.phase = phase
+        self.callBack = callBack
 
     def tick(self, phase):
         if phase == self.phase:
@@ -20,7 +21,11 @@ class Status:
                 return True
         
     def trigger(self):
-        pass
+        if self.callback is None:
+            pass
+        else:
+            self.callBack()
+
 
 class Bleeding(Status):
     def __init__(self, name, owner, damage_per_turn) -> None:
