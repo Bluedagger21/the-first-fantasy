@@ -78,21 +78,14 @@ class Player(Character):
         self.masteries.giveXP(items.Sword, 4500)
         self.masteries.giveXP(items.Staff, 4500)
         self.inventory.add(items.Staff())
+        self.inventory.add(items.Dagger())
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)
 
-    def giveXP(self, exp_earned):
-        # Gives the player exp_earned experience and checks for level up
-        print(self.name + " gained " + repr(exp_earned) + " experience!")
-        self.exp += exp_earned
-
-        if isinstance(items.Sword, type(self.equipped_gear.get("Main Hand"))):
-            self.sword_mastery.giveXP(exp_earned)
-        if isinstance(items.Staff, type(self.equipped_gear.get("Main Hand"))):
-            self.staff_mastery.giveXP(exp_earned)
-
-        self.checkLevelUp()
+    def giveXP(self, xp_earned):
+        print(self.name + " gained " + repr(xp_earned) + " experience!")
+        self.masteries.giveXP(type(self.equipped_gear.get("Main Hand")), xp_earned)
 
     def giveHealth(self, given_health):
         self.health += given_health

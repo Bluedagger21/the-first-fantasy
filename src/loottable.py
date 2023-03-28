@@ -22,7 +22,7 @@ class LootGenerator:
                            "Unique": {"Type Weight": 0},
                            "None": {"Type Weight": 29}}
 
-        self.weapon_list = [items.Sword, items.Staff]
+        self.weapon_list = [items.Sword, items.Staff, items.Dagger]
         self.armor_dict = {"Head": {"Helmet": {"Vitality": 10,
                                                "Physical Resist": 5,
                                                "Magical Resist": 5}},

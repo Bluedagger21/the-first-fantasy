@@ -83,13 +83,13 @@ class Weapon(Equipment):
         self.stats["Power"] = round(self.stats["Power"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Crit"] = round(self.stats["Crit"] * (1 + ((self.quality / 5) / 100)))
 
-    def getCalculatedDamage(self, origin, target, potency=1, damage_type="physical", crit=True):
+    def getCalculatedDamage(self, origin, target, potency=1, damage_type="physical", crit=True, crit_bonus=0):
         base_dmg = math.floor(origin.stats["Base Damage"])
         power = math.floor(origin.stats["Power"])
         total_damage = (base_dmg + power) * potency
 
         if crit is True:
-            if random.random() <= origin.stats["Crit"] / (100 + (5 * (target.level - 1))):
+            if random.random() <= (origin.stats["Crit"] + crit_bonus) / (100 + (5 * (target.level - 1))):
                 print("CRITICAL STRIKE!!!")
                 total_damage *= self.stats["Crit Multiplier"]
 
@@ -226,6 +226,63 @@ class Sword(Weapon):
         else:
             print("Your parry fails!")
             origin.takeDamage(incoming_dmg, target)
+
+class Dagger(Weapon):
+    def __init__(self, ilvl=1, slot="Main Hand", rarity=None, quality=None, stack_limit=1, name="Dagger"):
+        self.stats = {"Base Damage": 5,
+                      "Power": 5,
+                      "Crit": 10,
+                      "Crit Multiplier": 2}
+        super().__init__(name, self.stats, ilvl, slot, rarity, quality, stack_limit)
+
+        self.actions = ["Shank", "Puncture"]
+
+    def use(self, origin, target):
+        if game.player.masteries.getLevel(type(self)) >= 2:
+            self.actions = ["Shank", "Puncture+"]
+        if game.player.masteries.getLevel(type(self)) >= 3:
+            self.actions = ["Shank+", "Puncture+"]
+
+        print("\nAvailable Actions: ")
+        
+        for i, action in enumerate(self.actions):
+            print("{}) {}".format(i+1, action))
+        print("{}) Exit".format(i + 2))
+        try:
+            choice = int(input("\nSelection: ")) 
+        except ValueError:
+            print("Invalid choice, cancelling...")
+            return False
+        if choice == 1:
+            self.actionShank(origin, target)
+        elif choice == 2:
+            self.actionPuncture(origin, target)
+        else:
+            return False
+
+    def actionShank(self, origin, target):
+        potency = 0.8
+        crit_bonus = origin.stats["Crit"] * 2
+        if "Shank+" in self.actions:
+            potency = 1.0
+            crit_bonus = origin.stats["Crit"] * 3
+        damage_type = "physical"
+
+        damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit_bonus=crit_bonus)
+        print("You shank the {} for {} damage!".format(target.name, damage["Total Damage"]))
+        target.takeDamage(damage["Total Damage"], origin)
+
+    def actionPuncture(self, origin, target):
+        potency = 0.5
+        damage_type = "physical"
+
+        damage = self.getCalculatedDamage(origin, target, potency, damage_type)
+        print("You puncture the {} for {} damage!".format(target.name, damage["Total Damage"]))
+        target.takeDamage(damage["Total Damage"], origin)
+        if "Puncture" in self.actions:
+             target.status_list.append(Bleeding("Bleed", target, round(damage["Total Damage"] * 1)))
+        elif "Puncture+" in self.actions:
+             target.status_list.append(Bleeding("Bleed", target, round(damage["Total Damage"] * 1.5)))
 
 class Staff(Weapon):
     def __init__(self, ilvl=1, rarity=None, quality=None, stack_limit=1, name="Staff", slot="Main Hand"):
