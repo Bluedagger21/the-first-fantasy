@@ -30,7 +30,7 @@ class MasteryList:
             if mastery.type == item_type:
                 return mastery
         
-        # mastery type doesn't exist
+        # mastery type doesn't exist, so make a new one
 
         self.append(item_type)
         return self.getMastery(item_type)

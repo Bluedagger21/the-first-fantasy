@@ -79,6 +79,9 @@ class Player(Character):
         self.masteries.giveXP(items.Staff, 4500)
         self.inventory.add(items.Staff())
         self.inventory.add(items.Dagger())
+        self.inventory.add(items.Wand())
+        self.masteries.giveXP(items.Wand, 4500)
+        self.masteries.giveXP(items.Dagger, 4500)
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)
@@ -150,13 +153,13 @@ class Player(Character):
         return self.equipped_gear.slots_dict["Main Hand"].use(self, receiver)
 
     def takeDamage(self, damage, dealer):
+        damage_remaining = damage
+        damage_remaining = self.status_list.tick("TD", self, dealer, damage_remaining)
         if self.status_list.exists("parry"):
-            self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage)
-        elif self.status_list.exists("mana_shield"):
-            self.equipped_gear.slots_dict["Main Hand"].triggerManaShield(self, dealer, damage)
+            self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage_remaining)
         else:
-            print("{} takes {} damage.".format(self.name, damage))
-            self.health -= damage
+            print("{} takes {} damage.".format(self.name, damage_remaining))
+            self.health -= damage_remaining
             if self.health <= 0:
                 self.status_list.append(Status("dead", self))
                 self.health = 0
