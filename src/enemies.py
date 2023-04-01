@@ -31,7 +31,7 @@ class Spider(Enemy):
                     "Magical Resist" : 15}
         super().__init__(name, level, self.stats)
         self.actions = ["Bite", "Poison", "Web"]
-        self.action_weights = [10, 2, 333]
+        self.action_weights = [10, 2, 2]
 
     def attack(self, target: characters.Player):
         choice = random.choices(self.actions, weights=self.action_weights)[0]

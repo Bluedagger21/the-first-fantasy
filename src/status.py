@@ -54,7 +54,7 @@ class Poison(Status):
     def tick(self, phase, origin=None, target=None, damage=0):
         tick_packet = {"done": False}
         if phase == self.phase:
-            if random.random() >= .9:
+            if random.random() >= .5:
                 print("The {} effect on {} expires.".format(self.name, self.owner.name))
                 input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
