@@ -31,7 +31,7 @@ class Spider(Enemy):
                     "Magical Resist" : 15}
         super().__init__(name, level, self.stats)
         self.actions = ["Bite", "Poison", "Web"]
-        self.action_weights = [10, 222, 2]
+        self.action_weights = [10, 2, 333]
 
     def attack(self, target: characters.Player):
         choice = random.choices(self.actions, weights=self.action_weights)[0]
@@ -47,6 +47,7 @@ class Spider(Enemy):
 
         elif choice == "Web":
             target.status_list.append(StatMod("Web", target, duration=3, stat_mod_dict={"Power": -self.stats["Power"]}))
+            target.updateStats()
             print("The Spider entangles you in a web!")
 
 class Thief(Enemy):

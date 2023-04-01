@@ -17,6 +17,7 @@ class Status:
             expired = self.trigger(origin, target, damage)
             if self.duration == 0 or expired is True:
                 print("The {} effect on {} expires.".format(self.name, self.owner.name))
+                self.owner.updateStats()
                 input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
         return tick_packet
@@ -129,7 +130,7 @@ class StatusList():
         elif isinstance(name, Status):
             status_list = []
             for status in self.status_list:
-                if status == name:
+                if type(status) is type(name):
                     status_list.append(status)
             return status_list
 

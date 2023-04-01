@@ -99,6 +99,8 @@ class Weapon(Equipment):
             calc_resist = .1 * (target.stats["Magical Resist"] / (20 * target.level))
         damage_resisted = round(total_damage * calc_resist)
         total_damage = round(total_damage - damage_resisted)
+        if total_damage < 0:
+            total_damage = 0
 
         return {"Total Damage": total_damage, "Resisted Damage": damage_resisted}
 
@@ -208,7 +210,7 @@ class Sword(Weapon):
         origin.status_list.remove("slash_combo+")
     
     def actionParry(self, origin, target):
-        origin.status_list.append(Status("parry", self, duration=1, phase="EoT"))
+        origin.status_list.append(Status("parry", origin, duration=1, phase="EoT"))
         print("You prepare to counter an incoming attack.")
 
     def triggerParry(self, origin, target, incoming_dmg):

@@ -124,17 +124,7 @@ class Equipment():
         return self.total_stats
 
     def updateStats(self):
-        new_stats = {}
-        new_status_stats = {}
-        find_status = status.StatMod(None,None,None,None)
-        status_stat_list = self.owner.status_list.get(find_status)
-        if len(status_stat_list) > 0:
-            for status_i in status_stat_list:
-                for stat_name in status_i.stat_mods:
-                    if stat_name in new_status_stats:
-                        new_status_stats[stat_name] += status_i.stat_mods[stat_name]
-                    else:
-                        new_status_stats.update({stat_name: status_i.stats_mods[stat_name]})
+        new_stats = {}    
 
         for slot in self.slots_dict.values():
             if slot is None:
@@ -145,10 +135,6 @@ class Equipment():
                         new_stats[stat_name] += slot.stats[stat_name]
                     else:
                         new_stats.update({stat_name: slot.stats[stat_name]})
-
-        for stat_name in new_status_stats:
-            if stat_name in new_stats:
-                new_stats[stat_name] += new_status_stats[stat_name]
         
         return new_stats
     

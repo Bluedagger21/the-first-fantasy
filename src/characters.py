@@ -48,7 +48,8 @@ class Character:
             calc_resist = .1 * (target.stats["Magical Resist"] / (20 * target.level))
         damage_resisted = round(total_damage * calc_resist)
         total_damage = round(total_damage - damage_resisted)
-
+        if total_damage < 0:
+            total_damage = 0
         return {"Total Damage": total_damage, "Resisted Damage": damage_resisted}
     
     def takeDamage(self, damage, dealer, triggerable=True):
@@ -90,6 +91,22 @@ class Player(Character):
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)
+
+        new_status_stats = {}
+        find_status = StatMod(None,None,None,None)
+        status_stat_list = self.status_list.get(find_status)
+        
+        if len(status_stat_list) > 0:
+            for status_i in status_stat_list:
+                for stat_name in status_i.stat_mods:
+                    if stat_name in new_status_stats:
+                        new_status_stats[stat_name] += status_i.stat_mods[stat_name]
+                    else:
+                        new_status_stats.update({stat_name: status_i.stat_mods[stat_name]})
+
+        for stat_name in new_status_stats:
+            if stat_name in self.stats:
+                self.stats[stat_name] += new_status_stats[stat_name]
 
     def giveXP(self, xp_earned):
         print(self.name + " gained " + repr(xp_earned) + " experience!")
