@@ -47,7 +47,7 @@ class Region:
     def __init__(self, name, world) -> None:
         self.name = name
         self.world = world
-        self.enemy_type_list = [enemies.Thief]
+        self.enemy_type_list = [enemies.Thief, enemies.Spider]
     def showMap(self):
         print("No map available...")
 

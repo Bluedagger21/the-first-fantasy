@@ -51,8 +51,13 @@ class Character:
 
         return {"Total Damage": total_damage, "Resisted Damage": damage_resisted}
     
-    def takeDamage(self, damage, dealer):
+    def takeDamage(self, damage, dealer, triggerable=True):
         #print("{} takes {} damage.".format(self.name, damage))
+        if triggerable is True:
+            if self.status_list.exists("Hide in Shadows"):
+                if random.random() >= .5:
+                    print("{} completely avoids the incoming attack!".format(self.name))
+                    damage = 0
         self.health -= damage
         if self.health <= 0:
             self.status_list.append(Status("dead", self))
@@ -152,17 +157,17 @@ class Player(Character):
     def attack(self, receiver):
         return self.equipped_gear.slots_dict["Main Hand"].use(self, receiver)
 
-    def takeDamage(self, damage, dealer):
+    def takeDamage(self, damage, dealer, triggerable=True):
         damage_remaining = damage
-        damage_remaining = self.status_list.tick("TD", self, dealer, damage_remaining)
-        if self.status_list.exists("parry"):
-            self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage_remaining)
-        else:
-            print("{} takes {} damage.".format(self.name, damage_remaining))
-            self.health -= damage_remaining
-            if self.health <= 0:
-                self.status_list.append(Status("dead", self))
-                self.health = 0
+        if triggerable == True:
+            damage_remaining = self.status_list.tick("TD", self, dealer, damage_remaining)
+            if self.status_list.exists("parry"):
+                damage_remaining = self.equipped_gear.slots_dict["Main Hand"].triggerParry(self, dealer, damage_remaining)
+        #print("{} takes {} damage.".format(self.name, damage_remaining))
+        self.health -= damage_remaining
+        if self.health <= 0:
+            self.status_list.append(Status("dead", self))
+            self.health = 0
         
     def checkLevelUp(self):
         # Checks to see if enough experience has been gained to level up

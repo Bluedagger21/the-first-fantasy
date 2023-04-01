@@ -13,10 +13,11 @@ class Status:
     def tick(self, phase, origin, target, damage):
         tick_packet = {"done": False}
         if phase == self.phase:
-            expired = self.trigger(origin, target, damage)
             self.duration -= 1
+            expired = self.trigger(origin, target, damage)
             if self.duration == 0 or expired is True:
-                print("The {} effect on {} expires.".format(self.name, self.owner))
+                print("The {} effect on {} expires.".format(self.name, self.owner.name))
+                input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
         return tick_packet
         
@@ -24,8 +25,12 @@ class Status:
         if self.callBack is None:
             return False
         else:
-            self.callBack()
+            self.callBack(self)
 
+class StatMod(Status):
+    def __init__(self, name, owner, duration, stat_mod_dict: dict) -> None:
+        super().__init__(name, owner, duration=duration, phase="EoT")
+        self.stat_mods = stat_mod_dict
 
 class Bleeding(Status):
     def __init__(self, name, owner, damage_per_turn) -> None:
@@ -33,25 +38,27 @@ class Bleeding(Status):
         self.damage_per_turn = damage_per_turn
 
     def trigger(self, origin, target, damage):
-        self.owner.takeDamage(self.damage_per_turn, None)
+        self.owner.takeDamage(self.damage_per_turn, None, False)
         print("{} takes {} from the {}.".format(self.owner.name, self.damage_per_turn, self.name))
 
 class Poison(Status):
-    def __init__(self, name, owner) -> None:
-        super().__init__(name, owner, duration=-1, phase="BoT")
+    def __init__(self, name, owner, target) -> None:
+        super().__init__(name, owner, target=target, duration=-1, phase="EoT")
     
-    def trigger(self, phase, origin, target, damage):
-        self.owner.takeDamage(self.owner.health * .1)
-        print("{} takes {} damage from poison.".format(self.owner, self.damage_per_turn))
+    def trigger(self, origin, target, damage):
+        self.target.takeDamage(round(self.target.health * .1), self.owner, False)
+        print("{} takes {} damage from {}.".format(self.target.name, round(self.target.health * .1), self.name))
+        input("Press \"Enter\" to continue...")
     
     def tick(self, phase, origin=None, target=None, damage=0):
         tick_packet = {"done": False}
         if phase == self.phase:
-            if random.random() >= .5:
+            if random.random() >= .9:
                 print("The {} effect on {} expires.".format(self.name, self.owner.name))
+                input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
             else:
-                self.trigger()
+                self.trigger(origin, target, damage)
         return tick_packet
 
 class Shield(Status):
@@ -66,6 +73,7 @@ class Shield(Status):
             self.duration -= 1
             if self.duration == 0 or self.shield_amount <= 0:
                 print("The {} effect on {} expires.".format(self.name, self.owner.name))
+                input("Press \"Enter\" to continue...")
                 self.tick_packet["done"] = True
             else:
                 self.tick_packet["done"] = False
@@ -111,6 +119,19 @@ class StatusList():
         if isinstance(name, Status):
             self.status_list.remove(name)
             return True
+    
+    def get(self, name) -> list:
+        if isinstance(name, str):
+            for status in self.status_list:
+                if status.name == name:
+                    return [status]
+            return []
+        elif isinstance(name, Status):
+            status_list = []
+            for status in self.status_list:
+                if status == name:
+                    status_list.append(status)
+            return status_list
 
     def exists(self, name):
         if isinstance(name, str):
@@ -133,7 +154,6 @@ class StatusList():
             if "damage_remaining" in tick_packet:
                 damage_remaining = tick_packet["damage_remaining"]
         return damage_remaining
-
 
     def clear(self):
         for status in self.status_list:

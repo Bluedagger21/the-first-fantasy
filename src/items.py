@@ -219,13 +219,13 @@ class Sword(Weapon):
             reduced_incoming_dmg = round(0.1 * incoming_dmg)
             print("You successfully parry the {}'s attack!".format(target.name))
             print("The attack is parried, you will take significantly reduced damage!".format(reduced_incoming_dmg))
-            origin.takeDamage(reduced_incoming_dmg, target)
             damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
             print("You counter dealing {} damage!".format(damage["Total Damage"]))
             target.takeDamage(damage["Total Damage"], origin)
+            return reduced_incoming_dmg
         else:
             print("Your parry fails!")
-            origin.takeDamage(incoming_dmg, target)
+            return incoming_dmg
 
 class Dagger(Weapon):
     def __init__(self, ilvl=1, slot="Main Hand", rarity=None, quality=None, stack_limit=1, name="Dagger"):
