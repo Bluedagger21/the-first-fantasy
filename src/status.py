@@ -74,7 +74,9 @@ class Shield(Status):
             self.duration -= 1
             if self.duration == 0 or self.shield_amount <= 0:
                 print("The {} effect on {} expires.".format(self.name, self.owner.name))
-                input("Press \"Enter\" to continue...")
+                # input("Press \"Enter\" to continue...")
+                # this looks like it is just causing double Enter presses for shield expire and end of combat.
+                # this can be added back in if needed later
                 self.tick_packet["done"] = True
             else:
                 self.tick_packet["done"] = False
