@@ -17,7 +17,6 @@ class Status:
             expired = self.trigger(origin, target, damage)
             if self.duration == 0 or expired is True:
                 print("The {} effect on {} expires.".format(self.name, self.owner.name))
-                self.owner.updateStats()
                 input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
         return tick_packet
@@ -154,6 +153,7 @@ class StatusList():
             tick_packet = status.tick(phase, origin, target, damage_remaining)
             if tick_packet["done"] is True:
                 self.remove(status)
+                self.owner.updateStats()
             if "damage_remaining" in tick_packet:
                 damage_remaining = tick_packet["damage_remaining"]
         return damage_remaining
