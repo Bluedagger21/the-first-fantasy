@@ -11,14 +11,34 @@ class Enemy(characters.Character):
                  level, 
                  stats = None):
         super().__init__(name, stats, level)
-        self.stats["Vitality"] = round(5*(1+0.1)**self.level)
-        self.stats["Power"] = round(5*(1+0.1)**self.level)
-        self.stats["Base Damage"] = round(5*(1+0.1)**self.level)
-        self.stats["Crit"] = round(5*(1+0.1)**self.level)
-        self.stats["Physical Resist"] = round(20*(1+0.1)**self.level)
-        self.stats["Magical Resist"] = round(10*(1+0.1)**self.level)
+        self.stats["Vitality"] = round(stats["Vitality"]*(1+0.15)**self.level)
+        self.stats["Power"] = round(stats["Power"]*(1+0.1)**self.level)
+        self.stats["Base Damage"] = round(stats["Base Damage"]*(1+0.1)**self.level)
+        self.stats["Crit"] = round(stats["Crit"]*(1+0.1)**self.level)
+        self.stats["Physical Resist"] = round(stats["Physical Resist"]*(1+0.1)**self.level)
+        self.stats["Magical Resist"] = round(stats["Magical Resist"]*(1+0.1)**self.level)
+        self.base_stats = stats
         self.health = self.getMaxHealth()
         self.loot_table = loottable.LootGenerator(level, self)
+
+    def updateStats(self):
+        self.stats.update(self.base_stats)
+        
+        new_status_stats = {}
+        find_status = StatMod(None,None,None,None)
+        status_stat_list = self.status_list.get(find_status)
+        
+        if len(status_stat_list) > 0:
+            for status_i in status_stat_list:
+                for stat_name in status_i.stat_mods:
+                    if stat_name in new_status_stats:
+                        new_status_stats[stat_name] += status_i.stat_mods[stat_name]
+                    else:
+                        new_status_stats.update({stat_name: status_i.stat_mods[stat_name]})
+
+        for stat_name in new_status_stats:
+            if stat_name in self.stats:
+                self.stats[stat_name] += new_status_stats[stat_name]
 
 class Spider(Enemy):
     def __init__(self, level, name="Spider"):

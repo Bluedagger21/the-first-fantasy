@@ -16,7 +16,7 @@ class Status:
             self.duration -= 1
             expired = self.trigger(origin, target, damage)
             if self.duration == 0 or expired is True:
-                print("The {} effect on {} expires.".format(self.name, self.owner.name))
+                print("The {} effect on {} expires.".format(self.name, self.target.name))
                 input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
         return tick_packet
@@ -29,7 +29,7 @@ class Status:
 
 class StatMod(Status):
     def __init__(self, name, owner, duration, stat_mod_dict: dict) -> None:
-        super().__init__(name, owner, duration=duration, phase="EoT")
+        super().__init__(name, owner, owner, duration=duration, phase="EoT")
         self.stat_mods = stat_mod_dict
 
 class Bleeding(Status):
@@ -54,7 +54,7 @@ class Poison(Status):
         tick_packet = {"done": False}
         if phase == self.phase:
             if random.random() >= .5:
-                print("The {} effect on {} expires.".format(self.name, self.owner.name))
+                print("The {} effect on {} expires.".format(self.name, self.target.name))
                 input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
             else:
@@ -160,5 +160,5 @@ class StatusList():
 
     def clear(self):
         for status in self.status_list:
-            if (status.duration >= 0) and (status.phase == None):
+            if (status.duration >= 0):
                 self.status_list.remove(status)

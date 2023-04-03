@@ -163,7 +163,7 @@ class Sword(Weapon):
             if choice == 1:
                 self.actionSlice(origin, target)
                 origin.status_list.remove("slash_combo")
-                origin.status_list.append(Status("slash_combo+", origin, duration=1))
+                origin.status_list.append(Status("slash_combo+", origin, origin, duration=1))
                 return True
             if choice == 2:
                 origin.status_list.remove("slash_combo")
@@ -190,7 +190,7 @@ class Sword(Weapon):
         print("You slash for {} damage!".format(damage["Total Damage"]))
         target.takeDamage(damage["Total Damage"], origin)
         if origin.masteries.getLevel(type(self)) >= 2:
-            origin.status_list.append(Status("slash_combo", origin, duration=1))
+            origin.status_list.append(Status("slash_combo", origin, origin, duration=1))
     
     def actionSlice(self, origin, target):
         potency = 1.0
@@ -210,7 +210,7 @@ class Sword(Weapon):
         origin.status_list.remove("slash_combo+")
     
     def actionParry(self, origin, target):
-        origin.status_list.append(Status("parry", origin, duration=1, phase="EoT"))
+        origin.status_list.append(Status("parry", origin, origin, duration=1, phase="EoT"))
         print("You prepare to counter an incoming attack.")
 
     def triggerParry(self, origin, target, incoming_dmg):
