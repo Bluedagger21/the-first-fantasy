@@ -105,6 +105,7 @@ def homescreen():
             print("After some time, you notice that you're somehow waking up in the last safe haven you visited.")
             input("Press \"Enter\" to continue...")
             worldmap.current_node = worldmap.last_rest_node
+            os.system("cls" if os.name == "nt" else "clear")
         choice = worldmap.current_node.getOptions()
         if choice == 'e':
             os.system("cls" if os.name == "nt" else "clear")
