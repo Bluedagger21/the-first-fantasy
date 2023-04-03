@@ -24,7 +24,8 @@ class Character:
     
     def getCharacterSheet(self):
         print("[---Character Sheet---]")
-        print("Name: %s (Level: %d)" % (self.name, self.level))
+        # print("Name: %s (Level: %d)" % (self.name, self.level))
+        print("Name: %s" % self.name)
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
         print("\nVitality: {}".format(self.stats["Vitality"]))
         print("Physical Resist: {}".format(self.stats["Physical Resist"]))
@@ -208,7 +209,8 @@ class Player(Character):
     def getCharacterSheet(self):
         # Print Character stats and equipped gear
         print("[---Character Sheet---]")
-        print("Name: %s (Level: %d)" % (self.name, self.level))
+        # print("Name: %s (Level: %d)" % (self.name, self.level))
+        print("Name: %s" % self.name)
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
         print("Gold: {}".format(self.gold))
         for mastery in self.masteries.list:
