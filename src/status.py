@@ -58,7 +58,7 @@ class Poison(Status):
                 input("Press \"Enter\" to continue...")
                 tick_packet["done"] = True
             else:
-                self.trigger(origin, target, damage)
+                self.trigger(self.owner, self.target, damage)
         return tick_packet
 
 class Shield(Status):
