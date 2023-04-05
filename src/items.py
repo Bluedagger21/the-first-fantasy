@@ -58,12 +58,12 @@ class Equipment():
             elif choice == 'q':
                 return "quit"
             # might need else continue here as well for input validation?
+            
 class Armor(Equipment):
     # Derived class from Equipment
     def __init__(self, name, slot, stats, ilvl=1, rarity=0, quality=0, stack_limit=1):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
-
 
         self.stats["Vitality"] = round(stats["Vitality"]*(1+0.08)**self.ilvl)
         self.stats["Magical Resist"] = round(stats["Magical Resist"]*(1+0.08)**self.ilvl)
@@ -71,6 +71,7 @@ class Armor(Equipment):
         self.stats["Vitality"] = round(self.stats["Vitality"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Physical Resist"] = round(self.stats["Physical Resist"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Magical Resist"] = round(self.stats["Magical Resist"] * (1 + ((self.quality / 5) / 100)))
+
 class Weapon(Equipment):
     # Derived class from Equipment
     def __init__(self, name, stats, ilvl=1, slot="Main Hand", rarity=None, quality=None, stack_limit = 1, actions=None):
