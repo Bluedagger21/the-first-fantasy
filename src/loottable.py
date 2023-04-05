@@ -23,16 +23,16 @@ class LootGenerator:
                            "None": {"Type Weight": 29}}
 
         self.weapon_list = [items.Sword, items.Staff, items.Dagger, items.Wand]
-        self.armor_dict = {"Head": {"Helmet": {"Vitality": 10,
+        self.armor_dict = {"Head": {"Helmet": {"Vitality": 5,
                                                "Physical Resist": 5,
                                                "Magical Resist": 5}},
-                           "Body": {"Breastplate": {"Vitality": 10,
+                           "Body": {"Breastplate": {"Vitality": 5,
                                                     "Physical Resist": 5,
                                                     "Magical Resist": 5}},
-                           "Hands": {"Gauntlets": {"Vitality": 10,
+                           "Hands": {"Gauntlets": {"Vitality": 5,
                                                    "Physical Resist": 5,
                                                    "Magical Resist": 5}},
-                           "Feet": {"Greaves": {"Vitality": 10,
+                           "Feet": {"Greaves": {"Vitality": 5,
                                                 "Physical Resist": 5,
                                                 "Magical Resist": 5}}}
         self.unique_dict = {"Main Hand": {"Demonforged Blade": {"Base Damage": 5,
