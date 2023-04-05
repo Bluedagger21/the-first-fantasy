@@ -66,7 +66,7 @@ class Armor(Equipment):
 
         self.stats["Vitality"] = round(stats["Vitality"]*(1+0.08)**self.ilvl)
         self.stats["Magical Resist"] = round(stats["Magical Resist"]*(1+0.08)**self.ilvl)
-        self.stats["Physical Resist"] = round(["Physical Resist"]*(1+0.08)**self.ilvl)
+        self.stats["Physical Resist"] = round(stats["Physical Resist"]*(1+0.08)**self.ilvl)
         self.stats["Vitality"] = round(self.stats["Vitality"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Physical Resist"] = round(self.stats["Physical Resist"] * (1 + ((self.quality / 5) / 100)))
         self.stats["Magical Resist"] = round(self.stats["Magical Resist"] * (1 + ((self.quality / 5) / 100)))
