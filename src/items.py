@@ -64,6 +64,7 @@ class Armor(Equipment):
         super().__init__(name, stats, ilvl, rarity, quality, stack_limit)
         self.slot = slot
 
+
         self.stats["Vitality"] = round(stats["Vitality"]*(1+0.08)**self.ilvl)
         self.stats["Magical Resist"] = round(stats["Magical Resist"]*(1+0.08)**self.ilvl)
         self.stats["Physical Resist"] = round(stats["Physical Resist"]*(1+0.08)**self.ilvl)
