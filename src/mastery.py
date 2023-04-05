@@ -3,14 +3,15 @@ class Mastery:
         self.type = type
         self.level = 1
         self.xp = 0
+        self.next_level_threshold = 0
 
     def giveXP(self, xp):
         self.xp += xp
         self.checkLevel()
     
     def checkLevel(self):
-        next_level_threshold = 1000 + (1000 * self.level * (.5 * self.level))
-        if self.xp >= next_level_threshold:
+        self.next_level_threshold = round(1000 + (1000 * self.level * (.5 * self.level)))
+        if self.xp >= self.next_level_threshold:
             self.levelUp()
     
     def levelUp(self):

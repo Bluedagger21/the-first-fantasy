@@ -214,7 +214,9 @@ class Player(Character):
         print("Health: %d/%d" % (self.health, self.getMaxHealth()))
         print("Gold: {}".format(self.gold))
         for mastery in self.masteries.list:
-            print("{} Mastery: {}".format(mastery.type.__name__, mastery.level))
+            print("{} Mastery: {} ({}/{})".format(mastery.type.__name__, mastery.level,
+                                                  mastery.xp,
+                                                  mastery.next_level_threshold))
         print("\nVitality: {}".format(self.stats["Vitality"]))
         print("Physical Resist: {}".format(self.stats["Physical Resist"]))
         print("Magical Resist: {}".format(self.stats["Magical Resist"]))
