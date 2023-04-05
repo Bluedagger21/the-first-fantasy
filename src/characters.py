@@ -57,7 +57,7 @@ class Character:
         #print("{} takes {} damage.".format(self.name, damage))
         if triggerable is True:
             if self.status_list.exists("Hide in Shadows"):
-                if random.random() >= .5:
+                if random.random() >= .75:
                     print("{} completely avoids the incoming attack!".format(self.name))
                     damage = 0
         self.health -= damage
@@ -82,13 +82,6 @@ class Player(Character):
         self.health = self.getMaxHealth()
 
         self.masteries = MasteryList()
-        self.masteries.giveXP(items.Sword, 4500)
-        self.masteries.giveXP(items.Staff, 4500)
-        self.inventory.add(items.Staff())
-        self.inventory.add(items.Dagger())
-        self.inventory.add(items.Wand())
-        self.masteries.giveXP(items.Wand, 4500)
-        self.masteries.giveXP(items.Dagger, 4500)
 
     def updateStats(self):
         self.stats.update(self.equipped_gear.total_stats)
@@ -150,6 +143,8 @@ class Player(Character):
             return
 
         while True:
+            if self.inventory.isEmpty():
+                break
             accessed_item = self.inventory.access(from_where)
             if accessed_item is False:
                 break

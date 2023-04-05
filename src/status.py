@@ -26,7 +26,6 @@ class Status:
             return False
         else:
             self.callBack(self)
-
 class StatMod(Status):
     def __init__(self, name, owner, duration, stat_mod_dict: dict) -> None:
         super().__init__(name, owner, owner, duration=duration, phase="EoT")

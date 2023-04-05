@@ -42,8 +42,8 @@ class Enemy(characters.Character):
 
 class Spider(Enemy):
     def __init__(self, level, name="Spider"):
-        self.stats={"Vitality": 5,
-                    "Power": 5,
+        self.stats={"Vitality": 10,
+                    "Power": 3,
                     "Base Damage": 5,
                     "Crit": 5,
                     "Crit Multiplier": 1.5,
@@ -72,8 +72,8 @@ class Spider(Enemy):
 
 class Thief(Enemy):
     def __init__(self, level, name="Thief"):
-        self.stats={"Vitality": 5,
-                    "Power": 5,
+        self.stats={"Vitality": 10,
+                    "Power": 3,
                     "Base Damage": 5,
                     "Crit": 5,
                     "Crit Multiplier": 1.5,
@@ -92,7 +92,7 @@ class Thief(Enemy):
             target.takeDamage(damage["Total Damage"], self)
 
         elif choice == "Hide in Shadows":
-            self.status_list.append(Status("Hide in Shadows", self, duration=3, phase="BoT"))
+            self.status_list.append(Status("Hide in Shadows", self, self, duration=3, phase="BoT"))
             print("The Thief creates a swirling mass of shadows around them!")
 
         elif choice == "Pickpocket":
