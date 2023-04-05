@@ -184,7 +184,7 @@ class Sword(Weapon):
             return False
 
     def actionSlash(self, origin, target):
-        potency = 1.0
+        potency = 1.2
         damage_type = "physical"
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You slash for {} damage!".format(damage["Total Damage"]))
@@ -193,7 +193,7 @@ class Sword(Weapon):
             origin.status_list.append(Status("slash_combo", origin, origin, duration=1))
     
     def actionSlice(self, origin, target):
-        potency = 1.0
+        potency = 1.2
         damage_type = "physical"
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You slice for {} damage!".format(damage["Total Damage"]))
@@ -202,7 +202,7 @@ class Sword(Weapon):
         origin.status_list.remove("slash_combo")
     
     def actionSever(self, origin, target):
-        potency = 1.5
+        potency = 2
         damage_type = "physical"
         damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
         print("You sever your foe for {} damage!".format(damage["Total Damage"]))
@@ -218,7 +218,7 @@ class Sword(Weapon):
         if random.random() <= 0.9:
             potency = 1.5
             damage_type = "physical"
-            reduced_incoming_dmg = round(0.1 * incoming_dmg)
+            reduced_incoming_dmg = round(0.25 * incoming_dmg)
             print("You successfully parry the {}'s attack!".format(target.name))
             print("The attack is parried, you will take significantly reduced damage!".format(reduced_incoming_dmg))
             damage = self.getCalculatedDamage(origin, target, potency, damage_type, crit=True)
