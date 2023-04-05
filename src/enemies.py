@@ -42,9 +42,9 @@ class Enemy(characters.Character):
 
 class Spider(Enemy):
     def __init__(self, level, name="Spider"):
-        self.stats={"Vitality": 3,
+        self.stats={"Vitality": 10,
                     "Power": 3,
-                    "Base Damage": 5,
+                    "Base Damage": 3,
                     "Crit": 5,
                     "Crit Multiplier": 1.5,
                     "Physical Resist": 15,
