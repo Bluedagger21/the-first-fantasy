@@ -102,6 +102,8 @@ class Thief(Enemy):
             else:
                 self.item_stolen = random.choice(target.inventory.item_list)
                 target.inventory.remove(self.item_stolen)
+
+                self.item_stolen.stack_size = 1
                 self.loot_table.loot_list.append(self.item_stolen)
 
                 print("The Thief stole a {} from you!".format(self.item_stolen.name))
