@@ -1,5 +1,7 @@
 import items
 import os
+import characters
+import status
 import collections
 
 class Storage:
@@ -100,38 +102,41 @@ class Storage:
 class Equipment():
     # Defines base members and methods for managing equipped items
     def __init__(self, owner):
-        self.slots_dict = {"Head": None, 
-                           "Body": None, 
-                           "Hands": None,
-                           "Feet": None,
-                           "Main Hand": items.Weapon("Rusty Sword",
-                                                     {"Base Damage": 5,
-                                                      "Random Damage": 5,
-                                                      "Rarity": "+0"}),
+        self.slots_dict = {"Head": items.Armor("Ripped Hood", "Head", {"Vitality": 4,
+                                                                       "Physical Resist": 0,
+                                                                       "Magical Resist": 0}),
+                           "Body": items.Armor("Tattered Rags", "Body", {"Vitality": 4,
+                                                                         "Physical Resist": 0,
+                                                                         "Magical Resist": 0}), 
+                           "Hands": items.Armor("Scruffed Gloves", "Hands", {"Vitality": 4,
+                                                                             "Physical Resist": 0,
+                                                                             "Magical Resist": 0}),
+                           "Feet": items.Armor("Worn-out Sandals", "Feet", {"Vitality": 4,
+                                                                            "Physical Resist": 0,
+                                                                            "Magical Resist": 0}),
+                           "Main Hand": items.Sword(quality=0),
                            "Off Hand": None}
         self.owner = owner
-        self.total_modifiers = self.updateModifiers()
+        self.total_stats = self.updateStats()
     
-    def getAttributes(self):
-        self.total_attributes = self.updateAttributes()
-        return self.total_attributes
-    
-    def getModifiers(self):
-        self.total_modifiers = self.updateModifiers()
-        return self.total_modifiers
+    def getStats(self):
+        self.total_stats = self.updateStats()
+        return self.total_stats
 
-    def updateModifiers(self):
-        new_modifiers = {}
+    def updateStats(self):
+        new_stats = {}    
+
         for slot in self.slots_dict.values():
             if slot is None:
                 continue
             else:
-                for modifier_name in slot.modifiers:
-                    if modifier_name in new_modifiers:
-                        new_modifiers[modifier_name] += slot.modifiers[modifier_name]
+                for stat_name in slot.stats:
+                    if stat_name in new_stats:
+                        new_stats[stat_name] += slot.stats[stat_name]
                     else:
-                        new_modifiers.update({modifier_name : slot.modifiers[modifier_name]})
-        return new_modifiers
+                        new_stats.update({stat_name: slot.stats[stat_name]})
+        
+        return new_stats
     
     def equip(self, new_equipment, inventory, accessed_from="zone"):
         slot = new_equipment.slot
@@ -149,10 +154,10 @@ class Equipment():
     
     def actuallyEquip(self, new_equipment, slot):
         self.slots_dict[slot] = new_equipment
-        self.updateModifiers()
+        self.total_stats = self.updateStats()
     
     def compareEquip(self, new_equipment, cur_equipment, slot):
-        keys_to_compare = list((new_equipment.modifiers | cur_equipment.modifiers).keys())
+        keys_to_compare = list((new_equipment.stats | cur_equipment.stats).keys())
 
         while True:
             os.system("cls" if os.name == "nt" else "clear")
@@ -170,17 +175,27 @@ class Equipment():
             print("".join(("Name".ljust(STAT_WIDTH),
                            new_equipment.name.ljust(NEW_NAME_WIDTH),
                            cur_equipment.name.ljust(CUR_NAME_WIDTH))))
+            
+            print("".join(("Item Level".ljust(STAT_WIDTH),
+                            str(new_equipment.ilvl).ljust(NEW_NAME_WIDTH),
+                            str(cur_equipment.ilvl).ljust(CUR_NAME_WIDTH),
+                            str("{0:+}".format(new_equipment.ilvl - cur_equipment.ilvl).ljust(DIF_WIDTH)))))
+            
+            print("".join(("Quality".ljust(STAT_WIDTH),
+                            (str(new_equipment.quality) + "%").ljust(NEW_NAME_WIDTH),
+                            (str(cur_equipment.quality) + "%").ljust(CUR_NAME_WIDTH),
+                            str("{0:+}%".format(new_equipment.quality - cur_equipment.quality).ljust(DIF_WIDTH)))))
 
             for key in keys_to_compare:
                 if key != "Rarity":
-                    if key not in new_equipment.modifiers:
+                    if key not in new_equipment.stats:
                         new_modifier = 0
                     else:
-                        new_modifier = new_equipment.modifiers[key]
-                    if key not in cur_equipment.modifiers:
+                        new_modifier = new_equipment.stats[key]
+                    if key not in cur_equipment.stats:
                         cur_modifier = 0
                     else:
-                        cur_modifier = cur_equipment.modifiers[key]
+                        cur_modifier = cur_equipment.stats[key]
 
                     print("".join((key.ljust(STAT_WIDTH),
                             str(new_modifier).ljust(NEW_NAME_WIDTH),

@@ -4,6 +4,7 @@ import characters
 import os
 import combat
 import game
+import enemies
 
 class World:
     def __init__(self) -> None:
@@ -46,34 +47,7 @@ class Region:
     def __init__(self, name, world) -> None:
         self.name = name
         self.world = world
-        self.enemy_types = {"Thief": {"weight": 10,
-                                      "attribute_weights": [2, 5, 3],
-                                      "weapon": {"Base Damage": 5,
-                                                 "Random Damage": 5,
-                                                 "Random Multiplier": 1,
-                                                 "Base Crit Rate": .1,
-                                                 "Crit Multiplier": 2}},
-                            "Goblin": {"weight": 5,
-                                       "attribute_weights": [3, 4, 3],
-                                       "weapon": {"Base Damage": 3,
-                                                  "Random Damage": 3,
-                                                  "Random Multiplier": 2,
-                                                  "Base Crit Rate": .05,
-                                                  "Crit Multiplier": 2}},
-                            "Spider": {"weight": 5,
-                                       "attribute_weights": [3, 5, 2],
-                                       "weapon": {"Base Damage": 0,
-                                                  "Random Damage": 10,
-                                                  "Random Multiplier": 1,
-                                                  "Base Crit Rate": .05,
-                                                  "Crit Multiplier": 3}},
-                            "Kobold": {"weight": 5,
-                                       "attribute_weights": [4, 3, 3],
-                                       "weapon": {"Base Damage": 7,
-                                                  "Random Damage": 3,
-                                                  "Random Multiplier": 1,
-                                                  "Base Crit Rate": .05,
-                                                  "Crit Multiplier": 2}}}
+        self.enemy_type_list = [enemies.Thief, enemies.Spider]
     def showMap(self):
         print("No map available...")
 
@@ -84,7 +58,7 @@ class Region:
             os.system("cls" if os.name == "nt" else "clear")  
             type_of_encounter = self.getEncounter()
             if type_of_encounter == "combat":
-                if "dead" in game.player.status:
+                if game.player.status_list.exists("dead"):
                     print("You're too injured to fight and had to abandon your travels.")
                     input("Press \"Enter\" to continue...")
                     self.world.current_node = self.world.last_rest_node
@@ -110,18 +84,13 @@ class Region:
         maximum = round(level * 1.25)
         random_value = random.randint(minimum, maximum)
 
-        enemy_spawn_weights = []
-        for enemy in self.enemy_types.values():
-            enemy_spawn_weights.append(enemy["weight"])
+        # enemy_spawn_weights = []
+        # for enemy in self.enemy_types.values():
+        #     enemy_spawn_weights.append(enemy["weight"])
 
-        enemy_name_list = list(self.enemy_types.keys())
-
-        spawned_enemy_name = random.choices(enemy_name_list, weights=enemy_spawn_weights)[0]
+        spawned_enemy_type = random.choice(self.enemy_type_list)
         
-        self.new_spawned_enemy = characters.Enemy(spawned_enemy_name, 
-                                                random_value,
-                                                self.enemy_types[spawned_enemy_name]["attribute_weights"],
-                                                self.enemy_types[spawned_enemy_name]["weapon"])
+        self.new_spawned_enemy = spawned_enemy_type(level)
         return self.new_spawned_enemy
 
 class StartingRegion(Region):
@@ -204,7 +173,7 @@ class Wild(Node):
         return random.choices(options, weights=option_weights)[0]
     
     def explore(self):
-        if "dead" in game.player.status:
+        if game.player.status_list.exists("dead"):
                 print("You're too injured to fight and had to abandon your exploration.")
                 input("Press \"Enter\" to continue...")
                 return False
@@ -223,7 +192,7 @@ class Village(Node):
         self.market = market.BasicMarket()
 
     def rest(self, player):
-        if "dead" in player.status:
+        if player.status_list.exists("dead"):
                 print("You may rest up for free! Get back out there, adventurer.")
                 player.takeGold(0)
                 player.giveHealth(player.getMaxHealth())
@@ -253,7 +222,7 @@ class Town(Node):
         self.market = market.BasicMarket()
     
     def rest(self, player):
-        if "dead" in player.status:
+        if player.status_list.exists("dead"):
                 print("You may rest up for free! Get back out there, adventurer.")
                 player.takeGold(0)
                 player.giveHealth(player.getMaxHealth())
